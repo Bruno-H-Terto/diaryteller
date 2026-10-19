@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.pyright/
+.coverage
+htmlcov/
+dist/
+*.egg-info/
+.env
+keys/
+backups/
+*.dump
+*.enc
+.memray/
