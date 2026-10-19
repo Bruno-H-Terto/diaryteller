@@ -31,7 +31,7 @@ TEST_MONGO_URL='mongodb://diary:diary@localhost:57017/?authSource=admin' \
   rotativo, reutilização revoga sessão, source incompatível, quota concorrente,
   idempotência, isolamento entre usuários, compra/refund, exclusão de conta.
 - Conversa: validação de fontes inventadas, filtro de marcador, timeline via MCP
-  fake, finalização de consumo.
+  fake, finalização de consumo, cancelamento e deadline de primeiro token.
 - MCP: descoberta das cinco ferramentas, busca lexical, ID fora do contexto,
   permissão errada, timeline com eventos sem data.
 - Áudio: magic bytes, duração WAV, limite de bytes/segundos, formato declarado
@@ -50,7 +50,7 @@ TEST_MONGO_URL='mongodb://diary:diary@localhost:57017/?authSource=admin' \
 
 Em 2026-10-19, com PostgreSQL e MongoDB reais em containers:
 
-- `pytest -q` (unit + integração): **45 passaram**;
+- `pytest -q` (unit + integração): **47 passaram**;
 - `ruff check`, `black --check`, `pyright` e verificador de 200 linhas: passaram;
 - Compose completo subiu; cadastro → email (Mailpit) → verificação → login →
   conversa SSE → compra fake → timeline via MCP → transcrição/TTS funcionaram;

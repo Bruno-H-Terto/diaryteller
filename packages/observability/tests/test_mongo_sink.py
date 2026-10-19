@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 import pytest
 from diary_observability import MongoLogSink, sanitize
 from pymongo import AsyncMongoClient
+from pymongo.errors import OperationFailure
 
 pytestmark = pytest.mark.integration
 
@@ -35,7 +36,12 @@ async def test_sink_writes_only_sanitized_fields() -> None:
     document = None
     for _ in range(50):
         await asyncio.sleep(0.1)
-        document = await client[database]["events"].find_one({"request_id": marker})
+        try:
+            document = await client[database]["events"].find_one({"request_id": marker})
+        except OperationFailure as exc:
+            if exc.code == 13:
+                pytest.skip("MongoDB requires credentials; set TEST_MONGO_URL")
+            raise
         if document is not None:
             break
     assert document is not None
