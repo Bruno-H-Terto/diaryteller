@@ -67,3 +67,9 @@ implementations. Without provider credentials the affected smoke test is not
 executed; deterministic test adapters are used only when `APP_ENV=test` or when
 an explicit development flag enables them. The MVP does not store diary text,
 audio, transcripts or AI results on the server.
+
+
+## Aplicativo Android
+
+O cliente móvel fica em [android/](android/README.md), com build e testes
+próprios. Ele consome o contrato do backend e não faz parte dos pods.

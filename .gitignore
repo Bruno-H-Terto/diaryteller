@@ -15,3 +15,7 @@ backups/
 *.enc
 .memray/
 memray-*.bin
+android/local.properties
+android/.gradle/
+android/app/build/
+android/build/

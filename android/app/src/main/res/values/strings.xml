@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Me AI</string>
+    <string name="tab_records">Registros</string>
+    <string name="tab_conversation">Conversa</string>
+    <string name="tab_timeline">Linha do tempo</string>
+    <string name="tab_account">Conta</string>
+
+    <string name="auth_title">Entrar no Call Me AI</string>
+    <string name="auth_body">Use sua conta para sincronizar sessões e enviar conteúdos quando você pedir.</string>
+    <string name="auth_sign_in">Entrar com o provedor</string>
+    <string name="auth_signing_in">Abrindo o navegador…</string>
+    <string name="auth_error">Não foi possível entrar. Tente novamente.</string>
+    <string name="auth_cancelled">Entrada cancelada.</string>
+
+    <string name="records_title">Registros</string>
+    <string name="records_empty">Nenhum registro ainda. Crie o primeiro em texto.</string>
+    <string name="records_new_text">Novo texto</string>
+    <string name="records_save">Salvar</string>
+    <string name="records_saving">Salvando…</string>
+    <string name="records_draft_hint">Escreva seu registro</string>
+    <string name="records_versions">Versões</string>
+    <string name="records_original">Original</string>
+    <string name="records_restore">Restaurar como nova versão</string>
+    <string name="records_sync_pending">Pendente de sincronização</string>
+    <string name="records_sync_local">Somente neste dispositivo</string>
+    <string name="records_error">Não foi possível salvar. O texto continua no rascunho.</string>
+
+    <string name="account_title">Conta</string>
+    <string name="account_email">Email</string>
+    <string name="account_sign_out">Sair</string>
+    <string name="account_sign_out_body">Sair apaga tokens e dados privados desta conta neste dispositivo. Conteúdo ainda não sincronizado será perdido.</string>
+    <string name="account_sign_out_confirm">Sair e apagar dados locais</string>
+    <string name="account_cancel">Cancelar</string>
+
+    <string name="pending_feature">Esta etapa ainda não foi implementada. Consulte docs/backend-requirements.md.</string>
+    <string name="cd_back">Voltar</string>
+    <string name="cd_new_record">Criar novo registro</string>
+</resources>
