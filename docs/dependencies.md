@@ -22,6 +22,7 @@ Verificado em **2026-10-19** contra PyPI e documentação oficial. O `poetry.loc
 | cryptography | 50.0.2 | AES-GCM de segredos/backups | https://cryptography.io/ |
 | google-auth | 2.62.0 | Google Play e FCM | https://googleapis.dev/python/google-auth/latest/ |
 | httpx | 0.28.1 | clientes internos/provedores | https://www.python-httpx.org/ |
+| requests | 2.32.5 | transporte OAuth do Google | https://requests.readthedocs.io/ |
 | aiosmtplib | 5.1.3 | SMTP assíncrono | https://aiosmtplib.readthedocs.io/ |
 
 ## Desenvolvimento
