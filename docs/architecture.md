@@ -11,7 +11,7 @@ celular ──HTTPS──> api/ (borda pública + identidade)
                         └──> demais vizinhos (incremental)
 
 api/ ──> PostgreSQL (conta, sessão, quota, operação, outbox)
-{conversation,speech,exchange,memory_mcp} ──> suas próprias portas
+{conversation,exchange,memory_mcp} ──> suas próprias portas
 notifications ──> PostgreSQL próprio (inbox) + SMTP/push
 maintenance ──> PostgreSQL, Mongo, storage, backups
 ```
@@ -22,7 +22,6 @@ maintenance ──> PostgreSQL, Mongo, storage, backups
 |---|---|---|
 | `api` | Borda pública + conta, sessão, permissões, assinatura, quota, recibos, OIDC | PostgreSQL próprio, provedor de cobrança |
 | `conversation` | Resposta incremental, política, propostas, cliente MCP | Sem conteúdo durável |
-| `speech` | Áudio limitado, transcrição, catálogo, TTS | Sem mídia persistida |
 | `memory_mcp` | Ferramentas sobre contexto enviado | Sem banco/cache de memória |
 | `notifications` | Consumidor Kafka de e-mail e push | PostgreSQL próprio (inbox) |
 | `maintenance` | Expurgo, reconciliação, backups | PostgreSQL, Mongo, storage |
@@ -66,7 +65,7 @@ api/  (ou <vizinho>/)
 
 - `api/`: única borda HTTP pública. Contém identidade, sessões, quotas, OIDC e
   políticas; publica eventos via outbox transacional.
-- `conversation/`, `speech/`, `exchange/`, `memory_mcp/`, `notifications/`,
+- `conversation/`, `exchange/`, `memory_mcp/`, `notifications/`,
   `maintenance/`: um diretório por pod, cada um com `src`, `tests`,
   `Dockerfile`, `pyproject.toml`, `poetry.lock` e `db/migrate` quando precisa.
 - `shared/`: contratos, observabilidade, segurança e mensageria.
@@ -95,14 +94,14 @@ Tópicos atuais: `diary.identity.sessions.v1`, `diary.identity.emails.v1`,
 
 Sessão é um contexto ativo do usuário, não uma cópia de permissões. O `api`
 valida o JWT e o token de origem (JWE com dispositivo e versão) localmente contra
-o registro persistido. Durante a migração incremental, conversation, speech e
+o registro persistido. Durante a migração incremental, conversation e
 exchange ainda chamam `POST /internal/authorize`; o alvo é validação local com
 revogação propagada por evento.
 
 ## Operações
 
 O identity é dono dos recibos de operação, da idempotência e das reservas de
-quota. Conversation e speech criam a operação antes de chamar o provedor,
+quota. Conversation cria a operação antes de chamar o provedor,
 finalizam com consumo conhecido e consultam `/internal/operations/{id}/control`
 durante streams longos. O recibo nunca guarda a resposta da IA.
 

@@ -50,3 +50,14 @@ data class SyncQueueEntity(
     val state: String,
     val lastError: String?,
 )
+
+@Entity(tableName = "recordings", indices = [Index("createdAt")])
+data class RecordingEntity(
+    @PrimaryKey val id: String,
+    val createdAt: Long,
+    val durationMs: Long,
+    val sizeBytes: Long,
+    val fileName: String,
+    val state: String,
+    val recordId: String?,
+)

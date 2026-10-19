@@ -46,6 +46,7 @@ fun AppRoot(container: AppContainer, redirect: Uri?, onRedirectHandled: () -> Un
         is AuthState.SignedOut, is AuthState.Failed -> AuthScreen(authVm, container.oidcProvider)
         is AuthState.SignedIn -> MainScaffold(
             recordsRepository = container.recordsRepository,
+            captureService = container.captureService,
             email = current.email,
             onSignOut = authVm::signOut,
         )

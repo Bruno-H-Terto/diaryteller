@@ -9,6 +9,9 @@ interface RecordsRepository {
     fun observeVersions(recordId: String): Flow<List<RecordVersion>>
 
     suspend fun createDraft(): String
+
+    /** Creates a record whose version 1 is already confirmed (for example a transcript). */
+    suspend fun createRecord(content: String): String
     suspend fun updateDraft(recordId: String, content: String)
     suspend fun confirmDraft(recordId: String, content: String)
     suspend fun addVersion(recordId: String, content: String): String

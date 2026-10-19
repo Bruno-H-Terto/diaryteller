@@ -11,7 +11,6 @@ packages = [
   { include = "diary_messaging", from = "shared/messaging/src" },
   { include = "identity", from = "api/src" },
   { include = "conversation", from = "conversation/src" },
-  { include = "speech", from = "speech/src" },
   { include = "memory_mcp", from = "memory_mcp/src" },
   { include = "notifications", from = "notifications/src" },
   { include = "maintenance", from = "maintenance/src" },
@@ -77,7 +76,7 @@ target-version = ["py312"]
 extend-exclude = "migrations/versions"
 
 [tool.pyright]
-include = ["api", "conversation", "speech", "exchange", "memory_mcp", "notifications", "maintenance", "shared", "ops"]
+include = ["api", "conversation", "exchange", "memory_mcp", "notifications", "maintenance", "shared", "ops"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 exclude = ["**/migrations/versions", "**/.venv"]
@@ -88,7 +87,7 @@ reportUnnecessaryComparison = false
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
-testpaths = ["api", "conversation", "speech", "exchange", "memory_mcp", "notifications", "maintenance", "shared"]
+testpaths = ["api", "conversation", "exchange", "memory_mcp", "notifications", "maintenance", "shared"]
 addopts = "-q --strict-markers"
 markers = [
   "integration: requires PostgreSQL and MongoDB containers",

@@ -36,4 +36,19 @@
     <string name="pending_feature">Esta etapa ainda não foi implementada. Consulte docs/backend-requirements.md.</string>
     <string name="cd_back">Voltar</string>
     <string name="cd_new_record">Criar novo registro</string>
+
+    <string name="capture_dictate">Ditar (no aparelho)</string>
+    <string name="capture_record">Gravar áudio</string>
+    <string name="capture_stop">Parar</string>
+    <string name="capture_transcript">Transcrição</string>
+    <string name="capture_save_transcript">Salvar como registro</string>
+    <string name="capture_listen">Ouvir transcrição</string>
+    <string name="capture_play">Ouvir gravação</string>
+    <string name="capture_discard">Descartar</string>
+    <string name="capture_on_device_hint">A transcrição acontece no aparelho; nenhum áudio é enviado ao servidor.</string>
+    <string name="capture_local_only">A gravação fica cifrada apenas neste aparelho.</string>
+    <string name="capture_offline_only">Transcrição indisponível</string>
+    <string name="capture_model_missing">Baixe o pacote de idioma de reconhecimento offline nas configurações do Android. O app não envia áudio para a nuvem.</string>
+    <string name="capture_unsupported">Este aparelho não oferece reconhecimento de fala offline. Você pode gravar áudio e transcrever em outro aparelho compatível.</string>
+    <string name="capture_error">Não foi possível transcrever (%1$s). Tente novamente.</string>
 </resources>

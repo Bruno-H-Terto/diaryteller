@@ -14,8 +14,6 @@ from identity.models.subscription import Plan
 
 FREE = {
     Permission.CONVERSATION_USE,
-    Permission.SPEECH_TRANSCRIBE,
-    Permission.SPEECH_SYNTHESIZE,
     Permission.EXCHANGE_USE,
 }
 MEMORY = {
@@ -31,7 +29,6 @@ PLANS = [
         permissions=frozenset(permission.value for permission in FREE),
         quotas={
             UsageMetric.AI_TOKENS: 20_000,
-            UsageMetric.SPEECH_SECONDS: 300,
             UsageMetric.MEMORY_CALLS: 0,
         },
         upload_limits=FREE_UPLOAD_LIMITS,
@@ -43,7 +40,6 @@ PLANS = [
         permissions=frozenset(permission.value for permission in FREE | MEMORY),
         quotas={
             UsageMetric.AI_TOKENS: 200_000,
-            UsageMetric.SPEECH_SECONDS: 1_800,
             UsageMetric.MEMORY_CALLS: 100,
         },
         upload_limits=PAID_TEST_UPLOAD_LIMITS,
@@ -55,7 +51,6 @@ PLANS = [
         permissions=frozenset(permission.value for permission in FREE | MEMORY),
         quotas={
             UsageMetric.AI_TOKENS: 200_000,
-            UsageMetric.SPEECH_SECONDS: 1_800,
             UsageMetric.MEMORY_CALLS: 100,
         },
         upload_limits=PAID_TEST_UPLOAD_LIMITS,
@@ -69,7 +64,6 @@ PLANS = [
         ),
         quotas={
             UsageMetric.AI_TOKENS: 1_000_000,
-            UsageMetric.SPEECH_SECONDS: 3_600,
             UsageMetric.MEMORY_CALLS: 500,
         },
         upload_limits=PAID_TEST_UPLOAD_LIMITS,

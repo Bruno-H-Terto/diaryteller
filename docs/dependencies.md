@@ -15,7 +15,7 @@ Verificado em **2026-10-19** contra PyPI e documentação oficial. O `poetry.loc
 | alembic | 1.20.0 | migrations | https://alembic.sqlalchemy.org/ |
 | pymongo | 4.19.0 | logs async (`AsyncMongoClient`) | https://www.mongodb.com/docs/languages/python/pymongo-driver/current/ |
 | mcp | 2.3.0 | servidor/cliente MCP, Streamable HTTP | https://py.sdk.modelcontextprotocol.io/ |
-| openai | 3.35.1 | LLM, transcrição, TTS | https://platform.openai.com/docs/api-reference |
+| openai | 3.35.1 | LLM (interpretação/organização) | https://platform.openai.com/docs/api-reference |
 | pyjwt | 2.15.1 | JWT RS256 | https://pyjwt.readthedocs.io/ |
 | joserfc | 1.7.7 | JWE A256GCM | https://jose.authlib.org/ |
 | argon2-cffi | 25.1.0 | Argon2id | https://argon2-cffi.readthedocs.io/ |
@@ -45,8 +45,8 @@ CI; não é a unidade de deploy.
 
 ## Escolhas externas
 
-- **LLM/voz:** OpenAI (`gpt-4.1-mini`, `gpt-4o-mini-transcribe`,
-  `gpt-4o-mini-tts`). O adaptador aceita `OPENAI_BASE_URL` compatível.
+- **LLM:** OpenAI (`gpt-4.1-mini`) para organização e interpretação. O adaptador
+  aceita `OPENAI_BASE_URL` compatível. Voz não usa provedor externo.
 - **Loja:** Google Play (Android Publisher API + RTDN via Pub/Sub).
 - **Push:** Firebase Cloud Messaging HTTP v1.
 - **Email:** SMTP (Mailpit local).

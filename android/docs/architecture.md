@@ -45,6 +45,20 @@ mesmo estado.
 
 Renovação é centralizada em `SessionRefresher` (mutex, single-flight).
 
+## Voz local
+
+`features/capture` trata áudio sem servidor:
+
+- `SpeechRecognizerDictation` cria o reconhecedor **on-device**; se o aparelho
+  não tem modelo, retorna `MISSING_MODEL`/`UNSUPPORTED_DEVICE` e a UI explica.
+- `MediaRecorderAudioRecorder` grava AAC/MP4 em cache privado.
+- `EncryptedRecordingStore` cifra o arquivo (AES-256-GCM via `EncryptedFile`),
+  guarda metadados no Room e apaga o temporário.
+- `LocalSpeaker` usa `TextToSpeech` para ler texto no aparelho.
+
+Nenhum adaptador desta feature fala HTTP. O backend só recebe o texto que o
+usuário escolhe enviar em uma operação de organização/interpretação.
+
 ## Módulos Gradle
 
 Um único módulo `:app`. A separação por features já permite extrair módulos se

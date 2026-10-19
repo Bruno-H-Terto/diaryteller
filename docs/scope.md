@@ -2,11 +2,14 @@
 
 ## Objetivo
 
-Fornecer o backend mínimo de um diário por voz e texto: identidade por
-dispositivo, permissões e assinatura verificadas no servidor, conversa
-incremental, transcrição e síntese de voz, ferramentas MCP sobre o contexto
-selecionado pelo celular, propostas locais, notificações administrativas e
-operação tolerante a falhas.
+Fornecer o backend mínimo de um diário local-first: identidade por dispositivo,
+permissões e assinatura verificadas no servidor, organização e interpretação de
+contexto selecionado pelo celular, ferramentas MCP, notificações administrativas
+e operação tolerante a falhas.
+
+Gravação, transcrição e texto do diário acontecem somente no aparelho. O servidor
+recebe apenas o contexto que o usuário escolhe enviar para uma operação de
+organização/interpretação.
 
 ## Incluído
 
@@ -17,7 +20,8 @@ operação tolerante a falhas.
 3. Permissões combinando conta ativa, sessão, papel, assinatura e quota.
 4. Conversa por texto com SSE, resposta incremental, limite de perguntas e
    propostas estruturadas.
-5. Transcrição de áudio binário limitado, catálogo de vozes e TTS em streaming.
+5. Contextos autorizados enviados pelo app para organização e interpretação
+   (sem áudio, sem transcrição e sem TTS no servidor).
 6. Servidor MCP interno com `search_memories`, `get_memory`, `organize_ideas`,
    `build_timeline` e `summarize_period`.
 7. Alertas genéricos de novo acesso, leitura de notificações e push.
@@ -25,7 +29,9 @@ operação tolerante a falhas.
 
 ## Excluído
 
-- Aplicativo mobile, landing page e qualquer sincronização de diário.
+- Landing page e qualquer sincronização de diário.
+- Áudio, transcrição, TTS e texto do diário no servidor: esses fluxos são
+  locais no aparelho.
 - CRUD de registros, armazenamento de mídia, transcrições ou respostas.
 - Índice semântico global, embeddings persistidos e leitura do histórico não
   enviado.

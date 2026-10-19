@@ -6,7 +6,6 @@ devem ficar no Keychain/Keystore, nunca em logs, analytics ou backups do app.
 ```bash
 export BASE=http://localhost:8001
 export CONV=http://localhost:8010
-export SPEECH=http://localhost:8011
 ```
 
 ## Cadastro, verificação e login
@@ -95,22 +94,8 @@ curl -N -X POST "$CONV/v1/ai/responses" "${AUTH[@]}" \
 
 ## Voz
 
-```bash
-curl -s -X POST "$SPEECH/v1/speech/transcriptions" "${AUTH[@]}" \
-  -H 'content-type: audio/wav' -H 'X-Audio-Format: wav' \
-  -H 'X-Audio-Language: pt' -H 'Idempotency-Key: speech-0001' \
-  --data-binary @audio-sintetico.wav
-
-curl -s "$SPEECH/v1/speech/voices" "${AUTH[@]}"
-
-curl -s -X POST "$SPEECH/v1/speech/syntheses" "${AUTH[@]}" \
-  -H 'content-type: application/json' -H 'Idempotency-Key: tts-0001' \
-  -d '{"text":"Resposta curta.","voice_id":"alloy","format":"mp3"}' \
-  --output resposta.mp3
-```
-
-Cada etapa tem operação própria. Sem rede, o app mantém fila local; a API
-remota não funciona offline.
+Não há endpoint de voz. Gravação, transcrição e síntese acontecem no aparelho
+(`SpeechRecognizer` on-device e `TextToSpeech`); nenhum áudio sai do celular.
 
 ## Refresh e revogação
 

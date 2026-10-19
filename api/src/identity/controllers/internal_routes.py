@@ -39,21 +39,9 @@ from identity.services.reserve_usage import reserve_usage
 
 router = APIRouter(prefix="/internal", tags=["internal"])
 
-_METRICS = {
-    OperationType.AI_RESPONSE: UsageMetric.AI_TOKENS,
-    OperationType.TRANSCRIPTION: UsageMetric.SPEECH_SECONDS,
-    OperationType.SYNTHESIS: UsageMetric.SPEECH_SECONDS,
-}
-_PERMISSIONS = {
-    OperationType.AI_RESPONSE: Permission.CONVERSATION_USE,
-    OperationType.TRANSCRIPTION: Permission.SPEECH_TRANSCRIBE,
-    OperationType.SYNTHESIS: Permission.SPEECH_SYNTHESIZE,
-}
-_MAX_ESTIMATE = {
-    OperationType.AI_RESPONSE: 16_000,
-    OperationType.TRANSCRIPTION: 120,
-    OperationType.SYNTHESIS: 120,
-}
+_METRICS = {OperationType.AI_RESPONSE: UsageMetric.AI_TOKENS}
+_PERMISSIONS = {OperationType.AI_RESPONSE: Permission.CONVERSATION_USE}
+_MAX_ESTIMATE = {OperationType.AI_RESPONSE: 16_000}
 
 
 @router.post("/authorize", response_model=AuthorizeDecision)

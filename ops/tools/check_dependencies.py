@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PODS = ("api", "conversation", "speech", "exchange", "memory_mcp", "notifications", "maintenance")
+PODS = ("api", "conversation", "exchange", "memory_mcp", "notifications", "maintenance")
 PROJECTS = [ROOT, *(ROOT / pod for pod in PODS)]
 
 

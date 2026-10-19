@@ -11,22 +11,27 @@ python3 scripts/check_line_limits.py
 Resultados:
 
 - `assembleDebug`: sucesso; APK em `app/build/outputs/apk/debug/`.
-- `testDebugUnitTest`: 12 testes aprovados.
+- `testDebugUnitTest`: 16 testes aprovados.
   - PKCE: tamanho, alfabeto, S256 e unicidade.
   - Versionamento: numeração, restauração como nova versão.
   - Room: original imutável, nova versão, rascunho não altera versão confirmada,
     limpeza no logout.
   - Sessão: round-trip, limpeza e ciphertext ilegível → signed out.
+  - Captura: parada entrega arquivo e duração ao armazenamento, disponibilidade de
+    ditado é respeitada, descarte não grava, exclusão é local.
 - Limite de 200 linhas: aprovado.
 - `lintDebug`: aprovado.
-- `connectedDebugAndroidTest`: 1 teste aprovado no AVD `callme_api36`
-  (API 36) — abre Room com SQLCipher e confirma uma versão.
+- `connectedDebugAndroidTest`: 3 testes aprovados no AVD `callme_api36`
+  (API 36): Room com SQLCipher confirma versão; gravação é cifrada em repouso,
+  reproduz o conteúdo original e a exclusão remove o arquivo.
 - Instalação e abertura do APK no emulador: sucesso; processo ativo e tela de
   autenticação renderizada.
 
 ## Ainda não executado
 
-- Testes de upload/transcrição/conversa: dependem dos endpoints pendentes.
+- Testes de upload de anexos e conversa: dependem dos endpoints pendentes.
+- Ditado on-device real: depende de modelo de fala offline instalado no aparelho;
+  a ausência é tratada e testada por estado, sem fallback de nuvem.
 - Teste manual do fluxo OIDC completo: depende do Dex e do backend em execução.
 
 ## Emulador

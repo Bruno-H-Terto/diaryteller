@@ -58,6 +58,7 @@ interface RecordsDao {
 
     @Transaction
     suspend fun clearAll() {
+        clearRecordings()
         clearVersions()
         clearRecords()
         clearQueue()
@@ -65,6 +66,24 @@ interface RecordsDao {
 
     @Insert
     suspend fun enqueue(item: SyncQueueEntity)
+
+    @Insert
+    suspend fun insertRecording(recording: RecordingEntity)
+
+    @Query("SELECT * FROM recordings ORDER BY createdAt DESC")
+    suspend fun recordings(): List<RecordingEntity>
+
+    @Query("SELECT * FROM recordings WHERE id = :id")
+    suspend fun recording(id: String): RecordingEntity?
+
+    @Query("UPDATE recordings SET recordId = :recordId WHERE id = :id")
+    suspend fun attachRecording(id: String, recordId: String)
+
+    @Query("DELETE FROM recordings WHERE id = :id")
+    suspend fun deleteRecording(id: String)
+
+    @Query("DELETE FROM recordings")
+    suspend fun clearRecordings()
 
     @Query("SELECT * FROM sync_queue WHERE state = 'PENDING' AND nextAttemptAt <= :now ORDER BY nextAttemptAt LIMIT :limit")
     suspend fun dueQueue(now: Long, limit: Int): List<SyncQueueEntity>

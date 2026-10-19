@@ -14,8 +14,13 @@
 ## Banco e arquivos
 
 - Room sobre SQLCipher; nenhum conteúdo em texto claro no banco.
+- Gravações ficam em `files/recordings` cifradas com AES-256-GCM (chave do
+  Keystore). A reprodução descriptografa para um cache temporário apagado ao
+  final.
 - `allowBackup=false` e regras de extração excluem banco, arquivos e prefs.
-- Áudio e anexos usarão armazenamento privado protegido (etapa 5).
+- Anexos (imagens/arquivos) usarão armazenamento privado protegido (etapa 5).
+- Reconhecimento de fala e TTS são executados pelo sistema no aparelho; não há
+  fallback para serviços de nuvem.
 
 ## Limites do modelo
 

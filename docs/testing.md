@@ -53,7 +53,7 @@ Em 2026-10-19, com PostgreSQL e MongoDB reais em containers:
 - `pytest -q` (unit + integração): **47 passaram**;
 - `ruff check`, `black --check`, `pyright` e verificador de 200 linhas: passaram;
 - Compose completo subiu; cadastro → email (Mailpit) → verificação → login →
-  conversa SSE → compra fake → timeline via MCP → transcrição/TTS funcionaram;
+  conversa SSE → compra fake → timeline via MCP funcionaram;
 - retenção, backup PostgreSQL/Mongo cifrado e `restore-check` (pg_restore list +
   mongorestore `--dryRun`) foram executados;
 - 100 e 500 streams sintéticos e Memray: ver [performance](performance.md).

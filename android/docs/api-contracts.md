@@ -44,7 +44,12 @@ O backend devolve `{code, message, details, retryable}`. O app mapeia para:
 - `403` → mostra motivo (`email_not_verified`, `account_disabled`).
 - `429`/`5xx` → mensagem com ação de tentar novamente.
 
+## Voz
+
+Sem contrato HTTP: áudio, transcrição e TTS são locais. O backend nunca recebe
+áudio nem transcrição.
+
 ## Pendências
 
-Endpoints de registros/versões, upload, transcrição, conversa e timeline ainda
-não existem. Ver [backend-requirements](backend-requirements.md).
+Endpoints de registros/versões, upload de anexos, conversa e timeline ainda não
+existem. Ver [backend-requirements](backend-requirements.md).

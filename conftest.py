@@ -53,12 +53,10 @@ os.environ["IDEMPOTENCY_HMAC_KEY"] = _secret()
 os.environ["BACKUP_ENCRYPTION_KEY"] = _secret()
 os.environ["BILLING_PROVIDER"] = "fake"
 os.environ["LLM_PROVIDER"] = "fake"
-os.environ["SPEECH_PROVIDER"] = "fake"
 os.environ["PUSH_PROVIDER"] = "dev"
 os.environ["CONVERSATION_INTERNAL_TOKEN"] = "test-conversation"
-os.environ["SPEECH_INTERNAL_TOKEN"] = "test-speech"
 os.environ["IDENTITY_INTERNAL_SECRETS"] = (
-    '{"conversation":"test-conversation","speech":"test-speech","exchange":"test-exchange"}'
+    '{"conversation":"test-conversation","exchange":"test-exchange"}'
 )
 os.environ["OIDC_ENABLED"] = "true"
 os.environ["OIDC_ALLOWED_REDIRECT_URIS"] = '["diary://oidc"]'

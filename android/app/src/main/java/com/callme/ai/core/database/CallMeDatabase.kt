@@ -4,7 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [RecordEntity::class, RecordVersionEntity::class, SyncQueueEntity::class],
+    entities = [
+        RecordEntity::class,
+        RecordVersionEntity::class,
+        SyncQueueEntity::class,
+        RecordingEntity::class,
+    ],
     version = 1,
     exportSchema = false,
 )

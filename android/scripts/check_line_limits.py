@@ -19,9 +19,13 @@ def files() -> list[Path]:
         if not base.exists():
             continue
         for path in sorted(base.rglob("*")):
-            if path.is_file() and path.suffix in SUFFIXES:
-                if not IGNORED.intersection(path.relative_to(ROOT).parts):
-                    found.append(path)
+            relative = path.relative_to(ROOT)
+            if (
+                path.is_file()
+                and path.suffix in SUFFIXES
+                and not IGNORED.intersection(relative.parts)
+            ):
+                found.append(path)
     return found
 
 

@@ -31,11 +31,16 @@ backend:
 - `DELETE /v1/exchange/uploads/{id}`
 - `POST /v1/exchange/media/{id}/download-url`
 
-## 3. Transcrição assíncrona (etapa 6)
+## 3. Transcrição: nenhuma dependência
 
-- `POST /v1/speech/transcription-jobs`
-- `GET /v1/speech/transcription-jobs/{id}`
-- `POST /v1/speech/transcription-jobs/{id}/retry|cancel`
+Áudio e transcrição são locais por decisão de produto. Não há endpoint de
+transcrição, upload de áudio ou job de fala. O servidor não deve receber áudio,
+transcrição ou TTS.
+
+Limitação do app: transcrever um arquivo já gravado exigiria um modelo ASR
+embarcado (por exemplo, Whisper local). Hoje o ditado transcreve durante a fala;
+a gravação é preservada para audição. Se o produto exigir transcrição de arquivo
+antigo, a decisão é embarcar um modelo, nunca enviar áudio ao servidor.
 
 ## 4. Conversa e timeline (etapas 7/8)
 
@@ -59,8 +64,9 @@ Necessário para o app Android:
    GET /v1/records?cursor= e GET /v1/records/{id}/versions
    DELETE /v1/records/{id}
 2. Uploads diretos/multipart conforme contracts/android-delta.
-3. Jobs assíncronos de transcrição com retry/cancel.
-4. Conversa com context_id + resultados recuperáveis (GET/ack) e SSE.
-5. Feed incremental e snapshots para sincronização.
+3. Conversa com context_id + resultados recuperáveis (GET/ack) e SSE.
+4. Feed incremental e snapshots para sincronização.
+
+Não é necessário endpoint de transcrição: áudio e texto permanecem no aparelho.
 Todos com erros {code,message,details,retryable} e limites por plano.
 ```

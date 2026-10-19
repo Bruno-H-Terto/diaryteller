@@ -57,6 +57,12 @@ class RoomRecordsRepository(
         return recordId
     }
 
+    override suspend fun createRecord(content: String): String {
+        val recordId = createDraft()
+        confirmDraft(recordId, content)
+        return recordId
+    }
+
     override suspend fun updateDraft(recordId: String, content: String) {
         val record = dao.record(recordId) ?: return
         val version = dao.version(record.currentVersionId) ?: return

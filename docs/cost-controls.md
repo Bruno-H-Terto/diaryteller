@@ -10,11 +10,10 @@ cobrança.
 
 ## Limites
 
-- Janela diária UTC por plano (AI tokens, segundos de fala, chamadas de memória).
-- Estimativa por operação: AI `1200 + (mensagem+contexto)/3`, limitada a 8.000;
-  transcrição pela duração validada; TTS por `caracteres/15`.
-- Contexto 256 KiB, 50 registros, 8.000 caracteres por mensagem; áudio 10 MiB/120 s;
-  TTS 4.000 caracteres; 4 ferramentas MCP por operação.
+- Janela diária UTC por plano (AI tokens e chamadas de memória).
+- Estimativa por operação: AI `1200 + (mensagem+contexto)/3`, limitada a 8.000.
+- Contexto 256 KiB, 50 registros, 8.000 caracteres por mensagem; 4 ferramentas
+  MCP por operação. Voz local não consome quota.
 - Concorrência por usuário e por fornecedor configurável no deploy.
 - Orçamento global: reduzir limites de plano e/ou bloquear contas; não há
   contador global embutido no MVP (extensão documentada).

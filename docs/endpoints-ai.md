@@ -46,36 +46,16 @@ A resposta é `text/event-stream`; ver [streaming](streaming-contract.md).
 Estados: `accepted`, `running`, `succeeded`, `failed`, `cancel_requested`,
 `cancelled`, `interrupted`.
 
-## Voz
+## Voz no aparelho
 
-### `POST /v1/speech/transcriptions`
+Transcrição, síntese e gravação são locais e não têm endpoint. O app usa
+`SpeechRecognizer` em modo on-device e o `TextToSpeech` do Android; nenhum áudio
+ou transcrição é enviado ao backend nem persistido no servidor.
 
-Headers: autenticação, `Idempotency-Key`, `Content-Type` do áudio e,
-opcionalmente, `X-Audio-Format` (`wav`, `mp3`, `m4a`, `ogg`, `webm`) e
-`X-Audio-Language`. Corpo binário, máximo 10 MiB e 120 s. O formato é verificado
-por magic bytes e a duração por parser WAV ou `ffprobe` restrito. MIME declarado
-não basta.
+A única operação de IA no servidor é organização/interpretação do contexto
+textual explicitamente selecionado.
 
-```json
-{
-  "operation_id": "UUID",
-  "text": "texto transcrito",
-  "language": "pt",
-  "duration_seconds": 12.4,
-  "provider_format": "wav"
-}
-```
+## Operações
 
-### `GET /v1/speech/voices`
-
-Retorna vozes autorizadas do provedor. Não há clonagem.
-
-### `POST /v1/speech/syntheses`
-
-Corpo: `text` (até 4.000 caracteres), `voice_id`, `format` (`mp3`, `wav` ou
-`ogg`), `locale` opcional. Resposta binária em streaming com
-`X-Operation-Id`, `Content-Type` do formato e `Cache-Control: no-store`. O texto
-não é persistido. Falha do TTS não apaga o texto, que permanece no celular.
-
-Cada etapa (transcrição, conversa, síntese) tem operação, erro e consumo
-independentes. Não há endpoint de upload resumível no MVP.
+Cada conversa tem operação, erro e consumo independentes. Não há endpoint de
+upload de áudio nem de job de transcrição.

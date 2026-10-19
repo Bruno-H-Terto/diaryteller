@@ -14,11 +14,10 @@ import httpx
 
 IDENTITY = os.environ.get("SMOKE_IDENTITY", "http://localhost:8001")
 CONVERSATION = os.environ.get("SMOKE_CONVERSATION", "http://localhost:8010")
-SPEECH = os.environ.get("SMOKE_SPEECH", "http://localhost:8011")
 
 
 def main() -> int:
-    """Login and exercise health, conversation and voice catalog."""
+    """Login and exercise identity health and a streamed conversation."""
     email = os.environ.get("SMOKE_EMAIL")
     password = os.environ.get("SMOKE_PASSWORD")
     if not email or not password:
@@ -64,8 +63,6 @@ def main() -> int:
                 if line.startswith("event: result"):
                     print("conversation_result", "received")
                     break
-        voices = client.get(f"{SPEECH}/v1/speech/voices", headers=headers)
-        print("voices", voices.status_code, len(json.dumps(voices.json())))
     return 0
 
 

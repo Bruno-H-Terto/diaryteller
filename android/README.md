@@ -13,16 +13,28 @@ Entrega incremental conforme `docs/`:
 | 2. Persistência protegida e autenticação | concluída |
 | 3. Registros de texto e sincronização | parcial (local; endpoint de sync pendente no backend) |
 | 4. Histórico de versões | concluída (local) |
-| 5–9. Upload, áudio, conversa, timeline, release | pendentes |
+| 6. Gravação e transcrição local | concluída (ditado on-device e gravação cifrada) |
+| 5, 7, 8, 9. Upload de anexos, conversa, timeline, release | pendentes |
 
 O que é real: autenticação OIDC por Authorization Code + PKCE no navegador do
 sistema, sessão cifrada com Android Keystore, Room sobre SQLCipher, criação e
-versionamento local de registros.
+versionamento local de registros, ditado transcrito no aparelho e gravação de
+áudio cifrada localmente com TTS local para leitura.
 
 O que é simulado/pendente: sincronização de registros (não há endpoint no
-backend), upload direto, transcrição, conversa e timeline. Ver
+backend), upload de anexos, conversa e timeline. Ver
 [backend-requirements](docs/backend-requirements.md) e
 [testing](docs/testing.md).
+
+## Voz: somente no aparelho
+
+- Transcrição usa `SpeechRecognizer` criado com `createOnDeviceSpeechRecognizer`
+  e `EXTRA_PREFER_OFFLINE`. Não há fallback para mecanismo em nuvem.
+- Sem pacote de idioma offline, o app informa a limitação e não envia áudio.
+- Gravação vai para arquivo cifrado AES-256-GCM com chave do Keystore.
+- Leitura de texto usa o `TextToSpeech` do Android.
+- Nenhum áudio, transcrição ou texto é enviado ao backend; apenas o contexto
+  selecionado para organização/interpretação.
 
 ## Requisitos
 

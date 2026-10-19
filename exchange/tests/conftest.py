@@ -25,7 +25,7 @@ os.environ.setdefault(
 )
 os.environ.setdefault(
     "EXCHANGE_INTERNAL_SECRETS",
-    '{"conversation":"test-conversation","speech":"test-speech"}',
+    '{"conversation":"test-conversation"}',
 )
 
 pytestmark = pytest.mark.integration

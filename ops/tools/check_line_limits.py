@@ -31,6 +31,8 @@ IGNORED_DIRS = {
     "backups",
     "migrations",
     "migrate",
+    "build",
+    ".gradle",
 }
 CHECKED_SUFFIXES = {
     ".py",

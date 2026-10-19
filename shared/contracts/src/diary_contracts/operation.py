@@ -19,8 +19,6 @@ class OperationType(StrEnum):
     """Operations that may consume external provider capacity."""
 
     AI_RESPONSE = "ai_response"
-    TRANSCRIPTION = "transcription"
-    SYNTHESIS = "synthesis"
 
 
 class OperationState(StrEnum):

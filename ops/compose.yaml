@@ -104,24 +104,6 @@ services:
       retries: 12
     <<: *logging
 
-  speech:
-    build: { context: .., dockerfile: speech/Dockerfile }
-    env_file: [../.env]
-    environment:
-      IDENTITY_INTERNAL_URL: http://identity:8000
-      MONGO_URL: mongodb://speech_logs:speech_logs@mongo:27017/diary_logs?authSource=diary_logs
-      APP_ENV: development
-      SPEECH_PROVIDER: fake
-    ports: ["8011:8000"]
-    depends_on:
-      identity: { condition: service_healthy }
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
-    <<: *logging
-
   memory_mcp:
     build: { context: .., dockerfile: memory_mcp/Dockerfile }
     env_file: [../.env]

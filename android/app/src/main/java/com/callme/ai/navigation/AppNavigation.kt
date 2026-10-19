@@ -24,6 +24,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.callme.ai.R
+import com.callme.ai.features.capture.application.CaptureService
+import com.callme.ai.features.capture.domain.CaptureMode
+import com.callme.ai.features.capture.presentation.CaptureScreen
+import com.callme.ai.features.capture.presentation.CaptureViewModel
 import com.callme.ai.features.records.application.RecordsRepository
 import com.callme.ai.features.records.presentation.EditorScreen
 import com.callme.ai.features.records.presentation.EditorViewModel
@@ -45,6 +49,7 @@ private val tabs = listOf(
 @Composable
 fun MainScaffold(
     recordsRepository: RecordsRepository,
+    captureService: CaptureService,
     email: String,
     onSignOut: () -> Unit,
     navController: NavHostController = rememberNavController(),
@@ -81,7 +86,11 @@ fun MainScaffold(
         ) {
             composable(Destinations.RECORDS) {
                 val vm: RecordsViewModel = viewModel(factory = factory { RecordsViewModel(recordsRepository) })
-                RecordsScreen(vm, onOpen = { navController.navigate(Destinations.editor(it)) })
+                RecordsScreen(
+                    viewModel = vm,
+                    onOpen = { navController.navigate(Destinations.editor(it)) },
+                    onCapture = { navController.navigate(Destinations.capture(it.name.lowercase())) },
+                )
             }
             composable(Destinations.CONVERSATION) { PendingScreen(stringResource(R.string.tab_conversation)) }
             composable(Destinations.TIMELINE) { PendingScreen(stringResource(R.string.tab_timeline)) }
@@ -96,6 +105,25 @@ fun MainScaffold(
                     viewModel = vm,
                     onBack = { navController.popBackStack() },
                     onVersions = { navController.navigate(Destinations.versions(recordId)) },
+                )
+            }
+            composable(Destinations.CAPTURE) { backStack ->
+                val mode = if (backStack.arguments?.getString("mode") == "recording") {
+                    CaptureMode.RECORDING
+                } else {
+                    CaptureMode.DICTATION
+                }
+                val vm: CaptureViewModel = viewModel(
+                    key = "capture-${mode.name}",
+                    factory = factory { CaptureViewModel(captureService, recordsRepository) },
+                )
+                CaptureScreen(
+                    mode = mode,
+                    viewModel = vm,
+                    onSaved = { recordId ->
+                        navController.popBackStack()
+                        navController.navigate(Destinations.editor(recordId))
+                    },
                 )
             }
             composable(Destinations.VERSIONS) { backStack ->

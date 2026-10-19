@@ -1,8 +1,9 @@
 # Diary API
 
-Backend for a local-first voice/text diary. The phone owns diary content; this
-backend authenticates devices, enforces plans and quotas, and processes content
-only for the duration of a request.
+Backend for a local-first voice/text diary. The phone owns diary content,
+recording and transcription; this backend authenticates devices, enforces plans
+and quotas, and processes only the context the user selects for organization or
+interpretation.
 
 ## Pods
 
@@ -13,7 +14,6 @@ próprios.
 |---|---|---|
 | `api` | 8001 | Borda pública, contas, sessões, quotas, OIDC, operações |
 | `conversation` | 8010 | Respostas de IA em streaming, MCP, propostas |
-| `speech` | 8011 | Transcrição e TTS limitados |
 | `exchange` | 8012 | Contextos autorizados, uploads, resultados, feed |
 | `memory_mcp` | interno | Servidor MCP sobre registros selecionados |
 | `notifications` | worker | Consumidor Kafka de e-mail e push |

@@ -10,7 +10,7 @@ import pytest
 
 pytestmark = pytest.mark.contract
 
-SERVICES = ("identity", "conversation", "speech", "memory_mcp", "exchange")
+SERVICES = ("identity", "conversation", "memory_mcp", "exchange")
 METHODS = {"get", "post", "put", "patch", "delete", "head", "options"}
 BASELINE = Path(__file__).resolve().parents[2] / "contracts" / "routes.json"
 

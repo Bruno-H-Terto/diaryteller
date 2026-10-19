@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.sqlite)
     implementation(libs.sqlcipher)
+    implementation(libs.androidx.security.crypto)
 
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
@@ -99,5 +100,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("androidx.test:core:1.6.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }

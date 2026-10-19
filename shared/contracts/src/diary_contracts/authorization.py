@@ -17,8 +17,6 @@ class Permission(StrEnum):
     """Permissions granted by roles and plans."""
 
     CONVERSATION_USE = "conversation:use"
-    SPEECH_TRANSCRIBE = "speech:transcribe"
-    SPEECH_SYNTHESIZE = "speech:synthesize"
     MEMORY_SEARCH = "memory:search"
     MEMORY_ORGANIZE = "memory:organize"
     MEMORY_TIMELINE = "memory:timeline"
@@ -39,7 +37,6 @@ class UsageMetric(StrEnum):
     """Metered resources reserved before an external provider call."""
 
     AI_TOKENS = "ai_tokens"
-    SPEECH_SECONDS = "speech_seconds"
     MEMORY_CALLS = "memory_calls"
 
 

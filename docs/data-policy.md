@@ -2,9 +2,10 @@
 
 ## Princípio
 
-O celular é a fonte de verdade do diário. O backend recebe apenas o conteúdo
-necessário para uma operação e não o persiste. Gravações, transcrições,
-respostas, metas e lembretes ficam no aparelho.
+O celular é a fonte de verdade do diário. Gravação, transcrição, síntese de voz
+e texto vivem apenas no aparelho; nenhum desses bytes é enviado ao backend. O
+servidor recebe somente o contexto textual que o usuário seleciona para uma
+operação de organização/interpretação, e não o persiste.
 
 ## Dados permitidos
 
@@ -25,9 +26,8 @@ Metadados administrativos também podem ser dados pessoais. Não há promessa de
 
 - Corpo limitado e lido em memória durante a requisição; conexões do banco não
   ficam abertas durante streams.
-- Upload de áudio binário em streaming, limite de 10 MiB e 120 s, validação de
-  assinatura e duração. Se um adaptador exigir arquivo, usar área temporária
-  limitada e remover em `finally`.
+- Nenhum upload de áudio: gravação e transcrição são locais. O contexto textual
+  enviado é limitado por tamanho e validado pelo contrato de contexto.
 - `Cache-Control: no-store` em respostas com conteúdo; proxies/APM sem captura
   de corpo; sem logs de request/response.
 - Python não oferece apagamento criptograficamente garantido da RAM. Riscos de

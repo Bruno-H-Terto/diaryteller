@@ -68,13 +68,5 @@
     "get /health/live",
     "get /health/ready",
     "get /metrics"
-  ],
-  "speech": [
-    "get /health/live",
-    "get /health/ready",
-    "get /metrics",
-    "get /v1/speech/voices",
-    "post /v1/speech/syntheses",
-    "post /v1/speech/transcriptions"
   ]
 }

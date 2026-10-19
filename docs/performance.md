@@ -57,7 +57,7 @@ O arquivo `memray-stream.bin` é local e não é versionado.
 
 ## Escala horizontal
 
-Conversation e speech não guardam estado de sessão/contexto. Memory MCP é
+Conversation não guarda estado de sessão/contexto. Memory MCP é
 stateless. Duas réplicas podem receber chamadas sem afinidade; a credencial de
 contexto viaja na requisição. Revogação é aplicada via identity em até 15 s.
 

@@ -21,6 +21,7 @@ truth = "1.4.4"
 coroutinesTest = "1.10.1"
 robolectric = "4.14.1"
 androidxTest = "1.2.1"
+securityCrypto = "1.1.0-alpha06"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version = "1.16.0" }
@@ -37,6 +38,7 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "browser
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }

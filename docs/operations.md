@@ -6,7 +6,6 @@
 |---|---|---|
 | identity | `/health/live` | PostgreSQL (`SELECT 1`) |
 | conversation | `/health/live` | identity `/health/ready` |
-| speech | `/health/live` | identity `/health/ready` |
 | memory_mcp | `/health/live` | sem persistência essencial |
 | notifications | processo do worker | banco no primeiro ciclo |
 
