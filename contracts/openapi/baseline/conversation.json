@@ -1,0 +1,358 @@
+{
+  "components": {
+    "schemas": {
+      "ContextBundle": {
+        "additionalProperties": false,
+        "description": "Validated set of records with explicit coverage and unique IDs.",
+        "properties": {
+          "coverage": {
+            "default": "selected_records",
+            "pattern": "^selected_records$",
+            "title": "Coverage",
+            "type": "string"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/ContextRecord"
+            },
+            "maxItems": 50,
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "title": "ContextBundle",
+        "type": "object"
+      },
+      "ContextRecord": {
+        "additionalProperties": false,
+        "description": "One immutable record supplied by the client.",
+        "properties": {
+          "event_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event At"
+          },
+          "id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "source_type": {
+            "$ref": "#/components/schemas/SourceType",
+            "default": "diary_text"
+          },
+          "text": {
+            "maxLength": 20000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "recorded_at",
+          "text"
+        ],
+        "title": "ContextRecord",
+        "type": "object"
+      },
+      "ConversationRequest": {
+        "additionalProperties": false,
+        "description": "Body of a streaming AI request. Owner is derived from the session.",
+        "properties": {
+          "client_message_id": {
+            "format": "uuid",
+            "title": "Client Message Id",
+            "type": "string"
+          },
+          "context": {
+            "$ref": "#/components/schemas/ContextBundle"
+          },
+          "conversation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Conversation Id",
+            "type": "string"
+          },
+          "locale": {
+            "default": "pt-BR",
+            "maxLength": 16,
+            "title": "Locale",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/ResponseMode",
+            "default": "conversation"
+          },
+          "timezone": {
+            "default": "UTC",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_message_id",
+          "conversation_id",
+          "message"
+        ],
+        "title": "ConversationRequest",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "ResponseMode": {
+        "description": "Allowed intentions for a response.",
+        "enum": [
+          "conversation",
+          "recall",
+          "organize",
+          "timeline",
+          "summarize"
+        ],
+        "title": "ResponseMode",
+        "type": "string"
+      },
+      "SourceType": {
+        "description": "Origin of a record inside the phone's local store.",
+        "enum": [
+          "diary_text",
+          "voice_transcription",
+          "note",
+          "local_summary"
+        ],
+        "title": "SourceType",
+        "type": "string"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Diary Conversation API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health/live": {
+      "get": {
+        "description": "Process liveness.",
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Live Health Live Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Live"
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "description": "Require identity authorization; Mongo is not essential.",
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Ready"
+      }
+    },
+    "/metrics": {
+      "get": {
+        "description": "Internal metrics.",
+        "operationId": "metrics_metrics_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-metrics-token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Metrics-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Metrics"
+      }
+    },
+    "/v1/ai/responses": {
+      "post": {
+        "description": "Authorize, reserve, then stream a validated AI response.",
+        "operationId": "respond_v1_ai_responses_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Authorization",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Session-Source",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Session-Source",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Respond",
+        "tags": [
+          "ai"
+        ]
+      }
+    }
+  }
+}
