@@ -1,29 +1,38 @@
 package com.callme.ai.navigation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.callme.ai.navigation.factory
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.callme.ai.R
 import com.callme.ai.features.capture.application.CaptureService
 import com.callme.ai.features.capture.domain.CaptureMode
@@ -33,25 +42,26 @@ import com.callme.ai.features.conversations.application.ConversationRepository
 import com.callme.ai.features.conversations.domain.SelectableRecord
 import com.callme.ai.features.conversations.presentation.ConversationScreen
 import com.callme.ai.features.conversations.presentation.ConversationViewModel
-import com.callme.ai.features.records.domain.Record
 import com.callme.ai.features.records.application.RecordsRepository
+import com.callme.ai.features.records.presentation.DiaryScreen
 import com.callme.ai.features.records.presentation.EditorScreen
 import com.callme.ai.features.records.presentation.EditorViewModel
-import com.callme.ai.features.records.presentation.RecordsScreen
 import com.callme.ai.features.records.presentation.RecordsViewModel
 import com.callme.ai.features.records.presentation.VersionsScreen
 import com.callme.ai.features.settings.presentation.AccountScreen
-import com.callme.ai.features.settings.presentation.PendingScreen
+import com.callme.ai.features.settings.presentation.PrivacyScreen
+import com.callme.ai.features.settings.presentation.SettingsScreen
 
-private data class Tab(val route: String, val label: Int, val icon: androidx.compose.ui.graphics.vector.ImageVector)
+private data class Tab(val route: String, val label: Int, val icon: ImageVector)
 
 private val tabs = listOf(
-    Tab(Destinations.RECORDS, R.string.tab_records, Icons.AutoMirrored.Filled.List),
-    Tab(Destinations.CONVERSATION, R.string.tab_conversation, Icons.AutoMirrored.Filled.Chat),
-    Tab(Destinations.TIMELINE, R.string.tab_timeline, Icons.Default.Timeline),
-    Tab(Destinations.ACCOUNT, R.string.tab_account, Icons.Default.Person),
+    Tab(Destinations.DIARY, R.string.tab_diary, Icons.Outlined.MenuBook),
+    Tab(Destinations.CONVERSATIONS, R.string.tab_conversations, Icons.Outlined.ChatBubbleOutline),
+    Tab(Destinations.SETTINGS, R.string.tab_settings, Icons.Outlined.Tune),
 )
 
+/** Root scaffold: tab bar for the three destinations, full-screen routes above it. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MainScaffold(
     recordsRepository: RecordsRepository,
@@ -63,24 +73,32 @@ fun MainScaffold(
 ) {
     val entry by navController.currentBackStackEntryAsState()
     val route = entry?.destination?.route
-    val showBar = tabs.any { it.route == route }
+    val showBar = tabs.any { it.route == route } && !WindowInsets.isImeVisible
     Scaffold(
+        modifier = Modifier.imePadding(),
         bottomBar = {
             if (showBar) {
-                NavigationBar {
-                    tabs.forEach { tab ->
-                        NavigationBarItem(
-                            selected = route == tab.route,
-                            onClick = {
-                                navController.navigate(tab.route) {
-                                    popUpTo(Destinations.RECORDS) { saveState = true }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
-                            icon = { Icon(tab.icon, contentDescription = null) },
-                            label = { Text(stringResource(tab.label)) },
-                        )
+                Column {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 0.dp,
+                    ) {
+                        tabs.forEach { tab ->
+                            NavigationBarItem(
+                                selected = route == tab.route,
+                                onClick = { navController.navigateToTab(tab.route) },
+                                icon = { Icon(tab.icon, contentDescription = null) },
+                                label = { Text(stringResource(tab.label)) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                ),
+                            )
+                        }
                     }
                 }
             }
@@ -88,25 +106,44 @@ fun MainScaffold(
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = Destinations.RECORDS,
+            startDestination = Destinations.DIARY,
             modifier = Modifier.padding(padding),
         ) {
-            composable(Destinations.RECORDS) {
+            composable(Destinations.DIARY) {
                 val vm: RecordsViewModel = viewModel(factory = factory { RecordsViewModel(recordsRepository) })
-                RecordsScreen(
+                DiaryScreen(
                     viewModel = vm,
                     onOpen = { navController.navigate(Destinations.editor(it)) },
                     onCapture = { navController.navigate(Destinations.capture(it.name.lowercase())) },
                 )
             }
-            composable(Destinations.CONVERSATION) {
+            composable(Destinations.CONVERSATIONS) {
                 val vm: ConversationViewModel = viewModel(
                     factory = factory { ConversationViewModel(conversationRepository, recordsRepository) },
                 )
-                ConversationComposer(vm, recordsRepository)
+                val rows by recordsRepository.observeRecords().collectAsState(initial = emptyList())
+                ConversationScreen(
+                    viewModel = vm,
+                    selectable = rows.filter { it.preview.isNotBlank() }
+                        .map { SelectableRecord(it.id, it.preview.lineSequence().first()) },
+                )
             }
-            composable(Destinations.TIMELINE) { PendingScreen(stringResource(R.string.tab_timeline)) }
-            composable(Destinations.ACCOUNT) { AccountScreen(email, onSignOut) }
+            composable(Destinations.SETTINGS) {
+                SettingsScreen(
+                    onPrivacy = { navController.navigate(Destinations.PRIVACY) },
+                    onAccount = { navController.navigate(Destinations.ACCOUNT) },
+                )
+            }
+            composable(Destinations.PRIVACY) {
+                SubScreen(onBack = { navController.popBackStack() }) { PrivacyScreen() }
+            }
+            composable(Destinations.ACCOUNT) {
+                AccountScreen(
+                    email = email,
+                    onBack = { navController.popBackStack() },
+                    onSignOut = onSignOut,
+                )
+            }
             composable(Destinations.EDITOR) { backStack ->
                 val recordId = backStack.arguments?.getString("recordId").orEmpty()
                 val vm: EditorViewModel = viewModel(
@@ -115,7 +152,7 @@ fun MainScaffold(
                 )
                 EditorScreen(
                     viewModel = vm,
-                    onBack = { navController.popBackStack() },
+                    onClose = { navController.popBackStack() },
                     onVersions = { navController.navigate(Destinations.versions(recordId)) },
                 )
             }
@@ -136,6 +173,7 @@ fun MainScaffold(
                         navController.popBackStack()
                         navController.navigate(Destinations.editor(recordId))
                     },
+                    onClose = { navController.popBackStack() },
                 )
             }
             composable(Destinations.VERSIONS) { backStack ->
@@ -144,23 +182,16 @@ fun MainScaffold(
                     key = "editor-$recordId",
                     factory = factory { EditorViewModel(recordsRepository, recordId) },
                 )
-                VersionsScreen(vm, onBack = { navController.popBackStack() })
+                VersionsScreen(vm, onClose = { navController.popBackStack() })
             }
         }
     }
 }
 
-@Composable
-private fun ConversationComposer(viewModel: ConversationViewModel, records: RecordsRepository) {
-    val rows by records.observeRecords().collectAsState(initial = emptyList())
-    ConversationScreen(
-        viewModel = viewModel,
-        selectable = rows.filter { it.preview.isNotBlank() }.map { SelectableRecord(it.id, it.preview) },
-    )
-}
-
-private fun <T : ViewModel> factory(create: () -> T): ViewModelProvider.Factory =
-    object : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <V : ViewModel> create(modelClass: Class<V>): V = create() as V
+private fun NavHostController.navigateToTab(route: String) {
+    navigate(route) {
+        popUpTo(Destinations.DIARY) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
     }
+}

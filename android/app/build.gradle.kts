@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.androidx.sqlite)
     implementation(libs.sqlcipher)
     implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)

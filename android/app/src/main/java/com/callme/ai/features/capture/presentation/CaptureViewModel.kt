@@ -1,5 +1,6 @@
 package com.callme.ai.features.capture.presentation
 
+import android.os.SystemClock
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,9 @@ import com.callme.ai.features.capture.domain.DictationEvent
 import com.callme.ai.features.capture.domain.DictationFailure
 import com.callme.ai.features.capture.domain.LocalRecording
 import com.callme.ai.features.records.application.RecordsRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 enum class CapturePhase { IDLE, LISTENING, RECORDING, REVIEW, SAVING }
@@ -32,6 +36,7 @@ class CaptureViewModel(
         private set
     var playingId by mutableStateOf<String?>(null)
         private set
+    private var ticker: Job? = null
 
     val availability: DictationAvailability = service.dictationAvailability()
 
@@ -73,6 +78,7 @@ class CaptureViewModel(
     }
 
     override fun onCleared() {
+        ticker?.cancel()
         service.cancelDictation()
         service.discardRecording()
     }
@@ -81,9 +87,20 @@ class CaptureViewModel(
         error = null
         service.startRecording()
         phase = CapturePhase.RECORDING
+        elapsedMs = 0L
+        ticker?.cancel()
+        ticker = viewModelScope.launch {
+            val started = SystemClock.elapsedRealtime()
+            while (isActive) {
+                elapsedMs = SystemClock.elapsedRealtime() - started
+                delay(200)
+            }
+        }
     }
 
     fun stopRecording() {
+        ticker?.cancel()
+        ticker = null
         val saved = service.stopRecording()
         refresh()
         phase = CapturePhase.IDLE
@@ -92,7 +109,10 @@ class CaptureViewModel(
     }
 
     fun discardRecording() {
+        ticker?.cancel()
+        ticker = null
         service.discardRecording()
+        elapsedMs = 0L
         phase = CapturePhase.IDLE
     }
 

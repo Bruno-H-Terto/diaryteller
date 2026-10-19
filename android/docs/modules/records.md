@@ -7,7 +7,10 @@ edições/restaurações.
 - `application/RecordsRepository.kt`: contrato observável.
 - `adapters/RoomRecordsRepository.kt`: grava rascunho, confirma, adiciona versão,
   restaura e enfileira sincronização.
-- `presentation`: lista, editor e histórico (`vN ▾`).
+- `presentation/DiaryScreen.kt`: linha do tempo do diário com busca e filtro local.
+- `presentation/EditorScreen.kt`: editor sem distrações (título + corpo, um toque
+  para concluir). O texto é uma única string; a primeira linha é o título.
+- `presentation/VersionsScreen.kt`: histórico com restauração confirmada.
 
 **Invariantes:**
 

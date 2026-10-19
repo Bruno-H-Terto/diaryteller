@@ -1,63 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Call Me AI</string>
-    <string name="tab_records">Registros</string>
-    <string name="tab_conversation">Conversa</string>
-    <string name="tab_timeline">Linha do tempo</string>
-    <string name="tab_account">Conta</string>
+    <string name="app_name">Call Me</string>
 
-    <string name="auth_title">Entrar no Call Me AI</string>
-    <string name="auth_body">Use sua conta para sincronizar sessões e enviar conteúdos quando você pedir.</string>
-    <string name="auth_sign_in">Entrar com o provedor</string>
+    <string name="tab_diary">Diário</string>
+    <string name="tab_conversations">Conversas</string>
+    <string name="tab_settings">Ajustes</string>
+
+    <string name="auth_headline">Um diário que acompanha o seu pensamento.</string>
+    <string name="auth_body">Seus registros ficam no aparelho. A IA só vê o que você decidir compartilhar.</string>
+    <string name="auth_sign_in">Começar</string>
     <string name="auth_signing_in">Abrindo o navegador…</string>
     <string name="auth_error">Não foi possível entrar. Tente novamente.</string>
     <string name="auth_cancelled">Entrada cancelada.</string>
 
-    <string name="records_title">Registros</string>
-    <string name="records_empty">Nenhum registro ainda. Crie o primeiro em texto.</string>
-    <string name="records_new_text">Novo texto</string>
-    <string name="records_save">Salvar</string>
-    <string name="records_saving">Salvando…</string>
-    <string name="records_draft_hint">Escreva seu registro</string>
-    <string name="records_versions">Versões</string>
-    <string name="records_original">Original</string>
-    <string name="records_restore">Restaurar como nova versão</string>
-    <string name="records_sync_pending">Pendente de sincronização</string>
-    <string name="records_sync_local">Somente neste dispositivo</string>
-    <string name="records_error">Não foi possível salvar. O texto continua no rascunho.</string>
+    <string name="diary_title">Seu diário.</string>
+    <string name="diary_empty">Nada por aqui ainda.\nComece pelo que importa.</string>
+    <string name="diary_search">Buscar registros</string>
+    <string name="diary_search_close">Fechar busca</string>
+    <string name="diary_filter_all">Todos</string>
+    <string name="diary_filter_drafts">Rascunhos</string>
+    <string name="diary_new_record">Novo registro</string>
+    <string name="diary_new_text">Escrever texto</string>
+    <string name="diary_new_dictation">Ditar no aparelho</string>
+    <string name="diary_new_recording">Gravar áudio</string>
+    <string name="diary_draft">Rascunho local</string>
+    <string name="diary_no_results">Nenhum registro encontrado.</string>
 
-    <string name="account_title">Conta</string>
-    <string name="account_email">Email</string>
-    <string name="account_sign_out">Sair</string>
-    <string name="account_sign_out_body">Sair apaga tokens e dados privados desta conta neste dispositivo. Conteúdo ainda não sincronizado será perdido.</string>
-    <string name="account_sign_out_confirm">Sair e apagar dados locais</string>
-    <string name="account_cancel">Cancelar</string>
+    <string name="editor_draft">Rascunho local</string>
+    <string name="editor_record">Registro</string>
+    <string name="editor_title_hint">Começar pelo que importa</string>
+    <string name="editor_body_hint">Escreva sem pressa. Você revisa depois.</string>
+    <string name="editor_done">Concluir</string>
+    <string name="editor_saved">Salvo neste aparelho</string>
+    <string name="editor_pending">Aguardando sincronização</string>
+    <string name="editor_versions">Versões</string>
+    <string name="editor_error">Não foi possível salvar. O texto continua no rascunho.</string>
 
-    <string name="pending_feature">Esta etapa ainda não foi implementada. Consulte docs/backend-requirements.md.</string>
-    <string name="cd_back">Voltar</string>
-    <string name="cd_new_record">Criar novo registro</string>
+    <string name="versions_title">Versões do registro</string>
+    <string name="versions_subtitle">Seu original permanece preservado.</string>
+    <string name="versions_current">Atual</string>
+    <string name="versions_original">Original</string>
+    <string name="versions_restore">Restaurar como nova versão</string>
+    <string name="versions_close">Voltar à leitura</string>
+    <string name="versions_restore_title">Restaurar V%1$d?</string>
+    <string name="versions_restore_body">O conteúdo atual continua salvo como versão anterior.</string>
+    <string name="versions_restore_confirm">Restaurar</string>
+    <string name="versions_cancel">Cancelar</string>
+    <string name="versions_origin_user">Editada por você</string>
+    <string name="versions_origin_ai">Organizada pela IA</string>
+    <string name="versions_origin_restore">Restaurada</string>
+    <string name="versions_origin_import">Importada</string>
 
-    <string name="capture_dictate">Ditar (no aparelho)</string>
-    <string name="capture_record">Gravar áudio</string>
+    <string name="capture_new_audio">Novo áudio</string>
+    <string name="capture_recording">Gravando agora</string>
+    <string name="capture_ready">Pronto para gravar</string>
+    <string name="capture_start">Gravar</string>
+    <string name="capture_tap_to_speak">Toque no microfone para começar</string>
+    <string name="capture_saved_now">Áudio salvo</string>
+    <string name="capture_pace">Fale no seu ritmo.\nVocê revisa o texto depois.</string>
+    <string name="capture_recording_hint">O áudio fica cifrado neste aparelho.</string>
+    <string name="capture_discard">Descartar</string>
     <string name="capture_stop">Parar</string>
+    <string name="capture_play">Ouvir</string>
+    <string name="capture_done">Concluir</string>
+    <string name="capture_saved_local">Áudio salvo neste aparelho</string>
+    <string name="capture_recordings">Gravações neste aparelho</string>
+    <string name="capture_dictate">Ditar</string>
+    <string name="capture_listening">Ouvindo você</string>
+    <string name="capture_dictate_hint">A transcrição acontece no aparelho; nenhum áudio é enviado ao servidor.</string>
     <string name="capture_transcript">Transcrição</string>
+    <string name="capture_transcript_hint">Suas palavras aparecem aqui.</string>
     <string name="capture_save_transcript">Salvar como registro</string>
     <string name="capture_listen">Ouvir transcrição</string>
-    <string name="capture_play">Ouvir gravação</string>
-    <string name="capture_discard">Descartar</string>
-    <string name="capture_on_device_hint">A transcrição acontece no aparelho; nenhum áudio é enviado ao servidor.</string>
-    <string name="capture_local_only">A gravação fica cifrada apenas neste aparelho.</string>
     <string name="capture_offline_only">Transcrição indisponível</string>
     <string name="capture_model_missing">Baixe o pacote de idioma de reconhecimento offline nas configurações do Android. O app não envia áudio para a nuvem.</string>
     <string name="capture_unsupported">Este aparelho não oferece reconhecimento de fala offline. Você pode gravar áudio e transcrever em outro aparelho compatível.</string>
     <string name="capture_error">Não foi possível transcrever (%1$s). Tente novamente.</string>
     <string name="capture_pack_missing">O pacote de idioma offline não está instalado neste aparelho. Baixe em Configurações do Android › Reconhecimento de fala. Nenhum áudio é enviado.</string>
 
-    <string name="chat_context_hint">Toque para incluir registros no contexto desta pergunta.</string>
-    <string name="chat_you">Você</string>
-    <string name="chat_assistant">Assistente</string>
-    <string name="chat_message">Mensagem</string>
+    <string name="conversations_title">Conversas</string>
+    <string name="conversations_subtitle">Um espaço para desenvolver suas ideias.</string>
+    <string name="chat_context_add">Compartilhar contexto</string>
+    <string name="chat_context_shared">Compartilhado com a IA</string>
+    <plurals name="chat_context_count">
+        <item quantity="one">%1$d registro no contexto</item>
+        <item quantity="other">%1$d registros no contexto</item>
+    </plurals>
+    <string name="chat_context_note">Excluir após processamento</string>
+    <string name="chat_context_empty">Nenhum registro selecionado.</string>
+    <string name="chat_today">Hoje</string>
+    <string name="chat_assistant">Call Me</string>
+    <string name="chat_placeholder">Escreva uma mensagem…</string>
     <string name="chat_send">Enviar</string>
     <string name="chat_stop">Parar</string>
     <string name="chat_error">Não foi possível responder (%1$s). Verifique a conexão e tente novamente.</string>
+
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section">Seu espaço</string>
+    <string name="settings_privacy">Privacidade e dados</string>
+    <string name="settings_privacy_sub">Conteúdo local e contexto compartilhado</string>
+    <string name="settings_account">Conta</string>
+    <string name="settings_account_sub">Sessão e exclusão de dados remotos</string>
+    <string name="settings_back">Voltar</string>
+
+    <string name="privacy_title">Privacidade e dados</string>
+    <string name="privacy_headline">Você escolhe\no que compartilhar.</string>
+    <string name="privacy_local_label">No aparelho</string>
+    <string name="privacy_local_body">Seus registros, versões e mídias ficam aqui.</string>
+    <string name="privacy_shared_label">Compartilhado com a IA</string>
+    <string name="privacy_shared_body">Somente os contextos que você decidiu manter aparecem nesta lista.</string>
+    <string name="privacy_note">Excluir a conta também exclui os dados remotos associados.</string>
+
+    <string name="account_email">Email</string>
+    <string name="account_sign_out">Sair</string>
+    <string name="account_sign_out_body">Sair apaga tokens e dados privados desta conta neste dispositivo. Conteúdo ainda não sincronizado será perdido.</string>
+    <string name="account_sign_out_confirm">Sair e apagar dados locais</string>
+    <string name="account_cancel">Cancelar</string>
+
+    <string name="cd_back">Voltar</string>
+    <string name="cd_close">Fechar</string>
+    <string name="cd_search">Buscar</string>
+    <string name="cd_more">Mais opções</string>
+    <string name="cd_mic">Gravar</string>
 </resources>

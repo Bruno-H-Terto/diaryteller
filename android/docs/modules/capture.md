@@ -12,7 +12,10 @@
 - `adapters/EncryptedRecordingStore.kt`: cifra com AES-256-GCM, apaga o
   temporário, guarda metadados no Room e descriptografa para reprodução.
 - `presentation/CaptureScreen.kt` + `CaptureViewModel.kt`: permissão de
-  microfone, ditado com transcrição revisável, gravação e lista local.
+  microfone e escolha entre ditado e gravação.
+- `presentation/RecordingPanel.kt`: cronômetro, onda animada e ações de
+  descartar, parar/ouvir e concluir.
+- `presentation/DictationPanel.kt`: transcrição revisável com ouvir e concluir.
 
 **Fluxo de ditado:** microfone → eventos parciais → resultado final → revisão →
 `createRecord` (versão 1 confirmada, original imutável).
