@@ -24,6 +24,7 @@ enum class DictationFailure {
     PERMISSION_DENIED,
     CLIENT_ERROR,
     NETWORK_NOT_ALLOWED,
+    OFFLINE_PACK_MISSING,
 }
 
 data class LocalRecording(

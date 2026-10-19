@@ -51,4 +51,5 @@
     <string name="capture_model_missing">Baixe o pacote de idioma de reconhecimento offline nas configurações do Android. O app não envia áudio para a nuvem.</string>
     <string name="capture_unsupported">Este aparelho não oferece reconhecimento de fala offline. Você pode gravar áudio e transcrever em outro aparelho compatível.</string>
     <string name="capture_error">Não foi possível transcrever (%1$s). Tente novamente.</string>
+    <string name="capture_pack_missing">O pacote de idioma offline não está instalado neste aparelho. Baixe em Configurações do Android › Reconhecimento de fala. Nenhum áudio é enviado.</string>
 </resources>

@@ -6,7 +6,7 @@ import uuid
 from typing import Any
 
 from diary_contracts.authorization import Permission, UsageMetric
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -125,6 +125,14 @@ class PostgresPlanRepository:
                         "upload_limits": dict(plan.upload_limits),
                         "is_default": plan.is_default,
                     },
+                )
+            )
+            await self._session.execute(
+                delete(PlanPermissionTable).where(
+                    PlanPermissionTable.plan_code == plan.code,
+                    PlanPermissionTable.permission_code.notin_(
+                        [permission for permission in plan.permissions]
+                    ),
                 )
             )
             for permission in sorted(plan.permissions):

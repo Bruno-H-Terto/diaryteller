@@ -48,6 +48,7 @@ class CaptureViewModel(
                     is DictationEvent.Failed -> {
                         error = event.reason
                         phase = if (transcript.isBlank()) CapturePhase.IDLE else CapturePhase.REVIEW
+                        service.cancelDictation()
                     }
                 }
             }

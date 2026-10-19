@@ -29,6 +29,7 @@ import com.callme.ai.R
 import com.callme.ai.core.ui.LocalSpeaker
 import com.callme.ai.features.capture.domain.CaptureMode
 import com.callme.ai.features.capture.domain.DictationAvailability
+import com.callme.ai.features.capture.domain.DictationFailure
 import java.text.DateFormat
 import java.util.Date
 
@@ -122,7 +123,14 @@ private fun DictationSection(
     )
     viewModel.error?.let { error ->
         Text(
-            stringResource(R.string.capture_error, error.name),
+            stringResource(
+                if (error == DictationFailure.OFFLINE_PACK_MISSING) {
+                    R.string.capture_pack_missing
+                } else {
+                    R.string.capture_error
+                },
+                error.name,
+            ),
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
         )

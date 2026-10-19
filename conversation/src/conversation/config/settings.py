@@ -42,6 +42,9 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     openai_base_url: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4.1-mini"
+    deepseek_api_key: str = ""
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-chat"
     llm_timeout_seconds: float = Field(default=60.0, ge=5.0, le=180.0)
     first_token_timeout_seconds: float = Field(default=20.0, ge=5.0, le=60.0)
     operation_timeout_seconds: float = Field(default=90.0, ge=10.0, le=180.0)
@@ -71,11 +74,26 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _provider(self) -> Settings:
-        provider = self.llm_provider or ("openai" if self.openai_api_key else "fake")
-        if provider not in {"openai", "fake"}:
-            raise ValueError("llm provider must be openai or fake")
+        provider = self.llm_provider
+        if not provider:
+            if self.openai_api_key:
+                provider = "openai"
+            elif self.deepseek_api_key:
+                provider = "deepseek"
+            else:
+                provider = "fake"
+        if provider not in {"openai", "deepseek", "fake"}:
+            raise ValueError("llm provider must be openai, deepseek or fake")
         if provider == "openai" and not self.openai_api_key:
             raise ValueError("OPENAI_API_KEY is required for the openai provider")
+        if provider == "deepseek" and not self.deepseek_api_key:
+            raise ValueError("DEEPSEEK_API_KEY is required for the deepseek provider")
+        if provider == "deepseek":
+            object.__setattr__(self, "openai_api_key", self.deepseek_api_key)
+            object.__setattr__(self, "openai_base_url", self.deepseek_base_url)
+            object.__setattr__(self, "llm_model", self.deepseek_model)
+            object.__setattr__(self, "llm_provider", "openai")
+            return self
         if self.app_env == "production" and provider != "openai":
             raise ValueError("fake LLM is not allowed in production")
         object.__setattr__(self, "llm_provider", provider)

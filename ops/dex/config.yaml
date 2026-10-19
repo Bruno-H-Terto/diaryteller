@@ -7,7 +7,7 @@ web:
 staticClients:
   - id: diary-android
     redirectURIs:
-      - diary://oidc
+      - callmeai://oidc
     name: Diary Android
     secret: dev-dex-secret
 enablePasswordDB: true

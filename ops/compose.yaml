@@ -64,7 +64,7 @@ services:
       BILLING_PROVIDER: fake
       KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
       OIDC_ENABLED: "true"
-      OIDC_ALLOWED_REDIRECT_URIS: '["diary://oidc"]'
+      OIDC_ALLOWED_REDIRECT_URIS: '["callmeai://oidc"]'
       OIDC_PROVIDERS: '{"dex":{"discovery_url":"http://dex:5556/dex/.well-known/openid-configuration","client_id":"diary-android","client_secret":"dev-dex-secret"}}'
     command: sh -c "alembic -c alembic.ini upgrade head && python -m identity.config.seed && uvicorn identity.app:app --host 0.0.0.0 --port 8000 --workers 2"
     volumes:
@@ -92,7 +92,10 @@ services:
       MONGO_URL: mongodb://conversation_logs:conversation_logs@mongo:27017/diary_logs?authSource=diary_logs
       PROMPTS_DIR: /app/conversation/prompts
       APP_ENV: development
-      LLM_PROVIDER: fake
+      LLM_PROVIDER: ${LLM_PROVIDER:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
     ports: ["8010:8000"]
     depends_on:
       identity: { condition: service_healthy }
@@ -115,7 +118,6 @@ services:
     depends_on:
       mongo: { condition: service_healthy }
     <<: *logging
-
   notifications:
     build: { context: .., dockerfile: notifications/Dockerfile }
     env_file: [../.env]

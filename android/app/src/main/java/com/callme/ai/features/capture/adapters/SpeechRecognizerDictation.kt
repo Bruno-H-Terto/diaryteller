@@ -143,6 +143,9 @@ class SpeechRecognizerDictation(private val context: Context) : DictationEngine 
         SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> DictationFailure.PERMISSION_DENIED
         SpeechRecognizer.ERROR_NETWORK, SpeechRecognizer.ERROR_NETWORK_TIMEOUT ->
             DictationFailure.NETWORK_NOT_ALLOWED
+        SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED,
+        SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE,
+        -> DictationFailure.OFFLINE_PACK_MISSING
         else -> DictationFailure.CLIENT_ERROR
     }
 }
