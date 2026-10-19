@@ -25,6 +25,10 @@ jobs:
         run: poetry run python scripts/check_dependencies.py
       - name: Line limits
         run: poetry run python scripts/check_line_limits.py
+      - name: Contract validation
+        run: |
+          poetry run python scripts/export_openapi.py
+          poetry run python scripts/check_contract.py
       - name: Ruff
         run: poetry run ruff check .
       - name: Black

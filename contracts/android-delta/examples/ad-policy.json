@@ -1,0 +1,9 @@
+{
+  "tier": "free",
+  "enabled": true,
+  "placements": [
+    "home_banner"
+  ],
+  "rewarded_enabled": false,
+  "policy_version": "local-fixture-1"
+}

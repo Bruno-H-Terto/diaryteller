@@ -41,6 +41,7 @@ class ConversationRequest(BaseModel):
 
     client_message_id: UUID
     conversation_id: str = Field(min_length=1, max_length=128)
+    context_id: UUID | None = None
     mode: ResponseMode = ResponseMode.CONVERSATION
     message: str = Field(min_length=1, max_length=8000)
     locale: str = Field(default="pt-BR", max_length=16)
@@ -48,9 +49,12 @@ class ConversationRequest(BaseModel):
     context: ContextBundle = Field(default_factory=ContextBundle)
 
     @model_validator(mode="after")
-    def _context_required_for_tools(self) -> ConversationRequest:
-        if self.mode in CONTEXT_MODES and not self.context.records:
-            raise ValueError("this mode requires at least one selected record")
+    def _context_selection(self) -> ConversationRequest:
+        inline = bool(self.context.records)
+        if self.context_id is not None and inline:
+            raise ValueError("context_id and inline context are mutually exclusive")
+        if self.mode in CONTEXT_MODES and self.context_id is None and not inline:
+            raise ValueError("this mode requires context_id or selected records")
         return self
 
 

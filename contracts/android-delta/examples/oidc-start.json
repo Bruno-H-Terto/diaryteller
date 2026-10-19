@@ -1,0 +1,7 @@
+{
+  "provider": "configured-provider",
+  "redirect_uri": "https://login.example.test/android/callback",
+  "device_id": "10000000-0000-4000-8000-000000000015",
+  "code_challenge": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "code_challenge_method": "S256"
+}

@@ -1,0 +1,9 @@
+{
+  "client_message_id": "10000000-0000-4000-8000-000000000006",
+  "conversation_id": "10000000-0000-4000-8000-000000000007",
+  "context_id": "10000000-0000-4000-8000-000000000008",
+  "mode": "organize",
+  "message": "Organize as ideias do registro selecionado.",
+  "locale": "pt-BR",
+  "timezone": "America/Sao_Paulo"
+}

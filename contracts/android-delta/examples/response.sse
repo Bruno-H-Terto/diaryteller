@@ -1,0 +1,9 @@
+event: response.started
+data: {"operation_id": "10000000-0000-4000-8000-000000000018", "client_message_id": "10000000-0000-4000-8000-000000000006"}
+
+event: response.delta
+data: {"sequence": 1, "text": "Você registrou que organizou suas tarefas."}
+
+event: response.completed
+data: {"result_id": "10000000-0000-4000-8000-000000000016", "payload_sha256": "29b4e7954c95b75b72d91eda7237a638899ace1e17d056646675c88e9d1ac09b", "expires_at": "2026-10-20T05:00:00Z"}
+

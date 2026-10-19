@@ -57,7 +57,7 @@ def iter_files(root: Path) -> list[Path]:
             continue
         if path.name in ALLOWLIST:
             continue
-        if relative.parts[:2] == ("contracts", "openapi"):
+        if relative.parts[:2] in {("contracts", "openapi"), ("contracts", "android-delta")}:
             continue
         if path.suffix in CHECKED_SUFFIXES or path.name in CHECKED_NAMES:
             files.append(path)

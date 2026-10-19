@@ -1,0 +1,21 @@
+{
+  "client_context_id": "10000000-0000-4000-8000-000000000004",
+  "purpose": "organize",
+  "retention_policy": "keep_until_deleted",
+  "records": [
+    {
+      "local_record_id": "10000000-0000-4000-8000-000000000001",
+      "local_version_id": "10000000-0000-4000-8000-000000000002",
+      "content_sha256": "64d9e7ec35789a2dc00a857516f9dc86bea6c9835e17e3a9569421cdaf336f40",
+      "local_version_number": 1,
+      "base_local_version_id": null,
+      "text": "Hoje organizei minhas tarefas de trabalho.",
+      "recorded_at": "2026-10-19T02:00:00-03:00",
+      "event_at": null,
+      "event_date": "2026-10-18",
+      "event_description": null,
+      "event_precision": "date",
+      "timezone": "America/Sao_Paulo"
+    }
+  ]
+}

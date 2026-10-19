@@ -66,6 +66,7 @@ def envelope(
     body = ErrorEnvelope(
         type=error_type(code),
         title=title,
+        message=title,
         status=status,
         code=code,
         request_id=request_id or current_request_id(),

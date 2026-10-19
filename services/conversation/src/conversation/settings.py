@@ -33,6 +33,11 @@ class Settings(BaseSettings):
     mcp_max_tool_calls: int = Field(default=4, ge=1, le=4)
     mcp_context_ttl_seconds: int = Field(default=180, ge=30, le=600)
 
+    context_exchange_enabled: bool = False
+    exchange_internal_url: str = "http://localhost:8080"
+    exchange_service_token: str = ""
+    result_ttl_seconds: int = Field(default=86_400, ge=60, le=172_800)
+
     llm_provider: str = ""
     openai_api_key: str = ""
     openai_base_url: str = "https://api.openai.com/v1"

@@ -1,0 +1,18 @@
+{
+  "context-create.json": "ContextCreate",
+  "context-keep.json": "ContextCreate",
+  "context-voice.json": "ContextCreate",
+  "conversation-request.json": "ResponseRequest",
+  "upload-create.json": "UploadCreate",
+  "upload-single-complete.json": "UploadComplete",
+  "upload-parts-sign.json": "SignUrls",
+  "upload-multipart-complete.json": "UploadComplete",
+  "job-create.json": "JobCreate",
+  "job-retry.json": "RetryJob",
+  "retention-update.json": "RetentionUpdate",
+  "quota-error.json": "Error",
+  "oidc-start.json": "OidcStart",
+  "ad-policy.json": "AdPolicy",
+  "conversation-result.json": "Result",
+  "result-ack.json": "ResultAck"
+}

@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 COMPOSE := docker compose -f ops/compose.yaml --env-file .env
 
-.PHONY: install keys up down logs migrate seed test lint format typecheck limits check smoke profile
+.PHONY: install keys up down logs migrate seed test lint format typecheck limits check smoke profile contract android-contract-up android-contract-test android-contract-smoke android-contract-down
 
 install:
 	poetry install --with dev
@@ -49,3 +49,22 @@ smoke:
 
 profile:
 	poetry run python scripts/profile_memory.py
+
+contract:
+	poetry run python scripts/export_openapi.py
+	poetry run python scripts/check_contract.py
+
+android-contract-up: keys
+	$(COMPOSE) up -d postgres mongo minio dex
+	$(COMPOSE) run --rm identity alembic -c alembic.ini upgrade head
+	$(COMPOSE) run --rm identity python -m identity.seed
+
+android-contract-test:
+	poetry run pytest -m "not e2e"
+	poetry run python scripts/check_contract.py
+
+android-contract-smoke:
+	poetry run python scripts/smoke.py
+
+android-contract-down:
+	$(COMPOSE) down

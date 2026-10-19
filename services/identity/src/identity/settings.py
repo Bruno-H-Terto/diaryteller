@@ -70,6 +70,15 @@ class Settings(BaseSettings):
     login_max_attempts: int = Field(default=5, ge=3, le=20)
     login_window_seconds: int = Field(default=900, ge=60, le=3600)
 
+    oidc_enabled: bool = False
+    oidc_providers: dict[str, dict[str, object]] = Field(default_factory=dict)
+    oidc_transaction_ttl_seconds: int = Field(default=300, ge=60, le=600)
+    oidc_http_timeout_seconds: float = Field(default=5.0, ge=1.0, le=30.0)
+    oidc_allowed_redirect_uris: list[str] = Field(default_factory=list)
+    ads_enabled: bool = False
+    rewarded_ads_enabled: bool = False
+    ad_policy_version: str = "local-fixture-1"
+
     billing_provider: str = "fake"
     google_play_package_name: str = ""
     google_play_service_account_json: str = ""
@@ -102,6 +111,16 @@ class Settings(BaseSettings):
         if value not in {"fake", "google_play"}:
             raise ValueError("billing provider must be fake or google_play")
         return value
+
+    @model_validator(mode="after")
+    def _protect_flags(self) -> Settings:
+        if self.rewarded_ads_enabled and not self.ads_enabled:
+            raise ValueError("rewarded ads require ads_enabled")
+        if self.app_env == "production" and self.rewarded_ads_enabled:
+            raise ValueError("rewarded ads are disabled until a provider is chosen")
+        if self.oidc_enabled and not self.oidc_providers:
+            raise ValueError("oidc_enabled requires at least one provider")
+        return self
 
     @model_validator(mode="after")
     def _protect_production(self) -> Settings:

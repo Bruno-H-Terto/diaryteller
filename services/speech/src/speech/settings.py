@@ -25,6 +25,15 @@ class Settings(BaseSettings):
     speech_internal_token: str
     identity_timeout_seconds: float = Field(default=5.0, ge=1.0, le=30.0)
 
+    async_transcription_enabled: bool = False
+    transcription_poll_seconds: float = Field(default=2.0, ge=0.2, le=30.0)
+    transcription_lease_seconds: int = Field(default=120, ge=30, le=900)
+    transcription_max_attempts: int = Field(default=3, ge=1, le=10)
+    transcription_workers: int = Field(default=2, ge=1, le=16)
+    exchange_internal_url: str = "http://localhost:8080"
+    exchange_service_token: str = ""
+    transcription_result_ttl_seconds: int = Field(default=86_400, ge=60, le=172_800)
+
     speech_provider: str = ""
     openai_api_key: str = ""
     openai_base_url: str = "https://api.openai.com/v1"

@@ -1,0 +1,14 @@
+{
+  "code": "DAILY_UPLOAD_BYTES_EXCEEDED",
+  "message": "Cota diária de envio excedida.",
+  "request_id": "10000000-0000-4000-8000-000000000014",
+  "retryable": true,
+  "details": {
+    "metric": "daily_upload_bytes",
+    "limit": 20971520,
+    "used": 15728640,
+    "reserved": 0,
+    "requested": 9437184,
+    "reset_at": "2026-10-20T00:00:00Z"
+  }
+}

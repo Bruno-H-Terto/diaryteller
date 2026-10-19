@@ -1,0 +1,6 @@
+{
+  "client_context_id": "10000000-0000-4000-8000-000000000005",
+  "purpose": "transcribe",
+  "retention_policy": "delete_after_processing",
+  "records": []
+}

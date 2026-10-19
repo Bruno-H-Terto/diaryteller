@@ -1,0 +1,37 @@
+{
+  "result_id": "10000000-0000-4000-8000-000000000016",
+  "operation_id": "10000000-0000-4000-8000-000000000018",
+  "context_id": "10000000-0000-4000-8000-000000000008",
+  "created_at": "2026-10-19T05:00:00Z",
+  "expires_at": "2026-10-20T05:00:00Z",
+  "payload_sha256": "29b4e7954c95b75b72d91eda7237a638899ace1e17d056646675c88e9d1ac09b",
+  "payload": {
+    "kind": "conversation",
+    "answer": "Você registrou que organizou suas tarefas.",
+    "sources": [
+      {
+        "local_record_id": "10000000-0000-4000-8000-000000000001",
+        "local_version_id": "10000000-0000-4000-8000-000000000002",
+        "content_sha256": "64d9e7ec35789a2dc00a857516f9dc86bea6c9835e17e3a9569421cdaf336f40"
+      }
+    ],
+    "proposals": [
+      {
+        "proposal_id": "10000000-0000-4000-8000-000000000017",
+        "kind": "organized_text",
+        "text": "Trabalho: organização das tarefas.",
+        "base_sources": [
+          {
+            "local_record_id": "10000000-0000-4000-8000-000000000001",
+            "local_version_id": "10000000-0000-4000-8000-000000000002",
+            "content_sha256": "64d9e7ec35789a2dc00a857516f9dc86bea6c9835e17e3a9569421cdaf336f40"
+          }
+        ],
+        "requires_confirmation": true
+      }
+    ],
+    "timeline": [],
+    "coverage": "selected_context",
+    "warnings": []
+  }
+}

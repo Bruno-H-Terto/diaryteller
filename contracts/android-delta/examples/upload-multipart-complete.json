@@ -1,0 +1,16 @@
+{
+  "parts": [
+    {
+      "part_number": 1,
+      "size_bytes": 8388608,
+      "etag": "\"provider-etag-1\"",
+      "checksum_sha256_base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    {
+      "part_number": 2,
+      "size_bytes": 1048576,
+      "etag": "\"provider-etag-2\"",
+      "checksum_sha256_base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    }
+  ]
+}

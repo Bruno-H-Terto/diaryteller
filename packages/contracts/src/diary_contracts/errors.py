@@ -23,6 +23,24 @@ class ErrorCode(StrEnum):
     TOKEN_INVALID = "token_invalid"
     RECENT_AUTH_REQUIRED = "recent_auth_required"
     OPERATION_COMPLETED = "operation_completed"
+    DAILY_UPLOAD_COUNT_EXCEEDED = "daily_upload_count_exceeded"
+    DAILY_UPLOAD_BYTES_EXCEEDED = "daily_upload_bytes_exceeded"
+    FILE_TOO_LARGE = "file_too_large"
+    CONTEXT_TOO_LARGE = "context_too_large"
+    STORAGE_QUOTA_EXCEEDED = "storage_quota_exceeded"
+    UPLOAD_CONCURRENCY_EXCEEDED = "upload_concurrency_exceeded"
+    UPLOAD_STATE_INVALID = "upload_state_invalid"
+    CHECKSUM_MISMATCH = "checksum_mismatch"
+    CURSOR_EXPIRED = "cursor_expired"
+    RESULT_EXPIRED = "result_expired"
+    MEDIA_EXPIRED = "media_expired"
+    CONTEXT_NOT_READY = "context_not_ready"
+    PRECONDITION_REQUIRED = "precondition_required"
+    PRECONDITION_FAILED = "precondition_failed"
+    OIDC_TRANSACTION_INVALID = "oidc_transaction_invalid"
+    OIDC_PROVIDER_UNAVAILABLE = "oidc_provider_unavailable"
+    ACCOUNT_LINK_REQUIRED = "account_link_required"
+    FEATURE_DISABLED = "feature_disabled"
     OPERATION_IN_PROGRESS = "operation_in_progress"
     FORBIDDEN = "forbidden"
     NOT_FOUND = "not_found"
@@ -50,6 +68,7 @@ class ErrorEnvelope(BaseModel):
 
     type: str = Field(description="Stable URI-like category, e.g. https://diary/errors/session")
     title: str
+    message: str = Field(default="", description="Android-facing copy of the safe title")
     status: int = Field(ge=400, le=599)
     code: ErrorCode
     request_id: str

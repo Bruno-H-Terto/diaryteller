@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -41,6 +42,8 @@ class ContextRecord(BaseModel):
     event_at: datetime | None = None
     text: str = Field(min_length=1, max_length=MAX_RECORD_CHARS)
     source_type: SourceType = SourceType.DIARY_TEXT
+    local_version_id: UUID | None = None
+    content_sha256: str | None = Field(default=None, pattern="^[a-f0-9]{64}$")
 
     _recorded = field_validator("recorded_at")(_require_timezone)
     _event = field_validator("event_at")(_require_timezone)
