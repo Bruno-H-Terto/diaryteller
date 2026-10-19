@@ -1,0 +1,6 @@
+# systemd timer or cron example. Run one scheduler only, or invoke commands
+# with the advisory lock guarded by the CLI.
+17 3 * * * cd /srv/diary-api && docker compose -f ops/compose.yaml --env-file .env run --rm maintenance backup-postgres
+27 3 * * * cd /srv/diary-api && docker compose -f ops/compose.yaml --env-file .env run --rm maintenance backup-mongo
+37 3 * * 0 cd /srv/diary-api && docker compose -f ops/compose.yaml --env-file .env run --rm maintenance restore-check
+*/30 * * * * cd /srv/diary-api && docker compose -f ops/compose.yaml --env-file .env run --rm maintenance retention

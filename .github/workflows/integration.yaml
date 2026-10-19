@@ -1,0 +1,54 @@
+name: integration
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: diary
+          POSTGRES_PASSWORD: diary
+          POSTGRES_DB: diary
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U diary -d diary"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+      mongo:
+        image: mongo:8
+        ports: ["27017:27017"]
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1}).ok' localhost:27017"
+          --health-interval 10s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install Poetry
+        run: pip install poetry==2.5.1
+      - name: Install workspace
+        run: poetry install --with dev
+      - name: Prepare local configuration
+        run: |
+          cp .env.example .env
+          poetry run python scripts/dev_keys.py
+      - name: Apply and roll back migrations on empty database
+        env:
+          TEST_DATABASE_URL: postgresql+asyncpg://diary:diary@localhost:5432/diary_test
+        run: |
+          PGPASSWORD=diary psql -h localhost -U diary -d diary -c "CREATE DATABASE diary_migrate"
+          export DATABASE_URL=postgresql+asyncpg://diary:diary@localhost:5432/diary_migrate
+          poetry run alembic -c services/identity/alembic.ini upgrade head
+          poetry run alembic -c services/identity/alembic.ini downgrade base
+          poetry run alembic -c services/identity/alembic.ini upgrade head
+      - name: Integration tests
+        env:
+          TEST_DATABASE_URL: postgresql+asyncpg://diary:diary@localhost:5432/diary_test
+          TEST_MONGO_URL: mongodb://localhost:27017
+        run: poetry run pytest -m integration

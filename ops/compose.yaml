@@ -1,0 +1,159 @@
+name: diary-api
+
+x-logging: &logging
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: diary
+      POSTGRES_PASSWORD: diary
+      POSTGRES_DB: diary
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/01-roles.sql:ro
+    ports: ["55432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U diary -d diary"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    <<: *logging
+
+  mongo:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: diary
+      MONGO_INITDB_ROOT_PASSWORD: diary
+      MONGO_INITDB_DATABASE: diary_logs
+    volumes:
+      - mongodata:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/01-users.js:ro
+    ports: ["57017:27017"]
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.runCommand({ping:1}).ok' localhost:27017/diary_logs -u diary -p diary --authenticationDatabase admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    <<: *logging
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ["1025:1025", "8025:8025"]
+    <<: *logging
+
+  identity:
+    build: { context: .., dockerfile: services/identity/Dockerfile }
+    env_file: [../.env]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://diary_identity:diary_identity@postgres:5432/diary
+      MONGO_URL: mongodb://identity_logs:identity_logs@mongo:27017/diary_logs?authSource=diary_logs
+      JWT_KEYS_DIR: /app/keys/jwt
+      DB_POOL_SIZE: "10"
+      DB_MAX_OVERFLOW: "10"
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      APP_ENV: development
+      BILLING_PROVIDER: fake
+    command: sh -c "alembic -c alembic.ini upgrade head && python -m identity.seed && uvicorn identity.main:app --host 0.0.0.0 --port 8000 --workers 2"
+    volumes:
+      - ../keys:/app/keys:ro
+    ports: ["8001:8000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    <<: *logging
+
+  conversation:
+    build: { context: .., dockerfile: services/conversation/Dockerfile }
+    env_file: [../.env]
+    environment:
+      IDENTITY_INTERNAL_URL: http://identity:8000
+      MCP_URL: http://memory_mcp:8080/mcp
+      MONGO_URL: mongodb://conversation_logs:conversation_logs@mongo:27017/diary_logs?authSource=diary_logs
+      PROMPTS_DIR: /app/services/conversation/prompts
+      APP_ENV: development
+      LLM_PROVIDER: fake
+    ports: ["8010:8000"]
+    depends_on:
+      identity: { condition: service_healthy }
+      memory_mcp: { condition: service_started }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    <<: *logging
+
+  speech:
+    build: { context: .., dockerfile: services/speech/Dockerfile }
+    env_file: [../.env]
+    environment:
+      IDENTITY_INTERNAL_URL: http://identity:8000
+      MONGO_URL: mongodb://speech_logs:speech_logs@mongo:27017/diary_logs?authSource=diary_logs
+      APP_ENV: development
+      SPEECH_PROVIDER: fake
+    ports: ["8011:8000"]
+    depends_on:
+      identity: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    <<: *logging
+
+  memory_mcp:
+    build: { context: .., dockerfile: services/memory_mcp/Dockerfile }
+    env_file: [../.env]
+    environment:
+      MONGO_URL: mongodb://memory_logs:memory_logs@mongo:27017/diary_logs?authSource=diary_logs
+      APP_ENV: development
+      LLM_PROVIDER: fake
+    expose: ["8080"]
+    depends_on:
+      mongo: { condition: service_healthy }
+    <<: *logging
+
+  notifications:
+    build: { context: .., dockerfile: services/notifications/Dockerfile }
+    env_file: [../.env]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://diary_notifications:diary_notifications@postgres:5432/diary
+      MONGO_URL: mongodb://notifications_logs:notifications_logs@mongo:27017/diary_logs?authSource=diary_logs
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      APP_ENV: development
+      PUSH_PROVIDER: dev
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+    <<: *logging
+
+  maintenance:
+    build: { context: .., dockerfile: jobs/Dockerfile }
+    profiles: ["tools"]
+    env_file: [../.env]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://diary_maintenance:diary_maintenance@postgres:5432/diary
+      MONGO_URL: mongodb://diary:diary@mongo:27017/diary_logs?authSource=admin
+      BACKUP_DIR: /backups
+      APP_ENV: development
+      BILLING_PROVIDER: fake
+    volumes:
+      - ../backups:/backups
+    depends_on:
+      postgres: { condition: service_healthy }
+    <<: *logging
+
+volumes:
+  pgdata:
+  mongodata:

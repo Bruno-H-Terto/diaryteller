@@ -1,0 +1,33 @@
+name: quality
+
+on:
+  push:
+    branches: [main, dev, "dev/**"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install Poetry
+        run: pip install poetry==2.5.1
+      - name: Install workspace
+        run: poetry install --with dev
+      - name: Prepare local configuration
+        run: |
+          cp .env.example .env
+          poetry run python scripts/dev_keys.py
+      - name: Line limits
+        run: poetry run python scripts/check_line_limits.py
+      - name: Ruff
+        run: poetry run ruff check .
+      - name: Black
+        run: poetry run black --check .
+      - name: Pyright
+        run: poetry run pyright
+      - name: Unit tests
+        run: poetry run pytest -m "not integration and not e2e"
