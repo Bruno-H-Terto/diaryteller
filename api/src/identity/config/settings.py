@@ -54,7 +54,7 @@ class Settings(BaseSettings):
     source_issuer: str = "diary-api"
     source_audience: str = "diary-mobile-source"
     source_encryption_key: str
-    source_ttl_seconds: int = Field(default=900, ge=60, le=3600)
+    source_ttl_seconds: int = Field(default=2_592_000, ge=60, le=2_592_000)
 
     email_token_key: str
     push_token_key: str = ""

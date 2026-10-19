@@ -20,6 +20,7 @@ android {
         buildConfigField("String", "BACKEND_BASE_URL", "\"http://10.0.2.2:8001/\"")
         buildConfigField("String", "OIDC_REDIRECT_URI", "\"callmeai://oidc\"")
         buildConfigField("String", "OIDC_PROVIDER", "\"dex\"")
+        buildConfigField("String", "CONVERSATION_BASE_URL", "\"http://10.0.2.2:8010/\"")
     }
 
     buildTypes {

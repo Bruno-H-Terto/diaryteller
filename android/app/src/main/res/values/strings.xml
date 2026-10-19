@@ -52,4 +52,12 @@
     <string name="capture_unsupported">Este aparelho não oferece reconhecimento de fala offline. Você pode gravar áudio e transcrever em outro aparelho compatível.</string>
     <string name="capture_error">Não foi possível transcrever (%1$s). Tente novamente.</string>
     <string name="capture_pack_missing">O pacote de idioma offline não está instalado neste aparelho. Baixe em Configurações do Android › Reconhecimento de fala. Nenhum áudio é enviado.</string>
+
+    <string name="chat_context_hint">Toque para incluir registros no contexto desta pergunta.</string>
+    <string name="chat_you">Você</string>
+    <string name="chat_assistant">Assistente</string>
+    <string name="chat_message">Mensagem</string>
+    <string name="chat_send">Enviar</string>
+    <string name="chat_stop">Parar</string>
+    <string name="chat_error">Não foi possível responder (%1$s). Verifique a conexão e tente novamente.</string>
 </resources>

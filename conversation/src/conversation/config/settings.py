@@ -73,6 +73,16 @@ class Settings(BaseSettings):
         return value
 
     @model_validator(mode="after")
+    def _blank_defaults(self) -> Settings:
+        if not self.deepseek_base_url:
+            object.__setattr__(self, "deepseek_base_url", "https://api.deepseek.com")
+        if not self.deepseek_model:
+            object.__setattr__(self, "deepseek_model", "deepseek-chat")
+        if not self.openai_base_url:
+            object.__setattr__(self, "openai_base_url", "https://api.openai.com/v1")
+        return self
+
+    @model_validator(mode="after")
     def _provider(self) -> Settings:
         provider = self.llm_provider
         if not provider:

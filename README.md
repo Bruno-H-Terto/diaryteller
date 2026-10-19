@@ -5,6 +5,13 @@ recording and transcription; this backend authenticates devices, enforces plans
 and quotas, and processes only the context the user selects for organization or
 interpretation.
 
+## Provedor de IA
+
+A conversa usa um provedor compatível com OpenAI. Com `DEEPSEEK_API_KEY`
+definido no `.env` (e `LLM_PROVIDER` vazio), o serviço `conversation` usa
+`https://api.deepseek.com` com `deepseek-chat`. A chave fica apenas no servidor;
+o app nunca a recebe.
+
 ## Pods
 
 Cada diretório de topo é um pod: código, testes, Dockerfile, lock e migrations

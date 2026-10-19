@@ -44,6 +44,19 @@ O backend devolve `{code, message, details, retryable}`. O app mapeia para:
 - `403` → mostra motivo (`email_not_verified`, `account_disabled`).
 - `429`/`5xx` → mensagem com ação de tentar novamente.
 
+## Conversa
+
+`POST /v1/ai/responses` (streaming SSE) com `Idempotency-Key`.
+
+```json
+{"client_message_id":"uuid","conversation_id":"uuid","mode":"conversation",
+ "message":"...","context":{"coverage":"selected_records","records":[
+   {"id":"local","recorded_at":"2026-10-19T10:00:00Z","text":"...","source_type":"diary_text"}]}}
+```
+
+Eventos consumidos: `started`, `text_delta` (`data.text`), `result`,
+`completed`, `error` (`data.code`). O app nunca chama o provedor de IA.
+
 ## Voz
 
 Sem contrato HTTP: áudio, transcrição e TTS são locais. O backend nunca recebe

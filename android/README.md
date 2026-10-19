@@ -14,7 +14,9 @@ Entrega incremental conforme `docs/`:
 | 3. Registros de texto e sincronização | parcial (local; endpoint de sync pendente no backend) |
 | 4. Histórico de versões | concluída (local) |
 | 6. Gravação e transcrição local | concluída (ditado on-device e gravação cifrada) |
-| 5, 7, 8, 9. Upload de anexos, conversa, timeline, release | pendentes |
+| 5. Upload de anexos | pendente (contrato pronto no backend, implementação não) |
+| 7. Conversa com IA | concluída (streaming com contexto selecionado, DeepSeek no servidor) |
+| 8–9. Linha do tempo e release | pendentes |
 
 O que é real: autenticação OIDC por Authorization Code + PKCE no navegador do
 sistema, sessão cifrada com Android Keystore, Room sobre SQLCipher, criação e
@@ -22,7 +24,7 @@ versionamento local de registros, ditado transcrito no aparelho e gravação de
 áudio cifrada localmente com TTS local para leitura.
 
 O que é simulado/pendente: sincronização de registros (não há endpoint no
-backend), upload de anexos, conversa e timeline. Ver
+backend), upload de anexos e timeline. Ver
 [backend-requirements](docs/backend-requirements.md) e
 [testing](docs/testing.md).
 

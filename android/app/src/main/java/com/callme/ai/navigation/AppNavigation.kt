@@ -12,6 +12,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,6 +29,11 @@ import com.callme.ai.features.capture.application.CaptureService
 import com.callme.ai.features.capture.domain.CaptureMode
 import com.callme.ai.features.capture.presentation.CaptureScreen
 import com.callme.ai.features.capture.presentation.CaptureViewModel
+import com.callme.ai.features.conversations.application.ConversationRepository
+import com.callme.ai.features.conversations.domain.SelectableRecord
+import com.callme.ai.features.conversations.presentation.ConversationScreen
+import com.callme.ai.features.conversations.presentation.ConversationViewModel
+import com.callme.ai.features.records.domain.Record
 import com.callme.ai.features.records.application.RecordsRepository
 import com.callme.ai.features.records.presentation.EditorScreen
 import com.callme.ai.features.records.presentation.EditorViewModel
@@ -50,6 +56,7 @@ private val tabs = listOf(
 fun MainScaffold(
     recordsRepository: RecordsRepository,
     captureService: CaptureService,
+    conversationRepository: ConversationRepository,
     email: String,
     onSignOut: () -> Unit,
     navController: NavHostController = rememberNavController(),
@@ -92,7 +99,12 @@ fun MainScaffold(
                     onCapture = { navController.navigate(Destinations.capture(it.name.lowercase())) },
                 )
             }
-            composable(Destinations.CONVERSATION) { PendingScreen(stringResource(R.string.tab_conversation)) }
+            composable(Destinations.CONVERSATION) {
+                val vm: ConversationViewModel = viewModel(
+                    factory = factory { ConversationViewModel(conversationRepository, recordsRepository) },
+                )
+                ConversationComposer(vm, recordsRepository)
+            }
             composable(Destinations.TIMELINE) { PendingScreen(stringResource(R.string.tab_timeline)) }
             composable(Destinations.ACCOUNT) { AccountScreen(email, onSignOut) }
             composable(Destinations.EDITOR) { backStack ->
@@ -136,6 +148,15 @@ fun MainScaffold(
             }
         }
     }
+}
+
+@Composable
+private fun ConversationComposer(viewModel: ConversationViewModel, records: RecordsRepository) {
+    val rows by records.observeRecords().collectAsState(initial = emptyList())
+    ConversationScreen(
+        viewModel = viewModel,
+        selectable = rows.filter { it.preview.isNotBlank() }.map { SelectableRecord(it.id, it.preview) },
+    )
 }
 
 private fun <T : ViewModel> factory(create: () -> T): ViewModelProvider.Factory =

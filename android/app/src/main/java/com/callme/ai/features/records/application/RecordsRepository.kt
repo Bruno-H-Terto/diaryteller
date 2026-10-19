@@ -12,6 +12,9 @@ interface RecordsRepository {
 
     /** Creates a record whose version 1 is already confirmed (for example a transcript). */
     suspend fun createRecord(content: String): String
+
+    /** Current confirmed text of a record; null when it does not exist. */
+    suspend fun currentContent(recordId: String): String?
     suspend fun updateDraft(recordId: String, content: String)
     suspend fun confirmDraft(recordId: String, content: String)
     suspend fun addVersion(recordId: String, content: String): String

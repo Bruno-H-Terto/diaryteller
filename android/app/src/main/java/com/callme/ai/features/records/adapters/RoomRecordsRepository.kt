@@ -63,6 +63,11 @@ class RoomRecordsRepository(
         return recordId
     }
 
+    override suspend fun currentContent(recordId: String): String? {
+        val record = dao.record(recordId) ?: return null
+        return dao.version(record.currentVersionId)?.content
+    }
+
     override suspend fun updateDraft(recordId: String, content: String) {
         val record = dao.record(recordId) ?: return
         val version = dao.version(record.currentVersionId) ?: return
