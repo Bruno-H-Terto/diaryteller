@@ -56,8 +56,8 @@ async def _ensure_database() -> None:
 async def database() -> AsyncIterator[str]:
     """Create a clean exchange schema."""
     await _ensure_database()
-    from exchange.adapters.postgres import tables  # noqa: F401 - register tables
-    from exchange.adapters.postgres.engine import Base
+    from exchange.config.database import Base
+    from exchange.models import tables  # noqa: F401 - register tables
 
     url = os.environ["EXCHANGE_DATABASE_URL"]
     engine = create_async_engine(url)
@@ -85,7 +85,7 @@ async def client(
     database: str, authorizer: FakeAuthorizer, blobs: MemoryBlobStore
 ) -> AsyncIterator[httpx.AsyncClient]:
     """In-process exchange app with deterministic collaborators."""
-    from exchange.main import app
+    from exchange.app import app
 
     container = app.state.container
     container.identity = authorizer  # type: ignore[assignment]

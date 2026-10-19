@@ -22,7 +22,7 @@ async def test_free_tier_policy_respects_flags(client, database) -> None:
         "rewarded_enabled": False,
         "policy_version": "local-fixture-1",
     }
-    from identity.main import app
+    from identity.app import app
 
     settings = app.state.container.settings
     original = (settings.ads_enabled, settings.rewarded_ads_enabled)

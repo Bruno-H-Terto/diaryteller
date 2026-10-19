@@ -22,7 +22,7 @@ migrate:
 	poetry run alembic -c api/alembic.ini upgrade head
 
 seed:
-	poetry run python -m identity.seed
+	poetry run python -m identity.config.seed
 
 test:
 	poetry run pytest
@@ -57,7 +57,7 @@ contract:
 android-contract-up: keys
 	$(COMPOSE) up -d postgres mongo minio dex
 	$(COMPOSE) run --rm identity alembic -c alembic.ini upgrade head
-	$(COMPOSE) run --rm identity python -m identity.seed
+	$(COMPOSE) run --rm identity python -m identity.config.seed
 
 android-contract-test:
 	poetry run pytest -m "not e2e"

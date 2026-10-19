@@ -8,7 +8,7 @@ from uuid import uuid4
 import pytest
 from diary_contracts.authorization import UsageMetric
 from diary_contracts.operation import OperationState, OperationType
-from identity.domain.operation import InvalidTransition, OperationReceipt
+from identity.models.operation import InvalidTransition, OperationReceipt
 
 
 def receipt(state: OperationState = OperationState.ACCEPTED) -> OperationReceipt:

@@ -8,7 +8,7 @@ e nos contratos públicos em [docs/index.md](../../docs/index.md).
 
 ```bash
 poetry install
-poetry run uvicorn notifications.main:app --port 8000
+poetry run python -m notifications.jobs.worker
 ```
 
 ## Testes

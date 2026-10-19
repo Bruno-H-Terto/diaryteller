@@ -162,7 +162,7 @@ async def test_purchase_then_refund_revokes_paid_permission(client, database) ->
         "occurred_at": datetime.now(UTC).isoformat(),
     }
     body = json.dumps(event).encode()
-    from identity.settings import get_settings
+    from identity.config.settings import get_settings
 
     signature = hmac.new(
         get_settings().source_encryption_key.encode(), body, hashlib.sha256

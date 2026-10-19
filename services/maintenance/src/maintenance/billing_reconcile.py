@@ -13,7 +13,7 @@ from maintenance.settings import MaintenanceSettings
 
 def _provider(settings: MaintenanceSettings):
     if settings.billing_provider == "google_play":
-        from identity.adapters.billing.store_client import GooglePlayBillingProvider
+        from identity.lib.billing.store_client import GooglePlayBillingProvider
 
         return GooglePlayBillingProvider(
             package_name=settings.google_play_package_name,
@@ -23,7 +23,7 @@ def _provider(settings: MaintenanceSettings):
             pubsub_service_account="",
             account_link_salt=settings.source_encryption_key or settings.billing_token_key,
         )
-    from identity.adapters.billing.fake import FakeBillingProvider
+    from identity.lib.billing.fake import FakeBillingProvider
 
     return FakeBillingProvider(settings.source_encryption_key or settings.billing_token_key)
 

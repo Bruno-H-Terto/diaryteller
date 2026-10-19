@@ -11,9 +11,9 @@ from uuid import uuid4
 import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from identity.adapters.security.access_tokens import AccessTokenIssuer, TokenInvalid
-from identity.adapters.security.passwords import PasswordHasher
-from identity.adapters.security.source_tokens import SourceInvalid, SourceTokenCodec
+from identity.lib.security.access_tokens import AccessTokenIssuer, TokenInvalid
+from identity.lib.security.passwords import PasswordHasher
+from identity.lib.security.source_tokens import SourceInvalid, SourceTokenCodec
 
 
 def issuer() -> AccessTokenIssuer:

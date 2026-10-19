@@ -6,7 +6,7 @@ import struct
 
 import pytest
 from diary_contracts.speech import AudioFormat
-from speech.domain.audio import MediaInvalid, detect_format, validate_audio, wav_duration
+from speech.models.audio import MediaInvalid, detect_format, validate_audio, wav_duration
 
 
 def wav(seconds: float, sample_rate: int = 8000) -> bytes:

@@ -6,8 +6,8 @@ import json
 from uuid import uuid4
 
 import pytest
-from conversation.domain.evidence import EvidenceError, parse_final_result
-from conversation.domain.response import MARKER, MarkerFilter
+from conversation.models.evidence import EvidenceError, parse_final_result
+from conversation.models.response import MARKER, MarkerFilter
 
 
 def raw(payload: dict, answer: str = "Resposta") -> str:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 import httpx
-from identity.adapters.oidc import OidcIdentity, OidcInvalidToken
+from identity.lib.oidc import OidcIdentity, OidcInvalidToken
 from sqlalchemy.ext.asyncio import create_async_engine
 
 

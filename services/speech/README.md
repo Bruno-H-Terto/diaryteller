@@ -8,7 +8,7 @@ e nos contratos públicos em [docs/index.md](../../docs/index.md).
 
 ```bash
 poetry install
-poetry run uvicorn speech.main:app --port 8000
+poetry run uvicorn speech.app:app --port 8000
 ```
 
 ## Testes

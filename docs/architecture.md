@@ -30,9 +30,13 @@ services/maintenance ──> PostgreSQL, Mongo, storage, backups
 
 ## Direção das dependências
 
-`HTTP/MCP → aplicação → domínio`. Adaptadores implementam portas declaradas pela
-aplicação. O domínio não importa FastAPI, SQLAlchemy, PyMongo, SDK de IA ou SDK
-MCP. Não há injeção por reflexão: `bootstrap.py` monta cada dependência.
+`controllers → services → models`. Controllers cuidam de HTTP, services
+orquestram um fluxo, models concentram tabela e consulta. As antigas camadas
+`domain/`, `adapters/` e `application/` foram eliminadas; os protocolos de porta
+viraram aliases dos tipos concretos em `models/ports`, restando interface apenas
+onde há implementações intercambiáveis (provedor de cobrança, storage, LLM,
+MCP, fala). Não há injeção por reflexão: `config/bootstrap.py` monta cada
+dependência.
 
 ## Pacotes compartilhados
 
@@ -45,11 +49,26 @@ MCP. Não há injeção por reflexão: `bootstrap.py` monta cada dependência.
 
 ## Layout
 
+Cada serviço é uma aplicação autocontida, com o mesmo desenho interno:
+
+```text
+api/  (ou services/<vizinho>/)
+  src/<pacote>/
+    models/       # tabelas, entidades e consultas SQLAlchemy
+    controllers/  # routers FastAPI, schemas e dependências
+    services/     # orquestração de fluxo (auth, oidc, quota, billing)
+    jobs/         # relay do outbox e consumidores
+    lib/          # JWT/JWE, OIDC, billing, email, push, LLM
+    config/       # settings, database, bootstrap, container, seed
+  db/migrate/     # Alembic
+  tests/
+```
+
 - `api/`: única borda HTTP pública. Contém identidade, sessões, quotas, OIDC e
   políticas; publica eventos via outbox transacional.
 - `services/<vizinho>/`: conversation, speech, exchange, memory_mcp,
-  notifications e maintenance. Cada um tem `src`, `tests`, `Dockerfile`,
-  `pyproject.toml` e, quando precisa, migrations próprias.
+  notifications e maintenance, cada um com seus próprios `db/migrate`, imagem e
+  testes.
 - `packages/`: contratos, observabilidade, segurança e mensageria.
 - `ops/`: compose principal e arquivos incluídos por domínio
   (`compose.android.yaml`, `compose.messaging.yaml`), Dex e scripts de init.

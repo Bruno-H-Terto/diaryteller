@@ -139,7 +139,7 @@ async def test_context_is_owner_scoped(client, authorizer) -> None:
 
 async def test_oversized_context_is_rejected(client, authorizer, monkeypatch) -> None:
     authorizer.principal = principal_for(OWNER)
-    from exchange.main import app
+    from exchange.app import app
 
     monkeypatch.setattr(app.state.container.settings, "context_max_bytes", 4)
     response = await client.post("/v1/exchange/contexts", json=context_body(), headers=HEADERS)

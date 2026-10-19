@@ -10,12 +10,12 @@ from typing import Any
 import pytest
 from diary_messaging import EventEnvelope
 from diary_security import encrypt_json
-from notifications.application.handlers.email_delivery import (
+from notifications.config.settings import Settings
+from notifications.services.email_delivery import (
     EmailDelivery,
     EmailDeliveryError,
 )
-from notifications.application.handlers.session_alerts import SessionAlerts
-from notifications.settings import Settings
+from notifications.services.session_alerts import SessionAlerts
 
 KEY = base64.urlsafe_b64encode(b"n" * 32).decode()
 

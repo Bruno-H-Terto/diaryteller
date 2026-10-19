@@ -22,7 +22,7 @@ DEVICE = "88888888-8888-4888-8888-888888888888"
 @pytest.fixture()
 def provider(monkeypatch):
     """Install a deterministic provider in the running container."""
-    from identity.main import app
+    from identity.app import app
 
     container = app.state.container
     fake = FakeOidcProvider()

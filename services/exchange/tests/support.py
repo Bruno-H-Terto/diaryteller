@@ -8,8 +8,8 @@ from dataclasses import dataclass, field
 
 from diary_contracts.authorization import AccountStatus
 from diary_contracts.errors import DomainError, ErrorCode
-from exchange.application.ports.identity import Principal
-from exchange.application.ports.storage import StoredObject
+from exchange.models.ports.identity import Principal
+from exchange.models.ports.storage import StoredObject
 
 
 class FakeAuthorizer:

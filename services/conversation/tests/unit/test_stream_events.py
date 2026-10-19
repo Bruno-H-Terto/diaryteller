@@ -5,8 +5,8 @@ from __future__ import annotations
 import asyncio
 
 import pytest
-from conversation.application.ports import TextDelta
-from conversation.application.stream_events import (
+from conversation.lib.ports import TextDelta
+from conversation.services.stream_events import (
     OperationCancelled,
     ProviderTimeout,
     cancel_aware,

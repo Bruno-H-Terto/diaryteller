@@ -13,10 +13,10 @@ from diary_contracts.context import ContextRecord
 from diary_contracts.mcp import ContextTokenClaims
 from diary_security import context_digest, encrypt_json
 from mcp import Client
-from memory_mcp.adapters.llm.fake import FakeGenerator
-from memory_mcp.adapters.mcp.server import build_server
-from memory_mcp.container import Container
-from memory_mcp.domain.evidence import ContextVerifier
+from memory_mcp.config.container import Container
+from memory_mcp.lib.llm.fake import FakeGenerator
+from memory_mcp.lib.mcp.server import build_server
+from memory_mcp.models.evidence import ContextVerifier
 
 KEY = base64.urlsafe_b64encode(b"m" * 32).decode()
 

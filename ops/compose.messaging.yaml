@@ -49,7 +49,7 @@ services:
       JWT_KEYS_DIR: /app/keys/jwt
       APP_ENV: development
       BILLING_PROVIDER: fake
-    command: python -m identity.relay
+    command: python -m identity.jobs.relay
     volumes:
       - ../keys:/app/keys:ro
     depends_on:

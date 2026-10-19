@@ -29,6 +29,8 @@ IGNORED_DIRS = {
     "node_modules",
     "dist",
     "backups",
+    "migrations",
+    "migrate",
 }
 CHECKED_SUFFIXES = {
     ".py",

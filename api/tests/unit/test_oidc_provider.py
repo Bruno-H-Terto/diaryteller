@@ -11,8 +11,8 @@ import jwt
 import pytest
 from cryptography.hazmat.primitives.asymmetric import rsa
 from diary_security import sha256_digest
-from identity.adapters.oidc import OidcInvalidToken, OidcProviderClient
-from identity.settings import OidcProviderSettings
+from identity.config.settings import OidcProviderSettings
+from identity.lib.oidc import OidcInvalidToken, OidcProviderClient
 from jwt.algorithms import RSAAlgorithm
 
 ISSUER = "https://issuer.test"

@@ -8,10 +8,10 @@ from pathlib import Path
 from typing import cast
 from uuid import uuid4
 
-from conversation.adapters.llm.fake import FakeChatClient
-from conversation.application.ports import AuthHeaders, IdentityPort
-from conversation.application.stream_response import stream_response
-from conversation.settings import get_settings
+from conversation.config.settings import get_settings
+from conversation.lib.llm.fake import FakeChatClient
+from conversation.lib.ports import AuthHeaders, IdentityPort
+from conversation.services.stream_response import stream_response
 from diary_contracts.conversation import ConversationRequest
 
 
@@ -32,7 +32,7 @@ class NullMcp:
 
 
 def prepared():
-    from conversation.application.prepare import PreparedOperation
+    from conversation.services.prepare import PreparedOperation
 
     records = [
         {

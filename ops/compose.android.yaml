@@ -58,7 +58,7 @@ services:
       EXCHANGE_STORAGE_ACCESS_KEY: diary
       EXCHANGE_STORAGE_SECRET_KEY: diary-secret
       EXCHANGE_APP_ENV: development
-    command: sh -c "alembic -c alembic.ini upgrade head && uvicorn exchange.main:app --host 0.0.0.0 --port 8000"
+    command: sh -c "alembic -c alembic.ini upgrade head && uvicorn exchange.app:app --host 0.0.0.0 --port 8000"
     volumes:
       - exchangedata:/data/exchange
     ports: ["8012:8000"]

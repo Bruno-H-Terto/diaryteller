@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir poetry==2.5.1 \
 
 WORKDIR /app/services/memory_mcp
 EXPOSE 8080
-CMD ["uvicorn", "memory_mcp.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "memory_mcp.app:app", "--host", "0.0.0.0", "--port", "8080"]

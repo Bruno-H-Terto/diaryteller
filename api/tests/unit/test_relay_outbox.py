@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from diary_messaging import EventEnvelope
 from diary_messaging.kafka import BrokerUnavailable
-from identity.application.use_cases.relay_outbox import envelope_for, relay_batch
+from identity.services.relay_outbox import envelope_for, relay_batch
 
 
 class FakeRepo:
@@ -68,7 +68,7 @@ async def test_batch_marks_published_rows() -> None:
     repo = FakeRepo([row])
     publisher = FakePublisher()
     count = await relay_batch(
-        repo=repo,
+        repo=cast("Any", repo),
         publisher=publisher,
         worker_id="relay-1",
         batch_size=10,
@@ -85,7 +85,7 @@ async def test_broker_failure_reschedules_instead_of_losing() -> None:
     row = _row(attempts=3)
     repo = FakeRepo([row])
     count = await relay_batch(
-        repo=repo,
+        repo=cast("Any", repo),
         publisher=FakePublisher(fail=True),
         worker_id="relay-1",
         batch_size=10,

@@ -91,7 +91,7 @@ def export_specs(services: tuple[str, ...] = SERVICES) -> dict[str, dict]:
     _ensure_keys()
     documents: dict[str, dict] = {}
     for service in services:
-        module = importlib.import_module(f"{service}.main")
+        module = importlib.import_module(f"{service}.app")
         app = module.create_app()
         documents[service] = app.openapi()
     return documents

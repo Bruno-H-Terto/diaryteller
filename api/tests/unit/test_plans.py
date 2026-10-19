@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from diary_contracts.quota import UploadMetric
-from identity.domain.plans import FREE_UPLOAD_LIMITS
-from identity.seed import plans_for
+from identity.config.seed import plans_for
+from identity.models.plans import FREE_UPLOAD_LIMITS
 
 REQUIRED_LIMITS = {
     UploadMetric.DAILY_UPLOAD_COUNT.value,

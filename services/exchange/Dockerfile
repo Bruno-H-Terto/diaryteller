@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir poetry==2.5.1 \
 
 WORKDIR /app/services/exchange
 EXPOSE 8000
-CMD ["sh", "-c", "alembic -c alembic.ini upgrade head && uvicorn exchange.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "alembic -c alembic.ini upgrade head && uvicorn exchange.app:app --host 0.0.0.0 --port 8000"]

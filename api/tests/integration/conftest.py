@@ -38,7 +38,9 @@ async def _ensure_database() -> None:
 async def database() -> AsyncIterator[str]:
     """Create a clean schema once per integration session."""
     await _ensure_database()
-    from identity.adapters.postgres import (
+    from identity.config.database import Base
+    from identity.config.seed import PLANS, ROLE_PERMISSIONS
+    from identity.models import (
         tables_access,
         tables_billing,
         tables_federation,
@@ -48,9 +50,7 @@ async def database() -> AsyncIterator[str]:
         tables_session,
         tables_upload_quota,
     )
-    from identity.adapters.postgres.engine import Base
-    from identity.adapters.postgres.permission_repository import PostgresPlanRepository
-    from identity.seed import PLANS, ROLE_PERMISSIONS
+    from identity.models.permission_repository import PostgresPlanRepository
 
     _registered = (
         tables_access,
@@ -79,7 +79,7 @@ async def database() -> AsyncIterator[str]:
 @pytest.fixture()
 async def client(database: str) -> AsyncIterator[httpx.AsyncClient]:
     """In-process identity app against the test database."""
-    from identity.main import app
+    from identity.app import app
 
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://identity") as value:

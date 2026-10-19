@@ -6,13 +6,13 @@ from datetime import UTC, datetime
 from typing import cast
 from uuid import uuid4
 
-from conversation.adapters.llm.fake import FakeChatClient
-from conversation.adapters.llm.messages import load_system_prompt
-from conversation.application.ports import AuthHeaders, IdentityPort, McpTool
-from conversation.application.prepare import PreparedOperation
-from conversation.application.stream_response import stream_response
-from conversation.application.tool_loop import discover
-from conversation.settings import get_settings
+from conversation.config.settings import get_settings
+from conversation.lib.llm.fake import FakeChatClient
+from conversation.lib.llm.messages import load_system_prompt
+from conversation.lib.ports import AuthHeaders, IdentityPort, McpTool
+from conversation.services.prepare import PreparedOperation
+from conversation.services.stream_response import stream_response
+from conversation.services.tool_loop import discover
 from diary_contracts.conversation import ConversationRequest
 from diary_contracts.stream import StreamEventType
 
