@@ -14,7 +14,7 @@ from conversation.application.ports import McpPort, McpTool, ToolCall
 ALLOWLIST: dict[ResponseMode, set[MemoryTool]] = {
     ResponseMode.CONVERSATION: set(),
     ResponseMode.RECALL: {MemoryTool.SEARCH, MemoryTool.GET},
-    ResponseMode.ORGANIZE: {MemoryTool.ORGANIZE, MemoryTool.SEARCH},
+    ResponseMode.ORGANIZE: {MemoryTool.ORGANIZE},
     ResponseMode.TIMELINE: {MemoryTool.TIMELINE},
     ResponseMode.SUMMARIZE: {MemoryTool.SUMMARIZE},
 }

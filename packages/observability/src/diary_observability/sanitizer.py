@@ -97,7 +97,8 @@ def configure_logging(service: str, version: str = "0.1.0") -> None:
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(JsonFormatter(service, version, environment))
     root.addHandler(handler)
-    logging.getLogger("uvicorn.access").disabled = True
+    for name in ("uvicorn.access", "httpx", "httpcore", "openai", "mcp", "pymongo"):
+        logging.getLogger(name).setLevel(logging.WARNING)
 
 
 def log_event(logger: logging.Logger, level: int, event: str, **fields: Any) -> None:

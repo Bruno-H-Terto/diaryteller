@@ -52,7 +52,7 @@ async def dispatch_batch(
                     {"event": "outbox_retry", "attempt": int(event["attempts"]), "error_code": code}
                 )
             else:
-                await repo.delivered(event["id"])
+                await repo.delivered(event["id"], str(event["event_type"]))
                 log_sink.emit({"event": "outbox_delivered", "attempt": int(event["attempts"])})
     return len(events)
 

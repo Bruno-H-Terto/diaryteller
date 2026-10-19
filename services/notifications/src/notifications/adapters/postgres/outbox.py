@@ -56,16 +56,18 @@ class OutboxRepository:
                 claimed.append(dict(row))
         return claimed
 
-    async def delivered(self, event_id: UUID) -> None:
-        """Mark an event delivered."""
+    async def delivered(self, event_id: UUID, event_type: str = "") -> None:
+        """Mark delivered and erase email delivery material."""
+        scrub = event_type.startswith("email.")
         await self._session.execute(
             text("""
                 UPDATE outbox_events
                 SET state = 'delivered', delivered_at = now(),
-                    lease_owner = NULL, lease_expires_at = NULL
+                    lease_owner = NULL, lease_expires_at = NULL,
+                    payload = CASE WHEN :scrub THEN '{}'::jsonb ELSE payload END
                 WHERE id = :id
                 """),
-            {"id": event_id},
+            {"id": event_id, "scrub": scrub},
         )
         await self._session.commit()
 

@@ -21,6 +21,8 @@ jobs:
         run: |
           cp .env.example .env
           poetry run python scripts/dev_keys.py
+      - name: Dependency locks
+        run: poetry run python scripts/check_dependencies.py
       - name: Line limits
         run: poetry run python scripts/check_line_limits.py
       - name: Ruff
