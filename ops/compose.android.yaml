@@ -1,0 +1,78 @@
+x-logging: &logging
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  minio:
+    profiles: ["object-storage"]
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: diary
+      MINIO_ROOT_PASSWORD: diary-secret
+    volumes:
+      - miniodata:/data
+    ports: ["9000:9000", "9001:9001"]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    <<: *logging
+
+  minio-init:
+    profiles: ["object-storage"]
+    image: minio/mc:latest
+    depends_on:
+      minio: { condition: service_healthy }
+    entrypoint: >
+      sh -c "mc alias set local http://minio:9000 diary diary-secret &&
+      mc mb --ignore-existing local/diary-exchange &&
+      mc anonymous set none local/diary-exchange"
+    <<: *logging
+
+  dex:
+    image: ghcr.io/dexidp/dex:v2.41.1
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
+    volumes:
+      - ./dex/config.yaml:/etc/dex/config.yaml:ro
+    ports: ["5556:5556"]
+    <<: *logging
+
+  exchange:
+    build: { context: .., dockerfile: services/exchange/Dockerfile }
+    env_file: [../.env]
+    environment:
+      EXCHANGE_DATABASE_URL: postgresql+asyncpg://diary:diary@postgres:5432/exchange
+      EXCHANGE_MONGO_URL: mongodb://diary:diary@mongo:27017/diary_logs?authSource=diary_logs
+      EXCHANGE_IDENTITY_INTERNAL_URL: http://identity:8000
+      EXCHANGE_IDENTITY_INTERNAL_SERVICE: exchange
+      EXCHANGE_IDENTITY_INTERNAL_TOKEN: dev-exchange-secret
+      EXCHANGE_CONTEXT_ENCRYPTION_KEY: ${CONTEXT_ENCRYPTION_KEY:?set CONTEXT_ENCRYPTION_KEY in .env}
+      EXCHANGE_STORAGE_BACKEND: file
+      EXCHANGE_STORAGE_DIR: /data/exchange
+      EXCHANGE_STORAGE_ENDPOINT: http://minio:9000
+      EXCHANGE_STORAGE_PUBLIC_ENDPOINT: http://localhost:9000
+      EXCHANGE_STORAGE_BUCKET: diary-exchange
+      EXCHANGE_STORAGE_ACCESS_KEY: diary
+      EXCHANGE_STORAGE_SECRET_KEY: diary-secret
+      EXCHANGE_APP_ENV: development
+    command: sh -c "alembic -c alembic.ini upgrade head && uvicorn exchange.main:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - exchangedata:/data/exchange
+    ports: ["8012:8000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+      identity: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    <<: *logging
+
+volumes:
+  miniodata:
+  exchangedata:

@@ -23,7 +23,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "contracts" / "openapi"
 BASELINE = OUTPUT / "baseline"
-SERVICES = ("identity", "conversation", "speech", "memory_mcp")
+SERVICES = ("identity", "conversation", "speech", "memory_mcp", "exchange")
 
 _FIXED = {
     "APP_ENV": "test",
@@ -47,6 +47,12 @@ _FIXED = {
     "LLM_PROVIDER": "fake",
     "SPEECH_PROVIDER": "fake",
     "PUSH_PROVIDER": "dev",
+    "EXCHANGE_DATABASE_URL": "postgresql+asyncpg://diary:diary@localhost:5432/exchange",
+    "EXCHANGE_CONTEXT_ENCRYPTION_KEY": base64.urlsafe_b64encode(b"e" * 32).decode(),
+    "EXCHANGE_IDENTITY_INTERNAL_TOKEN": "export-exchange",
+    "EXCHANGE_INTERNAL_SECRETS": (
+        '{"conversation":"export-conversation","speech":"export-speech"}'
+    ),
 }
 
 

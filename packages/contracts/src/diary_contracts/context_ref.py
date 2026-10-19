@@ -162,6 +162,16 @@ class ContextView(BaseModel):
     deletion_id: UUID | None
 
 
+class InternalContextRecords(BaseModel):
+    """Trusted-service view of the records inside one ready copy."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    context_id: UUID
+    content_sha256: str
+    records: list[SelectedRecord]
+
+
 class RetentionUpdate(BaseModel):
     """Explicit retention change; requires `If-Match` with the current revision."""
 

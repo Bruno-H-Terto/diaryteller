@@ -27,6 +27,18 @@
         "additionalProperties": false,
         "description": "One immutable record supplied by the client.",
         "properties": {
+          "content_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Sha256"
+          },
           "event_at": {
             "anyOf": [
               {
@@ -44,6 +56,18 @@
             "minLength": 1,
             "title": "Id",
             "type": "string"
+          },
+          "local_version_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Local Version Id"
           },
           "recorded_at": {
             "format": "date-time",
@@ -80,6 +104,18 @@
           },
           "context": {
             "$ref": "#/components/schemas/ContextBundle"
+          },
+          "context_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Id"
           },
           "conversation_id": {
             "maxLength": 128,

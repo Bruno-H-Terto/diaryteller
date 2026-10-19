@@ -1,0 +1,19 @@
+# Local development identity provider. Never use these values in production.
+issuer: http://localhost:5556/dex
+storage:
+  type: memory
+web:
+  http: 0.0.0.0:5556
+staticClients:
+  - id: diary-android
+    redirectURIs:
+      - diary://oidc
+    name: Diary Android
+    secret: dev-dex-secret
+enablePasswordDB: true
+staticPasswords:
+  - email: demo@example.com
+    # bcrypt hash of "password" for local testing only.
+    hash: $2b$12$AptJlmPyUPm3GxQcy2gGSOJv1moi0sOqs4VjdKl1ma42.IaJZ3LSa
+    username: demo
+    userID: 08a8684b-db88-4b73-90a9-3cd1661f5466

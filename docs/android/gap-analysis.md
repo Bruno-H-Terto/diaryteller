@@ -80,6 +80,16 @@ Auditoria feita em 2026-10-19 contra o código deste repositório e o pacote
 | 0 | Auditoria, baseline OpenAPI e teste de compatibilidade | concluída |
 | 1 | Contratos do delta, erros, flags e validador | concluída |
 | 2 | OIDC genérico + PKCE, vínculo explícito, quotas de upload e política de anúncios | concluída |
+| 3 | Serviço `exchange` (contextos, proveniência, exclusão durável), migrations, Dex e MinIO | concluída |
+
+### Notas locais
+
+- O compose sobe Dex em `http://localhost:5556/dex`; o app Android usa
+  `adb reverse tcp:5556 tcp:5556` para o emulador alcançar o issuer.
+- MinIO/MinIO Client ficam no profile `object-storage`
+  (`docker compose --profile object-storage up`) porque o registry deste
+  ambiente bloqueia as imagens. O backend `file` do exchange é apenas para
+  desenvolvimento e é proibido em produção; uploads diretos exigem `s3`.
 
 Etapas seguintes (exchange, storage, uploads, jobs, contexto, feed, manutenção)
 permanecem conforme o plano aprovado.

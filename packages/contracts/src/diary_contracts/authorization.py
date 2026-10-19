@@ -24,6 +24,7 @@ class Permission(StrEnum):
     MEMORY_TIMELINE = "memory:timeline"
     MEMORY_SUMMARIZE = "memory:summarize"
     SESSIONS_MANAGE = "sessions:manage"
+    EXCHANGE_USE = "exchange:use"
 
 
 class AccountStatus(StrEnum):

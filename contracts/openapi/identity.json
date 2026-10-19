@@ -671,7 +671,8 @@
           "memory:organize",
           "memory:timeline",
           "memory:summarize",
-          "sessions:manage"
+          "sessions:manage",
+          "exchange:use"
         ],
         "title": "Permission",
         "type": "string"

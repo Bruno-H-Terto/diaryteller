@@ -16,6 +16,7 @@ FREE = {
     Permission.CONVERSATION_USE,
     Permission.SPEECH_TRANSCRIBE,
     Permission.SPEECH_SYNTHESIZE,
+    Permission.EXCHANGE_USE,
 }
 MEMORY = {
     Permission.MEMORY_SEARCH,
