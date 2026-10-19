@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "diary-observability"
+version = "0.1.0"
+description = "Diary shared package"
+authors = ["Diary API Team"]
+packages = [{ include = "diary_observability", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.15"
+pydantic = "^2.14.1"
+pymongo = "^4.19.0"
+fastapi = "^0.146.0"
+diary-contracts = { path = "../contracts", develop = true }
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
