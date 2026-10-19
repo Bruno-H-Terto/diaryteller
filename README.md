@@ -4,16 +4,23 @@ Backend for a local-first voice/text diary. The phone owns diary content; this
 backend authenticates devices, enforces plans and quotas, and processes content
 only for the duration of a request.
 
-## Services
+## Pods
 
-| Service | Port (compose) | Responsibility |
+Cada diretório de topo é um pod: código, testes, Dockerfile, lock e migrations
+próprios.
+
+| Pod | Porta (compose) | Responsabilidade |
 |---|---|---|
-| `identity` | 8001 | Accounts, sessions, permissions, subscriptions, operations |
-| `conversation` | 8010 | Streaming AI responses, MCP client, proposals |
-| `speech` | 8011 | Bounded transcription and text-to-speech |
-| `memory_mcp` | 8082 | Internal MCP server for selected local records |
-| `notifications` | worker | Outbox dispatch, session alerts, transactional email |
-| `maintenance` | CLI/job | Retention, reconciliation, encrypted backups |
+| `api` | 8001 | Borda pública, contas, sessões, quotas, OIDC, operações |
+| `conversation` | 8010 | Respostas de IA em streaming, MCP, propostas |
+| `speech` | 8011 | Transcrição e TTS limitados |
+| `exchange` | 8012 | Contextos autorizados, uploads, resultados, feed |
+| `memory_mcp` | interno | Servidor MCP sobre registros selecionados |
+| `notifications` | worker | Consumidor Kafka de e-mail e push |
+| `maintenance` | CLI/job | Retenção, reconciliação e backups |
+
+`shared/` contém contratos, segurança, observabilidade e mensageria usados no
+build desses pods.
 
 ## Quick start
 

@@ -41,7 +41,7 @@ services:
     <<: *logging
 
   exchange:
-    build: { context: .., dockerfile: services/exchange/Dockerfile }
+    build: { context: .., dockerfile: exchange/Dockerfile }
     env_file: [../.env]
     environment:
       EXCHANGE_DATABASE_URL: postgresql+asyncpg://diary:diary@postgres:5432/exchange

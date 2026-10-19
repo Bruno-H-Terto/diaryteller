@@ -5,17 +5,17 @@ description = "Development workspace for the local-first personal diary backend"
 authors = ["Diary API Team"]
 readme = "README.md"
 packages = [
-  { include = "diary_contracts", from = "packages/contracts/src" },
-  { include = "diary_observability", from = "packages/observability/src" },
-  { include = "diary_security", from = "packages/security/src" },
-  { include = "diary_messaging", from = "packages/messaging/src" },
+  { include = "diary_contracts", from = "shared/contracts/src" },
+  { include = "diary_observability", from = "shared/observability/src" },
+  { include = "diary_security", from = "shared/security/src" },
+  { include = "diary_messaging", from = "shared/messaging/src" },
   { include = "identity", from = "api/src" },
-  { include = "conversation", from = "services/conversation/src" },
-  { include = "speech", from = "services/speech/src" },
-  { include = "memory_mcp", from = "services/memory_mcp/src" },
-  { include = "notifications", from = "services/notifications/src" },
-  { include = "maintenance", from = "services/maintenance/src" },
-  { include = "exchange", from = "services/exchange/src" },
+  { include = "conversation", from = "conversation/src" },
+  { include = "speech", from = "speech/src" },
+  { include = "memory_mcp", from = "memory_mcp/src" },
+  { include = "notifications", from = "notifications/src" },
+  { include = "maintenance", from = "maintenance/src" },
+  { include = "exchange", from = "exchange/src" },
 ]
 
 [tool.poetry.dependencies]
@@ -77,7 +77,7 @@ target-version = ["py312"]
 extend-exclude = "migrations/versions"
 
 [tool.pyright]
-include = ["packages", "services", "api", "scripts", "tests"]
+include = ["api", "conversation", "speech", "exchange", "memory_mcp", "notifications", "maintenance", "shared", "ops"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 exclude = ["**/migrations/versions", "**/.venv"]
@@ -88,7 +88,7 @@ reportUnnecessaryComparison = false
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
-testpaths = ["packages", "services", "api", "tests"]
+testpaths = ["api", "conversation", "speech", "exchange", "memory_mcp", "notifications", "maintenance", "shared"]
 addopts = "-q --strict-markers"
 markers = [
   "integration: requires PostgreSQL and MongoDB containers",

@@ -69,6 +69,13 @@ os.environ["OIDC_PROVIDERS"] = (
 os.environ["MCP_SERVICE_TOKEN"] = "test-mcp"
 os.environ["IDENTITY_INTERNAL_URL"] = "http://identity"
 os.environ["MCP_URL"] = "http://memory/mcp"
+os.environ["EXCHANGE_DATABASE_URL"] = os.environ.get(
+    "TEST_EXCHANGE_DATABASE_URL", "postgresql+asyncpg://diary:diary@localhost:5432/exchange_test"
+)
+os.environ["EXCHANGE_CONTEXT_ENCRYPTION_KEY"] = _secret()
+os.environ["EXCHANGE_IDENTITY_INTERNAL_URL"] = "http://identity"
+os.environ["EXCHANGE_IDENTITY_INTERNAL_TOKEN"] = "test-exchange"
+os.environ["EXCHANGE_INTERNAL_SECRETS"] = '{"conversation":"test-conversation"}'
 
 
 @pytest.fixture(scope="session")

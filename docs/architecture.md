@@ -6,14 +6,14 @@
 celular ──HTTPS──> api/ (borda pública + identidade)
                         │  outbox transacional
                         ▼
-                    Redpanda/Kafka ──> services/notifications (email, push)
+                    Redpanda/Kafka ──> notifications (email, push)
                         │
                         └──> demais vizinhos (incremental)
 
 api/ ──> PostgreSQL (conta, sessão, quota, operação, outbox)
-services/{conversation,speech,exchange,memory_mcp} ──> suas próprias portas
-services/notifications ──> PostgreSQL próprio (inbox) + SMTP/push
-services/maintenance ──> PostgreSQL, Mongo, storage, backups
+{conversation,speech,exchange,memory_mcp} ──> suas próprias portas
+notifications ──> PostgreSQL próprio (inbox) + SMTP/push
+maintenance ──> PostgreSQL, Mongo, storage, backups
 ```
 
 ## Unidades
@@ -40,11 +40,11 @@ dependência.
 
 ## Pacotes compartilhados
 
-- `packages/contracts`: schemas Pydantic de transporte, erros, eventos SSE e
+- `shared/contracts`: schemas Pydantic de transporte, erros, eventos SSE e
   propostas. Não contém entidades ORM nem lógica de aplicação.
-- `packages/observability`: allowlist de log, sink Mongo limitado e middleware de
+- `shared/observability`: allowlist de log, sink Mongo limitado e middleware de
   `request_id`. Extraído após duplicação real entre cinco serviços.
-- `packages/messaging`: envelope de evento versionado, tópicos, codec estrito,
+- `shared/messaging`: envelope de evento versionado, tópicos, codec estrito,
   produtor e consumidor Kafka com inbox idempotente e DLQ.
 
 ## Layout
@@ -52,7 +52,7 @@ dependência.
 Cada serviço é uma aplicação autocontida, com o mesmo desenho interno:
 
 ```text
-api/  (ou services/<vizinho>/)
+api/  (ou <vizinho>/)
   src/<pacote>/
     models/       # tabelas, entidades e consultas SQLAlchemy
     controllers/  # routers FastAPI, schemas e dependências
@@ -66,10 +66,10 @@ api/  (ou services/<vizinho>/)
 
 - `api/`: única borda HTTP pública. Contém identidade, sessões, quotas, OIDC e
   políticas; publica eventos via outbox transacional.
-- `services/<vizinho>/`: conversation, speech, exchange, memory_mcp,
-  notifications e maintenance, cada um com seus próprios `db/migrate`, imagem e
-  testes.
-- `packages/`: contratos, observabilidade, segurança e mensageria.
+- `conversation/`, `speech/`, `exchange/`, `memory_mcp/`, `notifications/`,
+  `maintenance/`: um diretório por pod, cada um com `src`, `tests`,
+  `Dockerfile`, `pyproject.toml`, `poetry.lock` e `db/migrate` quando precisa.
+- `shared/`: contratos, observabilidade, segurança e mensageria.
 - `ops/`: compose principal e arquivos incluídos por domínio
   (`compose.android.yaml`, `compose.messaging.yaml`), Dex e scripts de init.
 

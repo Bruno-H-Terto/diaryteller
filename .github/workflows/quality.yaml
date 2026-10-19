@@ -20,15 +20,13 @@ jobs:
       - name: Prepare local configuration
         run: |
           cp .env.example .env
-          poetry run python scripts/dev_keys.py
+          poetry run python ops/tools/dev_keys.py
       - name: Dependency locks
-        run: poetry run python scripts/check_dependencies.py
+        run: poetry run python ops/tools/check_dependencies.py
       - name: Line limits
-        run: poetry run python scripts/check_line_limits.py
+        run: poetry run python ops/tools/check_line_limits.py
       - name: Contract validation
-        run: |
-          poetry run python scripts/export_openapi.py
-          poetry run python scripts/check_contract.py
+        run: poetry run pytest shared/tests/test_routes.py
       - name: Ruff
         run: poetry run ruff check .
       - name: Black

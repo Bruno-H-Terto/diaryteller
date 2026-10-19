@@ -52,7 +52,7 @@ poetry run python scripts/check_line_limits.py
 
 ## When adding a service
 
-1. Put transport schemas in `packages/contracts`, never ORM entities.
+1. Put transport schemas in `shared/contracts`, never ORM entities.
 2. Define ports in `application/ports.py` and implement them in `adapters/`.
 3. Wire dependencies explicitly in `bootstrap.py`.
 4. Add health/readiness checks, settings validation, a README and tests.

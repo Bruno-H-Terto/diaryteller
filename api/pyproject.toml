@@ -24,10 +24,10 @@ argon2-cffi = "^25.1.0"
 google-auth = "^2.62.0"
 requests = "^2.32.5"
 cryptography = "^50.0.2"
-diary-contracts = { path = "../packages/contracts", develop = true }
-diary-observability = { path = "../packages/observability", develop = true }
-diary-security = { path = "../packages/security", develop = true }
-diary-messaging = { path = "../packages/messaging", develop = true }
+diary-contracts = { path = "../shared/contracts", develop = true }
+diary-observability = { path = "../shared/observability", develop = true }
+diary-security = { path = "../shared/security", develop = true }
+diary-messaging = { path = "../shared/messaging", develop = true }
 
 [build-system]
 requires = ["poetry-core>=2.0.0"]

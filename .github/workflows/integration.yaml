@@ -37,7 +37,7 @@ jobs:
       - name: Prepare local configuration
         run: |
           cp .env.example .env
-          poetry run python scripts/dev_keys.py
+          poetry run python ops/tools/dev_keys.py
       - name: Apply and roll back migrations on empty database
         env:
           TEST_DATABASE_URL: postgresql+asyncpg://diary:diary@localhost:5432/diary_test
@@ -50,9 +50,9 @@ jobs:
           poetry run alembic -c api/alembic.ini downgrade base
           poetry run alembic -c api/alembic.ini upgrade head
           EXCHANGE_DATABASE_URL=postgresql+asyncpg://diary:diary@localhost:5432/exchange_migrate \
-            poetry run alembic -c services/exchange/alembic.ini upgrade head
+            poetry run alembic -c exchange/alembic.ini upgrade head
           NOTIFICATIONS_DATABASE_URL=postgresql+asyncpg://diary:diary@localhost:5432/notifications \
-            poetry run alembic -c services/notifications/alembic.ini upgrade head
+            poetry run alembic -c notifications/alembic.ini upgrade head
       - name: Integration tests
         env:
           TEST_DATABASE_URL: postgresql+asyncpg://diary:diary@localhost:5432/diary_test

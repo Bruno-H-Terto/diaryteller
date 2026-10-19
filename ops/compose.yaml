@@ -84,13 +84,13 @@ services:
     <<: *logging
 
   conversation:
-    build: { context: .., dockerfile: services/conversation/Dockerfile }
+    build: { context: .., dockerfile: conversation/Dockerfile }
     env_file: [../.env]
     environment:
       IDENTITY_INTERNAL_URL: http://identity:8000
       MCP_URL: http://memory_mcp:8080/mcp
       MONGO_URL: mongodb://conversation_logs:conversation_logs@mongo:27017/diary_logs?authSource=diary_logs
-      PROMPTS_DIR: /app/services/conversation/prompts
+      PROMPTS_DIR: /app/conversation/prompts
       APP_ENV: development
       LLM_PROVIDER: fake
     ports: ["8010:8000"]
@@ -105,7 +105,7 @@ services:
     <<: *logging
 
   speech:
-    build: { context: .., dockerfile: services/speech/Dockerfile }
+    build: { context: .., dockerfile: speech/Dockerfile }
     env_file: [../.env]
     environment:
       IDENTITY_INTERNAL_URL: http://identity:8000
@@ -123,7 +123,7 @@ services:
     <<: *logging
 
   memory_mcp:
-    build: { context: .., dockerfile: services/memory_mcp/Dockerfile }
+    build: { context: .., dockerfile: memory_mcp/Dockerfile }
     env_file: [../.env]
     environment:
       MONGO_URL: mongodb://memory_logs:memory_logs@mongo:27017/diary_logs?authSource=diary_logs
@@ -135,7 +135,7 @@ services:
     <<: *logging
 
   notifications:
-    build: { context: .., dockerfile: services/notifications/Dockerfile }
+    build: { context: .., dockerfile: notifications/Dockerfile }
     env_file: [../.env]
     environment:
       NOTIFICATIONS_DATABASE_URL: postgresql+asyncpg://diary:diary@postgres:5432/notifications
@@ -152,7 +152,7 @@ services:
     <<: *logging
 
   maintenance:
-    build: { context: .., dockerfile: services/maintenance/Dockerfile }
+    build: { context: .., dockerfile: maintenance/Dockerfile }
     profiles: ["tools"]
     env_file: [../.env]
     environment:
