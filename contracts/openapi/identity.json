@@ -11,6 +11,52 @@
         "title": "AccountStatus",
         "type": "string"
       },
+      "AdPlacement": {
+        "description": "Non-critical placements allowed by the MVP policy.",
+        "enum": [
+          "home_banner",
+          "post_save_interstitial"
+        ],
+        "title": "AdPlacement",
+        "type": "string"
+      },
+      "AdPolicy": {
+        "additionalProperties": false,
+        "description": "Policy for one account tier.",
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "placements": {
+            "items": {
+              "$ref": "#/components/schemas/AdPlacement"
+            },
+            "title": "Placements",
+            "type": "array"
+          },
+          "policy_version": {
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "rewarded_enabled": {
+            "default": false,
+            "title": "Rewarded Enabled",
+            "type": "boolean"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tier",
+          "enabled",
+          "policy_version"
+        ],
+        "title": "AdPolicy",
+        "type": "object"
+      },
       "AuthorizeDecision": {
         "additionalProperties": false,
         "description": "Internal authorization result with the current persisted state.",
@@ -323,6 +369,133 @@
           "items"
         ],
         "title": "NotificationListResponse",
+        "type": "object"
+      },
+      "OidcExchangeRequest": {
+        "additionalProperties": false,
+        "description": "Return the authorization code and PKCE verifier to the backend.",
+        "properties": {
+          "code": {
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "code_verifier": {
+            "maxLength": 128,
+            "minLength": 43,
+            "pattern": "^[A-Za-z0-9._~-]+$",
+            "title": "Code Verifier",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "transaction_id": {
+            "format": "uuid",
+            "title": "Transaction Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "transaction_id",
+          "code",
+          "state",
+          "code_verifier"
+        ],
+        "title": "OidcExchangeRequest",
+        "type": "object"
+      },
+      "OidcLinkRequest": {
+        "additionalProperties": false,
+        "description": "Link the provider identity to the currently authenticated account.",
+        "properties": {
+          "link_token": {
+            "maxLength": 4096,
+            "minLength": 20,
+            "title": "Link Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "link_token"
+        ],
+        "title": "OidcLinkRequest",
+        "type": "object"
+      },
+      "OidcStartRequest": {
+        "additionalProperties": false,
+        "description": "Start a login transaction for a configured provider.",
+        "properties": {
+          "code_challenge": {
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "title": "Code Challenge",
+            "type": "string"
+          },
+          "code_challenge_method": {
+            "const": "S256",
+            "default": "S256",
+            "title": "Code Challenge Method",
+            "type": "string"
+          },
+          "device_id": {
+            "format": "uuid",
+            "title": "Device Id",
+            "type": "string"
+          },
+          "provider": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "redirect_uri": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Redirect Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "redirect_uri",
+          "device_id",
+          "code_challenge"
+        ],
+        "title": "OidcStartRequest",
+        "type": "object"
+      },
+      "OidcTransactionView": {
+        "additionalProperties": false,
+        "description": "Transaction id, URL, state and expiry; no token is returned.",
+        "properties": {
+          "authorization_url": {
+            "title": "Authorization Url",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          },
+          "transaction_id": {
+            "format": "uuid",
+            "title": "Transaction Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "transaction_id",
+          "authorization_url",
+          "state",
+          "expires_at"
+        ],
+        "title": "OidcTransactionView",
         "type": "object"
       },
       "OperationControl": {
@@ -638,6 +811,214 @@
         "title": "PushTokenRequest",
         "type": "object"
       },
+      "QuotaAmount": {
+        "additionalProperties": false,
+        "description": "Used, reserved, limit and remaining for one metric.",
+        "properties": {
+          "limit": {
+            "minimum": 0.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "remaining": {
+            "minimum": 0.0,
+            "title": "Remaining",
+            "type": "integer"
+          },
+          "reserved": {
+            "minimum": 0.0,
+            "title": "Reserved",
+            "type": "integer"
+          },
+          "used": {
+            "minimum": 0.0,
+            "title": "Used",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "used",
+          "reserved",
+          "limit",
+          "remaining"
+        ],
+        "title": "QuotaAmount",
+        "type": "object"
+      },
+      "QuotaGaugeRequest": {
+        "additionalProperties": false,
+        "description": "Internal idempotent adjustment for a capacity gauge.",
+        "properties": {
+          "amount": {
+            "minimum": 1.0,
+            "title": "Amount",
+            "type": "integer"
+          },
+          "metric": {
+            "$ref": "#/components/schemas/UploadMetric"
+          },
+          "owner_id": {
+            "format": "uuid",
+            "title": "Owner Id",
+            "type": "string"
+          },
+          "reference": {
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner_id",
+          "metric",
+          "amount",
+          "reference"
+        ],
+        "title": "QuotaGaugeRequest",
+        "type": "object"
+      },
+      "QuotaReservationView": {
+        "additionalProperties": false,
+        "description": "Result of a reservation, including the current window.",
+        "properties": {
+          "bucket_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bucket Date"
+          },
+          "limit": {
+            "minimum": 0.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "metric": {
+            "$ref": "#/components/schemas/UploadMetric"
+          },
+          "remaining": {
+            "minimum": 0.0,
+            "title": "Remaining",
+            "type": "integer"
+          },
+          "reservation_id": {
+            "format": "uuid",
+            "title": "Reservation Id",
+            "type": "string"
+          },
+          "reserved": {
+            "minimum": 0.0,
+            "title": "Reserved",
+            "type": "integer"
+          },
+          "reset_at": {
+            "format": "date-time",
+            "title": "Reset At",
+            "type": "string"
+          },
+          "used": {
+            "minimum": 0.0,
+            "title": "Used",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "reservation_id",
+          "metric",
+          "bucket_date",
+          "used",
+          "reserved",
+          "limit",
+          "remaining",
+          "reset_at"
+        ],
+        "title": "QuotaReservationView",
+        "type": "object"
+      },
+      "QuotaReserveRequest": {
+        "additionalProperties": false,
+        "description": "Internal reservation; `reference` deduplicates retries.",
+        "properties": {
+          "amount": {
+            "minimum": 1.0,
+            "title": "Amount",
+            "type": "integer"
+          },
+          "metric": {
+            "$ref": "#/components/schemas/UploadMetric"
+          },
+          "owner_id": {
+            "format": "uuid",
+            "title": "Owner Id",
+            "type": "string"
+          },
+          "reference": {
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Reference",
+            "type": "string"
+          },
+          "ttl_seconds": {
+            "default": 3600,
+            "maximum": 172800.0,
+            "minimum": 60.0,
+            "title": "Ttl Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "owner_id",
+          "metric",
+          "amount",
+          "reference"
+        ],
+        "title": "QuotaReserveRequest",
+        "type": "object"
+      },
+      "QuotaResetRequest": {
+        "additionalProperties": false,
+        "description": "Internal request used by account deletion.",
+        "properties": {
+          "owner_id": {
+            "format": "uuid",
+            "title": "Owner Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner_id"
+        ],
+        "title": "QuotaResetRequest",
+        "type": "object"
+      },
+      "QuotaSettlementRequest": {
+        "additionalProperties": false,
+        "description": "Commit or release one reservation exactly once.",
+        "properties": {
+          "owner_id": {
+            "format": "uuid",
+            "title": "Owner Id",
+            "type": "string"
+          },
+          "reservation_id": {
+            "format": "uuid",
+            "title": "Reservation Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner_id",
+          "reservation_id"
+        ],
+        "title": "QuotaSettlementRequest",
+        "type": "object"
+      },
       "RefreshRequest": {
         "additionalProperties": false,
         "description": "Refresh rotation payload; device id must match the session.",
@@ -899,6 +1280,87 @@
           "source_expires_in"
         ],
         "title": "TokenResponse",
+        "type": "object"
+      },
+      "UploadMetric": {
+        "description": "Metered upload resources.",
+        "enum": [
+          "daily_upload_count",
+          "daily_upload_bytes",
+          "retained_storage_bytes",
+          "concurrent_uploads"
+        ],
+        "title": "UploadMetric",
+        "type": "string"
+      },
+      "UploadQuota": {
+        "additionalProperties": false,
+        "description": "Public view for `/v1/me/upload-quota`.",
+        "properties": {
+          "daily_upload_bytes": {
+            "$ref": "#/components/schemas/QuotaAmount"
+          },
+          "daily_upload_count": {
+            "$ref": "#/components/schemas/QuotaAmount"
+          },
+          "max_audio_seconds": {
+            "minimum": 1.0,
+            "title": "Max Audio Seconds",
+            "type": "integer"
+          },
+          "max_concurrent_uploads": {
+            "minimum": 1.0,
+            "title": "Max Concurrent Uploads",
+            "type": "integer"
+          },
+          "max_context_bytes": {
+            "minimum": 1.0,
+            "title": "Max Context Bytes",
+            "type": "integer"
+          },
+          "max_context_records": {
+            "maximum": 50.0,
+            "minimum": 1.0,
+            "title": "Max Context Records",
+            "type": "integer"
+          },
+          "max_file_bytes": {
+            "minimum": 1.0,
+            "title": "Max File Bytes",
+            "type": "integer"
+          },
+          "reset_at": {
+            "format": "date-time",
+            "title": "Reset At",
+            "type": "string"
+          },
+          "retained_storage_bytes": {
+            "$ref": "#/components/schemas/QuotaAmount"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "window_start": {
+            "format": "date-time",
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tier",
+          "window_start",
+          "reset_at",
+          "daily_upload_count",
+          "daily_upload_bytes",
+          "retained_storage_bytes",
+          "max_file_bytes",
+          "max_context_bytes",
+          "max_context_records",
+          "max_audio_seconds",
+          "max_concurrent_uploads"
+        ],
+        "title": "UploadQuota",
         "type": "object"
       },
       "UsageMetric": {
@@ -1428,6 +1890,477 @@
         ]
       }
     },
+    "/internal/upload-quota/acquire": {
+      "post": {
+        "description": "Increase a capacity gauge for a newly accepted resource.",
+        "operationId": "acquire_internal_upload_quota_acquire_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuotaGaugeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Acquire",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
+    "/internal/upload-quota/close": {
+      "post": {
+        "description": "Release capacity after a resource is destroyed.",
+        "operationId": "close_internal_upload_quota_close_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuotaGaugeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Close",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
+    "/internal/upload-quota/commit": {
+      "post": {
+        "description": "Consume reserved units after the object was verified.",
+        "operationId": "commit_internal_upload_quota_commit_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuotaSettlementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Commit",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
+    "/internal/upload-quota/expire": {
+      "post": {
+        "description": "Expire stale reservations; safe to run from the maintenance worker.",
+        "operationId": "expire_internal_upload_quota_expire_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Expire Internal Upload Quota Expire Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Expire",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
+    "/internal/upload-quota/release": {
+      "post": {
+        "description": "Return reserved units when the upload is abandoned.",
+        "operationId": "release_internal_upload_quota_release_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuotaSettlementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Release",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
+    "/internal/upload-quota/reserve": {
+      "post": {
+        "description": "Reserve metered units before signing an upload.",
+        "operationId": "reserve_internal_upload_quota_reserve_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuotaReserveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuotaReservationView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reserve",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
+    "/internal/upload-quota/reset-owner": {
+      "post": {
+        "description": "Drop all quota state for an account being deleted.",
+        "operationId": "reset_owner_internal_upload_quota_reset_owner_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuotaResetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reset Owner",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
+    "/internal/upload-quota/snapshot": {
+      "get": {
+        "description": "Return the same view the owner sees, for pre-signing validation.",
+        "operationId": "snapshot_internal_upload_quota_snapshot_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "owner_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Owner Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Service",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Service",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Internal-Token",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Internal-Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadQuota"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Snapshot",
+        "tags": [
+          "internal"
+        ]
+      }
+    },
     "/internal/usage/consume": {
       "post": {
         "description": "Consume incremental usage atomically; blocks when quota is exhausted.",
@@ -1628,6 +2561,147 @@
           }
         },
         "summary": "Logout Route",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/oidc/exchange": {
+      "post": {
+        "description": "Exchange the authorization code server-side for a session.",
+        "operationId": "exchange_v1_auth_oidc_exchange_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcExchangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Exchange",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/oidc/link": {
+      "post": {
+        "description": "Link the provider identity to the authenticated account.",
+        "operationId": "link_v1_auth_oidc_link_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Authorization",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Session-Source",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Session-Source",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcLinkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Link",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/oidc/transactions": {
+      "post": {
+        "description": "Create a short-lived transaction and return the browser URL.",
+        "operationId": "start_transaction_v1_auth_oidc_transactions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcTransactionView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start Transaction",
         "tags": [
           "auth"
         ]
@@ -2658,6 +3732,60 @@
         ]
       }
     },
+    "/v1/me/upload-quota": {
+      "get": {
+        "description": "Return plan-derived limits and the counters for the current window.",
+        "operationId": "my_upload_quota_v1_me_upload_quota_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Authorization",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Session-Source",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Session-Source",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadQuota"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "My Upload Quota",
+        "tags": [
+          "quota"
+        ]
+      }
+    },
     "/v1/me/usage": {
       "get": {
         "description": "Expose only the caller's consumption and limits.",
@@ -2709,6 +3837,60 @@
         "summary": "Usage",
         "tags": [
           "account"
+        ]
+      }
+    },
+    "/v1/monetization/ad-policy": {
+      "get": {
+        "description": "Return the placements allowed for the effective plan.",
+        "operationId": "ad_policy_v1_monetization_ad_policy_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Authorization",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Session-Source",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "X-Session-Source",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdPolicy"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ad Policy",
+        "tags": [
+          "monetization"
         ]
       }
     },

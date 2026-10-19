@@ -58,7 +58,13 @@ os.environ["PUSH_PROVIDER"] = "dev"
 os.environ["CONVERSATION_INTERNAL_TOKEN"] = "test-conversation"
 os.environ["SPEECH_INTERNAL_TOKEN"] = "test-speech"
 os.environ["IDENTITY_INTERNAL_SECRETS"] = (
-    '{"conversation":"test-conversation","speech":"test-speech"}'
+    '{"conversation":"test-conversation","speech":"test-speech","exchange":"test-exchange"}'
+)
+os.environ["OIDC_ENABLED"] = "true"
+os.environ["OIDC_ALLOWED_REDIRECT_URIS"] = '["diary://oidc"]'
+os.environ["OIDC_PROVIDERS"] = (
+    '{"fake":{"discovery_url":"https://issuer.test/.well-known/openid-configuration",'
+    '"client_id":"app","client_secret":"secret"}}'
 )
 os.environ["MCP_SERVICE_TOKEN"] = "test-mcp"
 os.environ["IDENTITY_INTERNAL_URL"] = "http://identity"

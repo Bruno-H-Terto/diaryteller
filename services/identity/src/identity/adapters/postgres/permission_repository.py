@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from identity.domain.plans import upload_limits_for
 from identity.domain.subscription import Plan
 
 from .tables_access import (
@@ -63,11 +64,13 @@ class PostgresPlanRepository:
                 quotas[UsageMetric(key)] = int(value)
             except ValueError:
                 continue
+        limits = {str(key): int(value) for key, value in (row.upload_limits or {}).items()}
         return Plan(
             code=row.code,
             name=row.name,
             permissions=await self._permissions(row.code),
             quotas=quotas,
+            upload_limits=limits or upload_limits_for(row.code),
             is_default=row.is_default,
         )
 
@@ -111,6 +114,7 @@ class PostgresPlanRepository:
                     code=plan.code,
                     name=plan.name,
                     quotas={metric.value: limit for metric, limit in plan.quotas.items()},
+                    upload_limits=dict(plan.upload_limits),
                     is_default=plan.is_default,
                 )
                 .on_conflict_do_update(
@@ -118,6 +122,7 @@ class PostgresPlanRepository:
                     set_={
                         "name": plan.name,
                         "quotas": {metric.value: limit for metric, limit in plan.quotas.items()},
+                        "upload_limits": dict(plan.upload_limits),
                         "is_default": plan.is_default,
                     },
                 )

@@ -66,6 +66,21 @@ class PostgresAccountRepository:
         self, email: str, password_hash: str, locale: str, timezone: str, now: datetime
     ) -> User:
         """Insert profile and user with an explicit default role."""
+        return await self._insert(email, password_hash, None, locale, timezone, now)
+
+    async def create_federated(self, email: str, locale: str, timezone: str, now: datetime) -> User:
+        """Create a passwordless account whose email is verified by the provider."""
+        return await self._insert(email, None, now, locale, timezone, now)
+
+    async def _insert(
+        self,
+        email: str,
+        password_hash: str | None,
+        email_verified_at: datetime | None,
+        locale: str,
+        timezone: str,
+        now: datetime,
+    ) -> User:
         user_id = uuid.uuid4()
         self._session.add(
             ProfileTable(
@@ -81,6 +96,7 @@ class PostgresAccountRepository:
             email=email,
             password_hash=password_hash,
             status=AccountStatus.ACTIVE.value,
+            email_verified_at=email_verified_at,
             created_at=now,
             updated_at=now,
         )

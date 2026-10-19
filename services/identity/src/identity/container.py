@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+import httpx
 from diary_observability import MongoLogSink
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from identity.adapters.billing.store_client import GooglePlayBillingProvider
+from identity.adapters.oidc import OidcProviderClient
 from identity.adapters.security.access_tokens import AccessTokenIssuer
+from identity.adapters.security.oidc_link_tokens import OidcLinkTokenCodec
 from identity.adapters.security.passwords import PasswordHasher
 from identity.adapters.security.source_tokens import SourceTokenCodec
 from identity.application.ports.billing import BillingProvider
@@ -28,6 +31,9 @@ class Container:
     billing: BillingProvider
     billing_name: str
     sink: MongoLogSink
+    oidc_http: httpx.AsyncClient | None = None
+    oidc_providers: dict[str, OidcProviderClient] = field(default_factory=dict)
+    oidc_link_tokens: OidcLinkTokenCodec | None = None
 
 
 def build_billing(settings: Settings) -> tuple[BillingProvider, str]:
@@ -49,3 +55,24 @@ def build_billing(settings: Settings) -> tuple[BillingProvider, str]:
     from identity.adapters.billing.fake import FakeBillingProvider
 
     return FakeBillingProvider(settings.source_encryption_key), "fake"
+
+
+def build_oidc(
+    settings: Settings,
+) -> tuple[httpx.AsyncClient | None, dict[str, OidcProviderClient], OidcLinkTokenCodec | None]:
+    """Build provider clients only when the flag is enabled."""
+    if not settings.oidc_enabled:
+        return None, {}, None
+    http = httpx.AsyncClient(timeout=settings.oidc_http_timeout_seconds)
+    providers = {
+        name: OidcProviderClient(name, config, http)
+        for name, config in settings.oidc_providers.items()
+    }
+    codec = OidcLinkTokenCodec(
+        settings.oidc_link_encryption_key,
+        issuer=settings.jwt_issuer,
+        audience=f"{settings.jwt_audience}-link",
+        ttl_seconds=settings.oidc_link_token_ttl_seconds,
+        leeway_seconds=settings.jwt_leeway_seconds,
+    )
+    return http, providers, codec

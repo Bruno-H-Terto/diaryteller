@@ -31,7 +31,7 @@ class User:
 
     id: UUID
     email: str
-    password_hash: str
+    password_hash: str | None
     status: AccountStatus
     email_verified_at: datetime | None
     created_at: datetime

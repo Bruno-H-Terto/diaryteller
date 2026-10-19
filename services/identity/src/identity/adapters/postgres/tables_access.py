@@ -75,6 +75,7 @@ class PlanTable(Base):
     code: Mapped[str] = mapped_column(String(40), primary_key=True)
     name: Mapped[str] = mapped_column(String(80))
     quotas: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    upload_limits: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
     is_default: Mapped[bool] = mapped_column(default=False, index=True)
 
 

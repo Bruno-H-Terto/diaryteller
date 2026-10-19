@@ -72,3 +72,14 @@ Auditoria feita em 2026-10-19 contra o código deste repositório e o pacote
   preço ou obrigação jurídica.
 - Flags `CONTEXT_EXCHANGE_ENABLED`, `ASYNC_TRANSCRIPTION_ENABLED`, `ADS_ENABLED`,
   `REWARDED_ADS_ENABLED` desligadas em produção até os gates.
+
+## Progresso da implementação
+
+| Etapa | Entrega | Estado |
+|---|---|---|
+| 0 | Auditoria, baseline OpenAPI e teste de compatibilidade | concluída |
+| 1 | Contratos do delta, erros, flags e validador | concluída |
+| 2 | OIDC genérico + PKCE, vínculo explícito, quotas de upload e política de anúncios | concluída |
+
+Etapas seguintes (exchange, storage, uploads, jobs, contexto, feed, manutenção)
+permanecem conforme o plano aprovado.

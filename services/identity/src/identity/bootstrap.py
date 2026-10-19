@@ -8,7 +8,7 @@ from identity.adapters.postgres.engine import build_engine, build_session_factor
 from identity.adapters.security.access_tokens import AccessTokenIssuer
 from identity.adapters.security.passwords import PasswordHasher
 from identity.adapters.security.source_tokens import SourceTokenCodec
-from identity.container import Container, build_billing
+from identity.container import Container, build_billing, build_oidc
 from identity.settings import Settings
 
 
@@ -21,6 +21,7 @@ def build_container(settings: Settings) -> Container:
         echo=settings.db_echo,
     )
     billing, billing_name = build_billing(settings)
+    oidc_http, oidc_providers, oidc_link_tokens = build_oidc(settings)
     return Container(
         settings=settings,
         engine=engine,
@@ -55,4 +56,7 @@ def build_container(settings: Settings) -> Container:
             environment=settings.app_env,
             buffer_size=settings.mongo_log_buffer,
         ),
+        oidc_http=oidc_http,
+        oidc_providers=oidc_providers,
+        oidc_link_tokens=oidc_link_tokens,
     )

@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from identity.adapters.postgres.account_repository import PostgresAccountRepository
 from identity.adapters.postgres.billing_event_repository import PostgresBillingEventRepository
 from identity.adapters.postgres.device_repository import PostgresDeviceRepository
+from identity.adapters.postgres.federation_repository import PostgresFederationRepository
 from identity.adapters.postgres.notification_repository import (
     PostgresNotificationRepository,
     PostgresPushRepository,
@@ -27,6 +28,10 @@ from identity.adapters.postgres.subscription_repository import (
     PostgresSubscriptionRepository,
 )
 from identity.adapters.postgres.throttle_repository import PostgresThrottleRepository
+from identity.adapters.postgres.upload_quota_gauge_repository import (
+    PostgresUploadQuotaGaugeRepository,
+)
+from identity.adapters.postgres.upload_quota_repository import PostgresUploadQuotaRepository
 from identity.adapters.postgres.usage_repository import PostgresUsageRepository
 
 
@@ -50,6 +55,9 @@ class Repositories:
     security: PostgresSecurityRepository
     billing_events: PostgresBillingEventRepository
     throttles: PostgresThrottleRepository
+    federation: PostgresFederationRepository
+    upload_quota: PostgresUploadQuotaRepository
+    upload_gauges: PostgresUploadQuotaGaugeRepository
 
 
 def build_repositories(session: AsyncSession) -> Repositories:
@@ -71,4 +79,7 @@ def build_repositories(session: AsyncSession) -> Repositories:
         security=PostgresSecurityRepository(session),
         billing_events=PostgresBillingEventRepository(session),
         throttles=PostgresThrottleRepository(session),
+        federation=PostgresFederationRepository(session),
+        upload_quota=PostgresUploadQuotaRepository(session),
+        upload_gauges=PostgresUploadQuotaGaugeRepository(session),
     )

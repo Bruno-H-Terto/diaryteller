@@ -20,9 +20,10 @@ from identity.adapters.http.schemas_auth import (
     RefreshRequest,
     RegisterRequest,
     TokenResponse,
+    tokens_response,
 )
 from identity.adapters.security.source_tokens import SourceClaims
-from identity.application.use_cases.common import IssuedSession, utcnow
+from identity.application.use_cases.common import utcnow
 from identity.application.use_cases.email_flows import (
     logout,
 )
@@ -35,18 +36,6 @@ from identity.application.use_cases.register import register_account
 from identity.container import Container
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-
-
-def _tokens(bundle: IssuedSession, container: Container) -> TokenResponse:
-    settings = container.settings
-    return TokenResponse(
-        access_token=bundle.access_token,
-        refresh_token=bundle.refresh_token,
-        source=bundle.source,
-        session_id=bundle.session_id,
-        expires_in=settings.access_token_ttl_seconds,
-        source_expires_in=settings.source_ttl_seconds,
-    )
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -104,7 +93,7 @@ async def login_route(
         device_label=body.device_label,
         platform=body.platform,
     )
-    return _tokens(bundle, container)
+    return tokens_response(bundle, container.settings)
 
 
 @router.post("/refresh", response_model=TokenResponse)
@@ -137,7 +126,7 @@ async def refresh_route(
         raise DomainError(
             ErrorCode.SESSION_REVOKED, 401, "Refresh credential was already used"
         ) from exc
-    return _tokens(bundle, container)
+    return tokens_response(bundle, container.settings)
 
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)

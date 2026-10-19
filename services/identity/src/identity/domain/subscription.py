@@ -41,6 +41,7 @@ class Plan:
     name: str
     permissions: frozenset[str]
     quotas: dict[UsageMetric, int]
+    upload_limits: dict[str, int]
     is_default: bool
 
 

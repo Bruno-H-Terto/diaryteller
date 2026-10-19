@@ -75,6 +75,7 @@ class QuotaReserveRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
+    owner_id: UUID
     metric: UploadMetric
     amount: int = Field(ge=1)
     reference: str = Field(min_length=8, max_length=128)
@@ -101,6 +102,7 @@ class QuotaSettlementRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
+    owner_id: UUID
     reservation_id: UUID
 
 
@@ -115,3 +117,22 @@ class QuotaErrorDetails(BaseModel):
     reserved: int = Field(ge=0)
     requested: int = Field(ge=0)
     reset_at: datetime
+
+
+class QuotaGaugeRequest(BaseModel):
+    """Internal idempotent adjustment for a capacity gauge."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    owner_id: UUID
+    metric: UploadMetric
+    amount: int = Field(ge=1)
+    reference: str = Field(min_length=8, max_length=128)
+
+
+class QuotaResetRequest(BaseModel):
+    """Internal request used by account deletion."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    owner_id: UUID

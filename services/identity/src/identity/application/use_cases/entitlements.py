@@ -23,6 +23,8 @@ from identity.application.ports.subscription import (
 from identity.domain.profile import User
 from identity.domain.session import Session
 
+from .plan_resolution import resolve_plan
+
 
 async def evaluate_entitlement(
     *,
@@ -36,11 +38,9 @@ async def evaluate_entitlement(
 ) -> EntitlementView:
     """Materialize plan, permissions and remaining quota for a user/session."""
     subscription = await subscription_repo.current(user.id)
-    plan = None
-    if subscription is not None and subscription.grants_access(now):
-        plan = await plan_repo.plan(subscription.plan_code)
-    if plan is None:
-        plan = await plan_repo.default_plan()
+    plan = await resolve_plan(
+        user_id=user.id, now=now, plans=plan_repo, subscriptions=subscription_repo
+    )
     role_permissions = await plan_repo.user_permissions(user.id)
     permissions = sorted(set(role_permissions) | set(plan.permissions))
     snapshot = await usage_repo.snapshot(user.id, now)

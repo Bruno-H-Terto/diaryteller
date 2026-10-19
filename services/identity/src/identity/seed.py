@@ -8,6 +8,7 @@ from diary_contracts.authorization import Permission, UsageMetric
 
 from identity.adapters.postgres.engine import build_engine, build_session_factory
 from identity.adapters.postgres.permission_repository import PostgresPlanRepository
+from identity.domain.plans import FREE_UPLOAD_LIMITS, PAID_TEST_UPLOAD_LIMITS
 from identity.domain.subscription import Plan
 from identity.settings import get_settings
 
@@ -32,6 +33,7 @@ PLANS = [
             UsageMetric.SPEECH_SECONDS: 300,
             UsageMetric.MEMORY_CALLS: 0,
         },
+        upload_limits=FREE_UPLOAD_LIMITS,
         is_default=True,
     ),
     Plan(
@@ -43,6 +45,19 @@ PLANS = [
             UsageMetric.SPEECH_SECONDS: 1_800,
             UsageMetric.MEMORY_CALLS: 100,
         },
+        upload_limits=PAID_TEST_UPLOAD_LIMITS,
+        is_default=False,
+    ),
+    Plan(
+        code="paid_test",
+        name="Paid test fixture",
+        permissions=frozenset(permission.value for permission in FREE | MEMORY),
+        quotas={
+            UsageMetric.AI_TOKENS: 200_000,
+            UsageMetric.SPEECH_SECONDS: 1_800,
+            UsageMetric.MEMORY_CALLS: 100,
+        },
+        upload_limits=PAID_TEST_UPLOAD_LIMITS,
         is_default=False,
     ),
     Plan(
@@ -56,9 +71,20 @@ PLANS = [
             UsageMetric.SPEECH_SECONDS: 3_600,
             UsageMetric.MEMORY_CALLS: 500,
         },
+        upload_limits=PAID_TEST_UPLOAD_LIMITS,
         is_default=False,
     ),
 ]
+
+TEST_ONLY_PLANS = {"paid_test"}
+
+
+def plans_for(app_env: str) -> list[Plan]:
+    """Never install engineering-only plans in production."""
+    if app_env == "production":
+        return [plan for plan in PLANS if plan.code not in TEST_ONLY_PLANS]
+    return list(PLANS)
+
 
 ROLE_PERMISSIONS = {
     "user": {Permission.SESSIONS_MANAGE.value},
@@ -78,7 +104,7 @@ async def seed() -> None:
     try:
         async with factory() as session:
             repository = PostgresPlanRepository(session)
-            await repository.upsert_seed(PLANS, ROLE_PERMISSIONS)
+            await repository.upsert_seed(plans_for(settings.app_env), ROLE_PERMISSIONS)
             await session.commit()
     finally:
         await engine.dispose()

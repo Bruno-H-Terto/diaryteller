@@ -8,6 +8,9 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
+from identity.application.use_cases.common import IssuedSession
+from identity.settings import Settings
+
 
 class RegisterRequest(BaseModel):
     """Account registration payload."""
@@ -78,6 +81,18 @@ class TokenResponse(BaseModel):
     token_type: str = "Bearer"
     expires_in: int
     source_expires_in: int
+
+
+def tokens_response(bundle: IssuedSession, settings: Settings) -> TokenResponse:
+    """Build the documented token payload from an issued credential bundle."""
+    return TokenResponse(
+        access_token=bundle.access_token,
+        refresh_token=bundle.refresh_token,
+        source=bundle.source,
+        session_id=bundle.session_id,
+        expires_in=settings.access_token_ttl_seconds,
+        source_expires_in=settings.source_ttl_seconds,
+    )
 
 
 class ProfileResponse(BaseModel):

@@ -41,10 +41,12 @@ async def database() -> AsyncIterator[str]:
     from identity.adapters.postgres import (
         tables_access,
         tables_billing,
+        tables_federation,
         tables_identity,
         tables_operation,
         tables_outbox,
         tables_session,
+        tables_upload_quota,
     )
     from identity.adapters.postgres.engine import Base
     from identity.adapters.postgres.permission_repository import PostgresPlanRepository
@@ -53,10 +55,12 @@ async def database() -> AsyncIterator[str]:
     _registered = (
         tables_access,
         tables_billing,
+        tables_federation,
         tables_identity,
         tables_operation,
         tables_outbox,
         tables_session,
+        tables_upload_quota,
     )
 
     url = __import__("os").environ["DATABASE_URL"]

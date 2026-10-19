@@ -10,8 +10,18 @@ import base64
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class OidcProviderSettings(BaseModel):
+    """One conference/identity provider reachable over OIDC discovery."""
+
+    discovery_url: str = Field(pattern=r"^https?://")
+    client_id: str = Field(min_length=1, max_length=200)
+    client_secret: str = Field(default="", max_length=500)
+    scopes: list[str] = Field(default_factory=lambda: ["openid", "email", "profile"])
+    algorithms: list[str] = Field(default_factory=lambda: ["RS256", "ES256"])
 
 
 class Settings(BaseSettings):
@@ -71,10 +81,12 @@ class Settings(BaseSettings):
     login_window_seconds: int = Field(default=900, ge=60, le=3600)
 
     oidc_enabled: bool = False
-    oidc_providers: dict[str, dict[str, object]] = Field(default_factory=dict)
+    oidc_providers: dict[str, OidcProviderSettings] = Field(default_factory=dict)
     oidc_transaction_ttl_seconds: int = Field(default=300, ge=60, le=600)
     oidc_http_timeout_seconds: float = Field(default=5.0, ge=1.0, le=30.0)
     oidc_allowed_redirect_uris: list[str] = Field(default_factory=list)
+    oidc_link_key: str = ""
+    oidc_link_token_ttl_seconds: int = Field(default=300, ge=60, le=900)
     ads_enabled: bool = False
     rewarded_ads_enabled: bool = False
     ad_policy_version: str = "local-fixture-1"
@@ -93,10 +105,16 @@ class Settings(BaseSettings):
     receipt_retention_hours: int = Field(default=24, ge=1, le=720)
 
     @field_validator(
-        "source_encryption_key", "email_token_key", "push_token_key", "billing_token_key"
+        "source_encryption_key",
+        "email_token_key",
+        "push_token_key",
+        "billing_token_key",
+        "oidc_link_key",
     )
     @classmethod
     def _decode_key(cls, value: str) -> str:
+        if not value:
+            return value
         try:
             decoded = base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
         except Exception as exc:
@@ -120,6 +138,8 @@ class Settings(BaseSettings):
             raise ValueError("rewarded ads are disabled until a provider is chosen")
         if self.oidc_enabled and not self.oidc_providers:
             raise ValueError("oidc_enabled requires at least one provider")
+        if self.oidc_enabled and not self.oidc_allowed_redirect_uris:
+            raise ValueError("oidc_enabled requires oidc_allowed_redirect_uris")
         return self
 
     @model_validator(mode="after")
@@ -134,6 +154,11 @@ class Settings(BaseSettings):
     def is_test(self) -> bool:
         """Whether deterministic adapters are allowed."""
         return self.app_env in {"test", "development"}
+
+    @property
+    def oidc_link_encryption_key(self) -> str:
+        """Key used to encrypt short-lived OIDC link tokens."""
+        return self.oidc_link_key or self.email_token_key
 
     @property
     def keys_path(self) -> Path:

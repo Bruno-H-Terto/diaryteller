@@ -46,7 +46,7 @@ class UserTable(Base):
         UUID(as_uuid=True), ForeignKey("profiles.id", ondelete="CASCADE"), primary_key=True
     )
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    password_hash: Mapped[str | None] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(32), default="active", index=True)
     email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deletion_due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)

@@ -30,6 +30,10 @@ class AccountRepository(Protocol):
         """Insert profile and user atomically."""
         ...
 
+    async def create_federated(self, email: str, locale: str, timezone: str, now: datetime) -> User:
+        """Insert a passwordless, email-verified account atomically."""
+        ...
+
     async def update_profile(
         self,
         user_id: UUID,

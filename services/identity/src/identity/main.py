@@ -20,8 +20,12 @@ from identity.adapters.http import (
     auth_routes,
     billing_routes,
     email_routes,
+    internal_quota_routes,
     internal_routes,
+    monetization_routes,
+    oidc_routes,
     operation_routes,
+    quota_routes,
     session_routes,
 )
 from identity.bootstrap import build_container
@@ -38,6 +42,8 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         await container.sink.close()
+        if container.oidc_http is not None:
+            await container.oidc_http.aclose()
         await container.engine.dispose()
 
 
@@ -55,7 +61,11 @@ def create_app() -> FastAPI:
     app.include_router(session_routes.router, prefix="/v1")
     app.include_router(operation_routes.router, prefix="/v1")
     app.include_router(billing_routes.router, prefix="/v1")
+    app.include_router(quota_routes.router, prefix="/v1")
+    app.include_router(monetization_routes.router, prefix="/v1")
+    app.include_router(oidc_routes.router, prefix="/v1")
     app.include_router(internal_routes.router)
+    app.include_router(internal_quota_routes.router)
 
     @app.get("/health/live")
     async def live() -> dict[str, str]:
