@@ -14,3 +14,4 @@ backups/
 *.dump
 *.enc
 .memray/
+memray-*.bin

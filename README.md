@@ -33,7 +33,9 @@ Run the full check suite with `make check`. Integration tests need the databases
 
 ```bash
 docker compose -f ops/compose.yaml --env-file .env up -d postgres mongo
-poetry run pytest -m integration
+TEST_DATABASE_URL=postgresql+asyncpg://diary:diary@localhost:55432/diary_test \
+TEST_MONGO_URL='mongodb://diary:diary@localhost:57017/?authSource=admin' \
+  poetry run pytest -m integration
 ```
 
 ## Local endpoints
