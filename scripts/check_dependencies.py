@@ -7,7 +7,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PROJECTS = [ROOT, *sorted((ROOT / "services").glob("*/pyproject.toml")), ROOT / "jobs"]
+PROJECTS = [
+    ROOT,
+    ROOT / "api",
+    *sorted((ROOT / "services").glob("*/pyproject.toml")),
+]
 
 
 def main() -> int:

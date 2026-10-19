@@ -19,7 +19,7 @@ logs:
 	$(COMPOSE) logs -f --tail=100
 
 migrate:
-	poetry run alembic -c services/identity/alembic.ini upgrade head
+	poetry run alembic -c api/alembic.ini upgrade head
 
 seed:
 	poetry run python -m identity.seed

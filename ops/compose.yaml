@@ -7,6 +7,7 @@ x-logging: &logging
 
 include:
   - compose.android.yaml
+  - compose.messaging.yaml
 
 services:
   postgres:
@@ -49,7 +50,7 @@ services:
     <<: *logging
 
   identity:
-    build: { context: .., dockerfile: services/identity/Dockerfile }
+    build: { context: .., dockerfile: api/Dockerfile }
     env_file: [../.env]
     environment:
       DATABASE_URL: postgresql+asyncpg://diary_identity:diary_identity@postgres:5432/diary
@@ -61,6 +62,7 @@ services:
       SMTP_PORT: "1025"
       APP_ENV: development
       BILLING_PROVIDER: fake
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
       OIDC_ENABLED: "true"
       OIDC_ALLOWED_REDIRECT_URIS: '["diary://oidc"]'
       OIDC_PROVIDERS: '{"dex":{"discovery_url":"http://dex:5556/dex/.well-known/openid-configuration","client_id":"diary-android","client_secret":"dev-dex-secret"}}'
@@ -136,7 +138,8 @@ services:
     build: { context: .., dockerfile: services/notifications/Dockerfile }
     env_file: [../.env]
     environment:
-      DATABASE_URL: postgresql+asyncpg://diary_notifications:diary_notifications@postgres:5432/diary
+      NOTIFICATIONS_DATABASE_URL: postgresql+asyncpg://diary:diary@postgres:5432/notifications
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
       MONGO_URL: mongodb://notifications_logs:notifications_logs@mongo:27017/diary_logs?authSource=diary_logs
       SMTP_HOST: mailpit
       SMTP_PORT: "1025"
@@ -145,10 +148,11 @@ services:
     depends_on:
       postgres: { condition: service_healthy }
       mongo: { condition: service_healthy }
+      redpanda: { condition: service_healthy }
     <<: *logging
 
   maintenance:
-    build: { context: .., dockerfile: jobs/Dockerfile }
+    build: { context: .., dockerfile: services/maintenance/Dockerfile }
     profiles: ["tools"]
     env_file: [../.env]
     environment:

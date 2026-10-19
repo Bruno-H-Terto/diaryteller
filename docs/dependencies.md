@@ -36,7 +36,7 @@ Verificado em **2026-10-19** contra PyPI e documentação oficial. O `poetry.loc
 pipx install poetry==2.5.1 --python python3.13
 poetry env use python3.13
 poetry install --with dev          # workspace de desenvolvimento
-poetry run alembic -c services/identity/alembic.ini upgrade head
+poetry run alembic -c api/alembic.ini upgrade head
 ```
 
 Cada serviço possui `pyproject.toml` próprio e lock independente para imagem de
@@ -58,5 +58,5 @@ CI; não é a unidade de deploy.
 - Não usar API lembrada de memória sem verificar na versão fixada.
 - Não usar Motor em código novo.
 - Não há fallback automático entre provedores.
-- A tabela de preços de IA é versionada em `services/identity/src/identity/domain/pricing.py`;
+- A tabela de preços de IA é versionada em `api/src/identity/domain/pricing.py`;
   valores são estimativas e não substituem a fatura do provedor.

@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir poetry==2.5.1 \
 
 WORKDIR /app/services/notifications
 EXPOSE 8000
-CMD ["python", "-m", "notifications.worker"]
+CMD ["sh", "-c", "alembic -c alembic.ini upgrade head && python -m notifications.worker"]

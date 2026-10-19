@@ -1,0 +1,58 @@
+x-logging: &logging
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  redpanda:
+    image: redpandadata/redpanda:v24.2.7
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr=PLAINTEXT://redpanda:9092
+    ports: ["9092:9092", "9644:9644"]
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    <<: *logging
+
+  redpanda-init:
+    image: redpandadata/redpanda:v24.2.7
+    depends_on:
+      redpanda: { condition: service_healthy }
+    entrypoint:
+      - sh
+      - -c
+      - >
+        rpk topic create
+        diary.identity.sessions.v1 diary.identity.emails.v1
+        diary.identity.accounts.v1 diary.maintenance.lifecycle.v1
+        --brokers redpanda:9092 || true
+    <<: *logging
+
+  outbox-relay:
+    build: { context: .., dockerfile: api/Dockerfile }
+    env_file: [../.env]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://diary:diary@postgres:5432/diary
+      MONGO_URL: mongodb://diary:diary@mongo:27017/diary_logs?authSource=diary_logs
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      JWT_KEYS_DIR: /app/keys/jwt
+      APP_ENV: development
+      BILLING_PROVIDER: fake
+    command: python -m identity.relay
+    volumes:
+      - ../keys:/app/keys:ro
+    depends_on:
+      postgres: { condition: service_healthy }
+      redpanda: { condition: service_healthy }
+    <<: *logging

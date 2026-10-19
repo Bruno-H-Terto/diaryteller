@@ -8,12 +8,13 @@ packages = [
   { include = "diary_contracts", from = "packages/contracts/src" },
   { include = "diary_observability", from = "packages/observability/src" },
   { include = "diary_security", from = "packages/security/src" },
-  { include = "identity", from = "services/identity/src" },
+  { include = "diary_messaging", from = "packages/messaging/src" },
+  { include = "identity", from = "api/src" },
   { include = "conversation", from = "services/conversation/src" },
   { include = "speech", from = "services/speech/src" },
   { include = "memory_mcp", from = "services/memory_mcp/src" },
   { include = "notifications", from = "services/notifications/src" },
-  { include = "maintenance", from = "jobs/src" },
+  { include = "maintenance", from = "services/maintenance/src" },
   { include = "exchange", from = "services/exchange/src" },
 ]
 
@@ -39,6 +40,7 @@ cryptography = "^50.0.2"
 google-auth = "^2.62.0"
 requests = "^2.32.5"
 boto3 = "^1.40.0"
+aiokafka = "^0.12.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.1.1"
@@ -75,7 +77,7 @@ target-version = ["py312"]
 extend-exclude = "migrations/versions"
 
 [tool.pyright]
-include = ["packages", "services", "jobs", "scripts", "tests"]
+include = ["packages", "services", "api", "scripts", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 exclude = ["**/migrations/versions", "**/.venv"]
@@ -86,7 +88,7 @@ reportUnnecessaryComparison = false
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
-testpaths = ["packages", "services", "jobs", "tests"]
+testpaths = ["packages", "services", "api", "tests"]
 addopts = "-q --strict-markers"
 markers = [
   "integration: requires PostgreSQL and MongoDB containers",

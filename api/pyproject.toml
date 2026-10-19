@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "identity"
+version = "0.1.0"
+description = "Diary API identity"
+authors = ["Diary API Team"]
+readme = "README.md"
+packages = [{ include = "identity", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.15"
+fastapi = "^0.146.0"
+uvicorn = { version = "^0.54.0", extras = ["standard"] }
+pydantic = "^2.14.1"
+pydantic-settings = "^2.16.0"
+pymongo = "^4.19.0"
+httpx = "^0.28.1"
+email-validator = "^2.3.0"
+sqlalchemy = { version = "^2.1.5", extras = ["asyncio"] }
+asyncpg = "^0.32.0"
+alembic = "^1.20.0"
+pyjwt = { version = "^2.15.1", extras = ["crypto"] }
+joserfc = "^1.7.7"
+argon2-cffi = "^25.1.0"
+google-auth = "^2.62.0"
+requests = "^2.32.5"
+cryptography = "^50.0.2"
+diary-contracts = { path = "../packages/contracts", develop = true }
+diary-observability = { path = "../packages/observability", develop = true }
+diary-security = { path = "../packages/security", develop = true }
+diary-messaging = { path = "../packages/messaging", develop = true }
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"

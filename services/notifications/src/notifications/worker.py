@@ -1,4 +1,4 @@
-"""Outbox worker loop with leases, retries and graceful shutdown."""
+"""Kafka consumer that delivers notifications without touching other databases."""
 
 from __future__ import annotations
 
@@ -6,59 +6,42 @@ import asyncio
 import contextlib
 import logging
 import signal
-import uuid
 
+from diary_messaging import EMAIL_EVENTS, SESSION_EVENTS
+from diary_messaging.consumer import KafkaEventConsumer
+from diary_messaging.kafka import KafkaEventPublisher
 from diary_observability import MongoLogSink, configure_logging
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from notifications.adapters.email.client import EmailSender
-from notifications.adapters.postgres.outbox import OutboxRepository
+from notifications.adapters.postgres.engine import build_engine, build_session_factory
+from notifications.adapters.postgres.inbox import PostgresInbox
 from notifications.adapters.push.client import build_push_client
-from notifications.application.dispatch import Dispatcher
+from notifications.application.handlers.email_delivery import EmailDelivery
+from notifications.application.handlers.router import EventRouter
+from notifications.application.handlers.session_alerts import SessionAlerts
 from notifications.settings import Settings, get_settings
 
 _logger = logging.getLogger(__name__)
 
 
-async def dispatch_batch(
-    factory: async_sessionmaker[AsyncSession],
-    settings: Settings,
-    log_sink: MongoLogSink,
-    stop: asyncio.Event,
-) -> int:
-    """Claim and deliver one batch with fresh sessions around network calls."""
-    worker_id = f"notifications-{uuid.uuid4()}"
-    push = build_push_client(settings)
-    email = EmailSender(settings)
-    async with factory() as session:
-        events = await OutboxRepository(session).claim(
-            settings.batch_size, settings.lease_seconds, worker_id
-        )
-    for event in events:
-        if stop.is_set():
-            break
-        async with factory() as session:
-            repo = OutboxRepository(session)
-            dispatcher = Dispatcher(settings, email, push, repo)
-            try:
-                await dispatcher.dispatch(event)
-            except Exception as exc:
-                code = getattr(exc, "code", "delivery_failed")
-                attempts = int(event["attempts"])
-                if str(code).startswith("invalid_"):
-                    attempts = settings.max_attempts
-                await repo.retry(event["id"], attempts, settings.max_attempts, str(code))
-                log_sink.emit(
-                    {"event": "outbox_retry", "attempt": int(event["attempts"]), "error_code": code}
-                )
-            else:
-                await repo.delivered(event["id"], str(event["event_type"]))
-                log_sink.emit({"event": "outbox_delivered", "attempt": int(event["attempts"])})
-    return len(events)
+class SessionInbox:
+    """Inbox adapter that opens one session per check."""
+
+    def __init__(self, factory: async_sessionmaker[AsyncSession]) -> None:
+        self._factory = factory
+
+    async def seen(self, consumer: str, event_id) -> bool:  # type: ignore[no-untyped-def]
+        async with self._factory() as session:
+            return await PostgresInbox(session).seen(consumer, event_id)
+
+    async def mark(self, consumer: str, event_id, topic: str) -> None:  # type: ignore[no-untyped-def]
+        async with self._factory() as session:
+            await PostgresInbox(session).mark(consumer, event_id, topic)
 
 
 async def run(settings: Settings | None = None) -> None:
-    """Run until SIGTERM/SIGINT, sleeping when the queue is idle."""
+    """Consume until SIGTERM/SIGINT."""
     settings = settings or get_settings()
     configure_logging("notifications", settings.service_version)
     sink = MongoLogSink(
@@ -68,13 +51,28 @@ async def run(settings: Settings | None = None) -> None:
         environment=settings.app_env,
         buffer_size=settings.mongo_log_buffer,
     )
-    engine = create_async_engine(
-        settings.database_url,
+    engine = build_engine(
+        settings.notifications_database_url,
         pool_size=settings.db_pool_size,
         max_overflow=settings.db_max_overflow,
-        pool_pre_ping=True,
     )
-    factory = async_sessionmaker(engine, expire_on_commit=False)
+    factory = build_session_factory(engine)
+    publisher = KafkaEventPublisher(settings.kafka_bootstrap_servers, "diary-notifications-dlq")
+    handler = EventRouter(
+        EmailDelivery(settings, EmailSender(settings)),
+        SessionAlerts(settings, build_push_client(settings)),
+    )
+    consumer = KafkaEventConsumer(
+        bootstrap_servers=settings.kafka_bootstrap_servers,
+        group_id=settings.kafka_group_id,
+        client_id=settings.kafka_client_id,
+        topics=(SESSION_EVENTS, EMAIL_EVENTS),
+        handler=handler,
+        inbox=SessionInbox(factory),
+        dlq=publisher,
+        max_attempts=settings.kafka_retry_attempts,
+        retry_base_seconds=settings.kafka_retry_base_seconds,
+    )
     await sink.start()
     stop = asyncio.Event()
     loop = asyncio.get_running_loop()
@@ -82,21 +80,16 @@ async def run(settings: Settings | None = None) -> None:
         with contextlib.suppress(NotImplementedError):
             loop.add_signal_handler(signal_name, stop.set)
     try:
-        while not stop.is_set():
-            try:
-                count = await dispatch_batch(factory, settings, sink, stop)
-            except asyncio.CancelledError:
-                raise
-            except Exception as exc:
-                _logger.error(
-                    "worker_error",
-                    extra={"error_code": type(exc).__name__[:48], "event": "worker_error"},
-                )
-                count = 0
-            if count == 0:
-                with contextlib.suppress(TimeoutError):
-                    await asyncio.wait_for(stop.wait(), timeout=settings.poll_seconds)
+        await consumer.run(stop)
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        _logger.error(
+            "consumer_error", extra={"event": "consumer_error", "error_code": type(exc).__name__}
+        )
+        raise
     finally:
+        await publisher.close()
         await engine.dispose()
         await sink.close()
 

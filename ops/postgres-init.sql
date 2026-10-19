@@ -8,3 +8,7 @@ GRANT CONNECT ON DATABASE diary TO diary_notifications, diary_maintenance;
 -- Dedicated database for exchange-owned tables.
 CREATE DATABASE exchange OWNER diary;
 GRANT CONNECT ON DATABASE exchange TO diary_notifications, diary_maintenance;
+
+-- Dedicated database for the notification inbox.
+CREATE DATABASE notifications OWNER diary;
+GRANT CONNECT ON DATABASE notifications TO diary_notifications;
