@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "conversation"
+version = "0.1.0"
+description = "Diary API conversation"
+authors = ["Diary API Team"]
+readme = "README.md"
+packages = [{ include = "conversation", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.15"
+fastapi = "^0.146.0"
+uvicorn = { version = "^0.54.0", extras = ["standard"] }
+pydantic = "^2.14.1"
+pydantic-settings = "^2.16.0"
+pymongo = "^4.19.0"
+httpx = "^0.28.1"
+mcp = "^2.3.0"
+openai = "^3.35.1"
+diary-contracts = { path = "../../packages/contracts", develop = true }
+diary-observability = { path = "../../packages/observability", develop = true }
+diary-security = { path = "../../packages/security", develop = true }
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
