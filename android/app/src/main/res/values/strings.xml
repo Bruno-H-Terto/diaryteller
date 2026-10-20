@@ -80,9 +80,7 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="connections_history">Tudo</string>
     <string name="connections_manage">Ver conexões em lista</string>
     <string name="connections_map">Mapa</string>
-    <string name="connections_neighbours">%1$d conexões neste período</string>
     <string name="connections_recenter">Voltar ao centro</string>
-    <string name="connections_records">%1$d registros</string>
     <string name="connections_review_count">%1$d sugestões para revisar</string>
     <string name="connections_review_hint">Você confirma quem é quem</string>
     <string name="connections_search">Buscar conexões</string>
@@ -100,7 +98,6 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="date_unknown">Sem data</string>
     <string name="date_year">Ano</string>
     <string name="date_year_field">Ano</string>
-    <string name="diary_day_count">%1$d registros neste dia</string>
     <string name="diary_draft">Rascunho local</string>
     <string name="diary_empty">Nada por aqui ainda.\nComece pelo que importa.</string>
     <string name="diary_filter_all">Todos</string>
@@ -242,6 +239,18 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="versions_restore_title">Restaurar V%1$d?</string>
     <string name="versions_subtitle">Seu original permanece preservado.</string>
     <string name="versions_title">Versões do registro</string>
+    <plurals name="connections_records">
+        <item quantity="one">%1$d registro</item>
+        <item quantity="other">%1$d registros</item>
+    </plurals>
+    <plurals name="diary_day_count">
+        <item quantity="one">%1$d registro neste dia</item>
+        <item quantity="other">%1$d registros neste dia</item>
+    </plurals>
+    <plurals name="connections_neighbours">
+        <item quantity="one">%1$d conexão neste período</item>
+        <item quantity="other">%1$d conexões neste período</item>
+    </plurals>
     <plurals name="chat_context_count">
         <item quantity="one">%1$d registro no contexto</item>
         <item quantity="other">%1$d registros no contexto</item>

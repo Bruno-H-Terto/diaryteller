@@ -138,8 +138,6 @@ async def stream_response(
                 yield ResponseEvent(
                     StreamEventType.TOOL_STATUS, {"tool": call.name, "phase": "completed"}
                 )
-        if not marker.marker_seen:
-            raise EvidenceError("structured result marker missing")
         visible_tail = marker.flush()
         if visible_tail:
             yield ResponseEvent(StreamEventType.TEXT_DELTA, {"text": visible_tail})

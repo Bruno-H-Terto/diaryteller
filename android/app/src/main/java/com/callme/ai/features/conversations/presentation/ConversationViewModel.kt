@@ -100,7 +100,7 @@ class ConversationViewModel(
                 _state.value = _state.value.copy(streaming = false, error = "unexpected")
             }
             if (_state.value.streaming) _state.value = _state.value.copy(streaming = false)
-            applyProposals(answerId, pending)
+            applyProposals(answerId, message, pending)
             speakAnswer(answerId)
             voice?.resume()
         }
@@ -113,10 +113,20 @@ class ConversationViewModel(
         if (answer.isNotBlank()) speaker.speak(answer)
     }
 
-    /** Applies what the assistant proposed and attaches the result to its message. */
-    private suspend fun applyProposals(answerId: String, actions: List<DiaryAction>) {
+    /**
+     * Stores the narration as a diary entry and applies what the assistant proposed.
+     *
+     * The entry is written first so the event and the mentioned people are attached
+     * to the words that produced them; without it the map would show nothing.
+     */
+    private suspend fun applyProposals(
+        answerId: String,
+        narration: String,
+        actions: List<DiaryAction>,
+    ) {
         if (actions.isEmpty()) return
-        val changes = runCatching { mutator.apply(actions, null) }.getOrElse { emptyList() }
+        val recordId = runCatching { records.createRecord(narration.trim()) }.getOrNull()
+        val changes = runCatching { mutator.apply(actions, recordId) }.getOrElse { emptyList() }
         if (changes.isEmpty()) return
         _state.value = _state.value.copy(
             messages = _state.value.messages.map { message ->

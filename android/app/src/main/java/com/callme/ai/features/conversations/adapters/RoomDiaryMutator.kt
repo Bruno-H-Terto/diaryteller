@@ -36,33 +36,42 @@ class RoomDiaryMutator(
     private val today: () -> LocalDate = { LocalDate.now() },
 ) : DiaryMutator {
 
+    private val schema = DiarySchema()
+
     override suspend fun snapshot(): DiarySnapshot = DiarySnapshot(
         entities = snapshotDao.recentEntities(MAX_ENTITIES).map { row ->
-            SnapshotEntity(row.id, entityType(row.type), row.name, snapshotDao.relationLabel(row.id).orEmpty())
+            SnapshotEntity(row.id, schema.entityType(row.type), row.name, snapshotDao.relationLabel(row.id).orEmpty())
         },
         events = snapshotDao.recentEvents(MAX_EVENTS).map { row ->
-            SnapshotEvent(row.id, row.title, row.eventDate, precision(row.datePrecision))
+            SnapshotEvent(row.id, row.title, row.eventDate, schema.precision(row.datePrecision))
         },
         today = today().toString(),
     )
 
     override suspend fun apply(actions: List<DiaryAction>, recordId: String?): List<AppliedChange> {
         val created = mutableMapOf<String, String>()
+        val mentioned = linkedSetOf<String>()
         val changes = mutableListOf<AppliedChange>()
         for (action in actions) {
             when (action) {
                 is DiaryAction.CreateEntity -> {
                     if (action.name.isBlank()) continue
-                    created[action.ref] = createEntity(action)
+                    val id = createEntity(action)
+                    created[action.ref] = id
+                    mentioned += id
                     changes += AppliedChange(AppliedKind.ENTITY, action.name.trim())
                 }
                 is DiaryAction.CreateEvent -> {
                     created[action.ref] = createEvent(action, created, recordId)
+                    action.participants.forEach { reference ->
+                        mentioned += created[reference] ?: reference
+                    }
                     changes += AppliedChange(AppliedKind.EVENT, action.title)
                 }
                 is DiaryAction.LinkEntity -> {
                     val entityId = created[action.entity] ?: action.entity
                     link(action, entityId, created, recordId)
+                    mentioned += entityId
                     changes += AppliedChange(AppliedKind.LINK, dao.entity(entityId)?.name.orEmpty())
                 }
                 is DiaryAction.SetEventDate -> {
@@ -72,19 +81,28 @@ class RoomDiaryMutator(
                 }
             }
         }
+        if (recordId != null) {
+            mentioned.forEach { entityId -> attach(recordId, entityId) }
+        }
         return changes
+    }
+
+    /** The entry the user narrated mentions everyone the reply introduced. */
+    private suspend fun attach(recordId: String, entityId: String) {
+        if (dao.entity(entityId) == null) return
+        dao.upsertLink(RecordEntityLink(recordId, entityId, AI_ORIGIN, CONFIRMED))
     }
 
     private suspend fun createEntity(action: DiaryAction.CreateEntity): String {
         val id = newId()
         val moment = now()
-        val state = state(action.certainty)
+        val state = schema.state(action.certainty)
         dao.insert(
             EntityRow(
                 id = id,
                 type = action.type.name,
                 name = action.name.trim(),
-                avatarModel = model(action.type),
+                avatarModel = schema.model(action.type),
                 avatarBackground = BACKGROUND,
                 skinColor = null,
                 hairColor = null,
@@ -116,7 +134,7 @@ class RoomDiaryMutator(
         recordId: String?,
     ): String {
         val id = newId()
-        val state = state(action.certainty)
+        val state = schema.state(action.certainty)
         dao.upsertEvent(
             EventEntity(
                 id = id,
@@ -135,7 +153,7 @@ class RoomDiaryMutator(
         }
         action.participants.forEach { reference ->
             val entityId = created[reference] ?: reference
-            dao.insertEventEntity(EventEntityLink(id, entityId, role(entityId)))
+            dao.insertEventEntity(EventEntityLink(id, entityId, schema.role(dao, entityId)))
         }
         return id
     }
@@ -146,40 +164,16 @@ class RoomDiaryMutator(
         created: Map<String, String>,
         recordId: String?,
     ) {
-        val review = state(action.certainty).review
+        val review = schema.state(action.certainty).review
         val source = action.sourceId ?: recordId
         if (source != null && dao.recordExists(source) > 0 && dao.entity(entityId) != null) {
             dao.upsertLink(RecordEntityLink(source, entityId, AI_ORIGIN, review))
         }
         action.event?.let { reference ->
             val eventId = created[reference] ?: reference
-            dao.insertEventEntity(EventEntityLink(eventId, entityId, role(entityId)))
+            dao.insertEventEntity(EventEntityLink(eventId, entityId, schema.role(dao, entityId)))
         }
     }
-
-    private suspend fun role(entityId: String): String =
-        if (dao.entity(entityId)?.type == EntityType.PLACE.name) PLACE else PERSON
-
-    private fun entityType(value: String): EntityType =
-        runCatching { EntityType.valueOf(value) }.getOrDefault(EntityType.PERSON)
-
-    private fun precision(value: String): DatePrecision =
-        runCatching { DatePrecision.valueOf(value) }.getOrDefault(DatePrecision.UNKNOWN)
-
-    private fun model(type: EntityType): String = when (type) {
-        EntityType.ANIMAL -> "a1"
-        EntityType.PLACE -> "l1"
-        EntityType.EVENT -> "e1"
-        else -> "p1"
-    }
-
-    /** Review state and origin derived from how certain the model was. */
-    private fun state(certainty: Certainty): AppliedState =
-        if (certainty == Certainty.EXPLICIT) {
-            AppliedState(CONFIRMED, DECLARED)
-        } else {
-            AppliedState(SUGGESTED, SUGGESTED)
-        }
 
     private companion object {
         const val SELF = "self"
@@ -195,5 +189,4 @@ class RoomDiaryMutator(
     }
 }
 
-/** The two strings one certainty maps to in the local schema. */
-private data class AppliedState(val review: String, val origin: String)
+

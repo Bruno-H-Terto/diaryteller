@@ -80,9 +80,7 @@ GENERATED FILE - edit android/i18n/en.yml and run `make i18n`.
     <string name="connections_history">All</string>
     <string name="connections_manage">See connections as a list</string>
     <string name="connections_map">Map</string>
-    <string name="connections_neighbours">%1$d connections in this period</string>
     <string name="connections_recenter">Back to the centre</string>
-    <string name="connections_records">%1$d entries</string>
     <string name="connections_review_count">%1$d suggestions to review</string>
     <string name="connections_review_hint">You confirm who is who</string>
     <string name="connections_search">Search connections</string>
@@ -100,7 +98,6 @@ GENERATED FILE - edit android/i18n/en.yml and run `make i18n`.
     <string name="date_unknown">No date</string>
     <string name="date_year">Year</string>
     <string name="date_year_field">Year</string>
-    <string name="diary_day_count">%1$d entries on this day</string>
     <string name="diary_draft">Local draft</string>
     <string name="diary_empty">Nothing here yet.\nStart with what matters.</string>
     <string name="diary_filter_all">All</string>
@@ -242,6 +239,18 @@ GENERATED FILE - edit android/i18n/en.yml and run `make i18n`.
     <string name="versions_restore_title">Restore V%1$d?</string>
     <string name="versions_subtitle">Your original stays preserved.</string>
     <string name="versions_title">Entry versions</string>
+    <plurals name="connections_records">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
+    <plurals name="diary_day_count">
+        <item quantity="one">%1$d entry on this day</item>
+        <item quantity="other">%1$d entries on this day</item>
+    </plurals>
+    <plurals name="connections_neighbours">
+        <item quantity="one">%1$d connection in this period</item>
+        <item quantity="other">%1$d connections in this period</item>
+    </plurals>
     <plurals name="chat_context_count">
         <item quantity="one">%1$d entry in context</item>
         <item quantity="other">%1$d entries in context</item>

@@ -26,7 +26,9 @@ JAVA_HOME = os.environ.get("JAVA_HOME", "/usr/lib/jvm/java-17-openjdk-amd64")
 COMPOSE = ["docker", "compose", "-f", "ops/compose.yaml", "--env-file", ".env"]
 APP_ID = "com.callme.ai"
 AVD = os.environ.get("DIARY_AVD", "callme_api36")
-REVERSED = ("8001", "8010")
+#: Ports the app and the browser reach from inside the device. 5556 is the OIDC
+#: provider: without it the login screen opens and fails with connection refused.
+REVERSED = ("8001", "8010", "5556")
 FORWARDED = "5557"
 
 
@@ -54,7 +56,7 @@ def wait_postgres(timeout: int = 90) -> None:
     """Wait until the development database accepts connections."""
     deadline = time.time() + timeout
     while time.time() < deadline:
-        probe = subprocess.run(  # noqa: S603 - fixed command
+        probe = subprocess.run(
             ["docker", "exec", "diary-api-postgres-1", "pg_isready", "-U", "diary"],
             capture_output=True,
             text=True,
@@ -77,22 +79,31 @@ def wait_device(timeout: int = 180) -> None:
 
 
 def ensure_emulator() -> None:
-    """Start the configured AVD in the background when no device is attached."""
+    """Start the configured AVD when no device is attached.
+
+    A realistic 1080x2400 AVD needs more than the default guest memory, and a
+    fresh image asks for an adb authorization that the automation cannot accept,
+    so both are passed explicitly.
+    """
     if "device" in adb("devices"):
         return
     emulator = str(Path(ANDROID_HOME) / "emulator" / "emulator")
     if not Path(emulator).exists():
         raise SystemExit(f"emulator not found at {emulator}")
-    subprocess.Popen(  # noqa: S603 - fixed command
+    window = [] if os.environ.get("DIARY_WINDOW") == "1" else ["-no-window"]
+    subprocess.Popen(
         [
             emulator,
             "-avd",
             AVD,
-            "-no-window",
+            *window,
             "-no-audio",
             "-no-boot-anim",
+            "-skip-adb-auth",
+            "-memory",
+            os.environ.get("DIARY_AVD_MEMORY", "3072"),
             "-gpu",
-            "swiftshader_indirect",
+            os.environ.get("DIARY_AVD_GPU", "swiftshader_indirect"),
         ],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -103,11 +114,8 @@ def ensure_emulator() -> None:
 
 
 def build_app() -> None:
-    """Compile the debug APK, reusing gradle's incremental build."""
-    run(
-        ["./gradlew", ":app:assembleDebug"],
-        cwd=ROOT / "android",
-    )
+    """Compile the debug APK with gradle's incremental build."""
+    run(["./gradlew", ":app:assembleDebug"], cwd=ROOT / "android")
 
 
 def install_app() -> None:
@@ -140,7 +148,7 @@ def up(install: bool) -> None:
 def down() -> None:
     """Stop the stack and the emulator."""
     run([*COMPOSE, "down"])
-    subprocess.run(  # noqa: S603 - best effort
+    subprocess.run(
         [str(Path(ANDROID_HOME) / "platform-tools" / "adb"), "emu", "kill"],
         capture_output=True,
         check=False,
@@ -151,8 +159,8 @@ def down() -> None:
 def summary() -> None:
     """Print the URLs and commands a developer needs next."""
     print("\nstack:\n" + compose_state())
-    print(f"\nlogin: demo@example.com / password (dex)")
-    print("app:   emulator attached, ports reversed 8001/8010, bridge forwarded 5557")
+    print("\nlogin: demo@example.com / password (dex)")
+    print("app:   emulator attached, ports reversed 8001/8010/5556, bridge 5557")
     print("panel: make studio   -> http://127.0.0.1:8099")
     print("checks: make check")
 
@@ -164,7 +172,7 @@ def status() -> None:
     for label, path in (("bridge", "/health"), ("studio", "/api/status")):
         port = FORWARDED if label == "bridge" else "8099"
         url = f"http://127.0.0.1:{port}{path}"
-        code = subprocess.run(  # noqa: S603 - fixed command
+        code = subprocess.run(
             ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", url],
             capture_output=True,
             text=True,

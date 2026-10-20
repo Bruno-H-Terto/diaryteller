@@ -42,6 +42,14 @@ class _Tail(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+def _tail(payload: str) -> tuple[_Tail, bool]:
+    """Parse the structured tail; a malformed one keeps the answer readable."""
+    try:
+        return _Tail.model_validate(json.loads(payload)), False
+    except (ValueError, ValidationError):
+        return _Tail(), True
+
+
 def _require_subset(ids: list[str], allowed: set[str]) -> None:
     unknown = set(ids) - allowed
     if unknown:
@@ -105,17 +113,22 @@ def parse_final_result(
     snapshot: DiarySnapshot | None = None,
     timeline_override: list[dict[str, Any]] | None = None,
 ) -> FinalResult:
-    """Split visible answer and structured tail, then validate every reference."""
+    """Split visible answer and structured tail, then validate every reference.
+
+    A reply that forgot the marker is still a valid answer: it simply carries no
+    proposals or actions. Only an empty answer is a failure.
+    """
     index = raw_text.rfind(MARKER)
-    if index < 0:
-        raise EvidenceError("structured result marker missing")
-    answer = raw_text[:index].strip()
+    answer = (raw_text[:index] if index >= 0 else raw_text).strip()
     if not answer:
         raise EvidenceError("answer is empty")
-    try:
-        tail = _Tail.model_validate(json.loads(raw_text[index + len(MARKER) :]))
-    except (ValueError, ValidationError) as exc:
-        raise EvidenceError("invalid structured result") from exc
+    if index < 0:
+        return FinalResult(
+            operation_id=operation_id,
+            answer=answer,
+            warnings=["structured result unavailable"],
+        )
+    tail, tail_error = _tail(raw_text[index + len(MARKER) :])
     _require_subset(tail.source_ids, allowed_ids)
     timeline_values = timeline_override if timeline_override is not None else tail.timeline
     try:
@@ -123,8 +136,15 @@ def parse_final_result(
         timeline = [_timeline(item, allowed_ids) for item in timeline_values[:100]]
     except (ValueError, TypeError) as exc:
         raise EvidenceError("invalid proposal or timeline") from exc
+    kept = kept_actions(tail.actions, snapshot or DiarySnapshot(), allowed_ids)
+    warnings = tail.warnings[:10]
+    if tail_error:
+        warnings.append("structured result unavailable")
+    if kept.ignored:
+        warnings.append(f"{kept.ignored} proposed action(s) ignored: invalid reference")
     return FinalResult(
-        actions=kept_actions(tail.actions, snapshot or DiarySnapshot(), allowed_ids),
+        warnings=warnings,
+        actions=kept.actions,
         operation_id=operation_id,
         answer=answer,
         source_ids=tail.source_ids[:50],
@@ -132,7 +152,6 @@ def parse_final_result(
         suggested_replies=tail.suggested_replies[:5],
         proposals=proposals,
         timeline=timeline,
-        warnings=tail.warnings[:10],
     )
 
 

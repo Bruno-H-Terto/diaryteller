@@ -82,9 +82,7 @@ strings:
   connections_history: Tudo
   connections_manage: Ver conexões em lista
   connections_map: Mapa
-  connections_neighbours: '%1$d conexões neste período'
   connections_recenter: Voltar ao centro
-  connections_records: '%1$d registros'
   connections_review_count: '%1$d sugestões para revisar'
   connections_review_hint: Você confirma quem é quem
   connections_search: Buscar conexões
@@ -102,7 +100,6 @@ strings:
   date_unknown: Sem data
   date_year: Ano
   date_year_field: Ano
-  diary_day_count: '%1$d registros neste dia'
   diary_draft: Rascunho local
   diary_empty: Nada por aqui ainda.\nComece pelo que importa.
   diary_filter_all: Todos
@@ -247,6 +244,15 @@ strings:
   versions_subtitle: Seu original permanece preservado.
   versions_title: Versões do registro
 plurals:
+  connections_records:
+    one: '%1$d registro'
+    other: '%1$d registros'
+  diary_day_count:
+    one: '%1$d registro neste dia'
+    other: '%1$d registros neste dia'
+  connections_neighbours:
+    one: '%1$d conexão neste período'
+    other: '%1$d conexões neste período'
   chat_context_count:
     one: '%1$d registro no contexto'
     other: '%1$d registros no contexto'

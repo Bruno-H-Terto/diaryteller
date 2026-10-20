@@ -13,12 +13,14 @@ from datetime import date
 from enum import StrEnum
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from .diary import DiarySnapshot, EntityKind, Precision
 
 MAX_ACTIONS = 12
 NEW_REF = r"^new:[a-z0-9-]{1,24}$"
+#: Values a model writes when it means "no date"; they are not dates.
+NO_DATE = {"", "unknown", "undated", "none", "null", "sem data", "n/a"}
 
 
 class ActionKind(StrEnum):
@@ -64,6 +66,13 @@ class CreateEvent(BaseModel):
     participants: list[str] = Field(default_factory=list, max_length=10)
     source_ids: list[str] = Field(default_factory=list, max_length=20)
     certainty: ActionCertainty = ActionCertainty.EXPLICIT
+
+    @field_validator("event_date", mode="before")
+    @classmethod
+    def _no_placeholder_date(cls, value: object) -> object:
+        if isinstance(value, str) and value.strip().lower() in NO_DATE:
+            return None
+        return value
 
     @model_validator(mode="after")
     def _date_matches_precision(self) -> CreateEvent:

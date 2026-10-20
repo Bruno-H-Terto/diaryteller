@@ -78,9 +78,7 @@ strings:
   connections_history: All
   connections_manage: See connections as a list
   connections_map: Map
-  connections_neighbours: '%1$d connections in this period'
   connections_recenter: Back to the centre
-  connections_records: '%1$d entries'
   connections_review_count: '%1$d suggestions to review'
   connections_review_hint: You confirm who is who
   connections_search: Search connections
@@ -98,7 +96,6 @@ strings:
   date_unknown: No date
   date_year: Year
   date_year_field: Year
-  diary_day_count: '%1$d entries on this day'
   diary_draft: Local draft
   diary_empty: Nothing here yet.\nStart with what matters.
   diary_filter_all: All
@@ -241,6 +238,15 @@ strings:
   versions_subtitle: Your original stays preserved.
   versions_title: Entry versions
 plurals:
+  connections_records:
+    one: '%1$d entry'
+    other: '%1$d entries'
+  diary_day_count:
+    one: '%1$d entry on this day'
+    other: '%1$d entries on this day'
+  connections_neighbours:
+    one: '%1$d connection in this period'
+    other: '%1$d connections in this period'
   chat_context_count:
     one: '%1$d entry in context'
     other: '%1$d entries in context'

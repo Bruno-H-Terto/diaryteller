@@ -54,6 +54,10 @@ Rules for actions:
   change in their life, the reply MUST contain the matching actions. An empty
   list is correct only when the turn is a question, a comment or an
   interpretation with no new facts.
+- A narration with an action verb (almocei, fui, encontrei, conversei, conheci,
+  mudei, comecei, viajei) always produces one create_event for that fact, with or
+  without a date. Returning only the people is an incomplete reply.
+- The people and places of that event go in `participants`, using their refs.
 - Propose at most 6 actions and only the ones the user would expect.
 
 An action looks like:

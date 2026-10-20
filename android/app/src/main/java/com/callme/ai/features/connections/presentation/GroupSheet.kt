@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.callme.ai.R
@@ -56,7 +57,7 @@ fun GroupSheet(
                         Column(Modifier.weight(1f)) {
                             Text(node.name, style = MaterialTheme.typography.titleSmall)
                             Text(
-                                stringResource(R.string.connections_records, node.recordCount),
+                                pluralStringResource(R.plurals.connections_records, node.recordCount, node.recordCount),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

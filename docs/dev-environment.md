@@ -13,6 +13,45 @@ make test-env-status # o que está no ar
 make test-env-down   # encerra pilha e emulador
 ```
 
+## Emulador realista
+
+O perfil padrão `callme_api36` é 320×640 e serve para ver o app caber em telas
+pequenas. Para validar como num aparelho de verdade use o AVD de 1080×2400:
+
+```bash
+DIARY_AVD=Medium_Phone_API_36 DIARY_WINDOW=1 make test-env
+```
+
+| Variável | Padrão | Para que serve |
+|---|---|---|
+| `DIARY_AVD` | `callme_api36` | nome do AVD |
+| `DIARY_WINDOW` | `0` | `1` abre a janela do emulador |
+| `DIARY_AVD_MEMORY` | `3072` | RAM do convidado; 1080p não sobe com 2 GB |
+| `DIARY_AVD_GPU` | `swiftshader_indirect` | renderização por software |
+
+O script passa `-skip-adb-auth` (uma imagem recém-criada pediria autorização de
+adb, que a automação não consegue aceitar) e aplica `adb reverse` em **8001,
+8010 e 5556**. A porta 5556 é o provedor OIDC: sem ela o navegador abre o login e
+falha com `ERR_CONNECTION_REFUSED`.
+
+Login: `demo@example.com` / `password`. Na primeira vez o Chrome mostra o
+assistente inicial (escolha "Use without an account") e depois a tela de
+consentimento do Dex.
+
+### Tamanho da tela e automação
+
+`adb exec-out screencap` devolve a imagem no tamanho físico, mas ferramentas de
+visualização reduzem a imagem. Para tocar em um elemento use os limites reais:
+
+```bash
+adb shell uiautomator dump /sdcard/ui.xml
+adb shell cat /sdcard/ui.xml | tr '>' '>\n' | grep -oE 'text="[^"]*"[^>]*bounds="\[[0-9,]+\]\[[0-9,]+\]"'
+```
+
+Se o host estiver sem memória o convidado dispara ANR em `systemui` e o app
+"não conclui a inicialização". Dê RAM ao AVD e evite rodar build e emulador ao
+mesmo tempo.
+
 `make test-env` executa, nesta ordem:
 
 1. cria `.env` a partir de `.env.example` quando necessário e gera chaves locais;
@@ -22,7 +61,8 @@ make test-env-down   # encerra pilha e emulador
 5. compila o APK de debug, instala, aplica `adb reverse` em `8001`/`8010` e
    `adb forward` em `5557` e abre o app.
 
-Login do Dex: `demo@example.com` / `password`.
+Login do Dex: `demo@example.com` / `password`. Na primeira vez o Chrome mostra o
+assistente inicial; escolha "Use without an account" e depois conceda o acesso.
 
 ## Painel (studio)
 
