@@ -70,7 +70,7 @@ def build_server(settings: Settings) -> MCPServer:
     @server.tool(title="Stack status")
     def stack_status() -> str:
         """List the compose services and their health."""
-        result = subprocess.run(  # noqa: S603 - fixed command
+        result = subprocess.run(
             [*COMPOSE, "ps", "--format", "{{.Name}} {{.State}} {{.Health}}"],
             cwd=ROOT,
             capture_output=True,
@@ -92,7 +92,7 @@ def build_server(settings: Settings) -> MCPServer:
     @server.tool(title="Run checks")
     def run_checks() -> str:
         """Run the repository check target and return its tail."""
-        result = subprocess.run(  # noqa: S603 - fixed command
+        result = subprocess.run(
             ["make", "check"],
             cwd=ROOT,
             capture_output=True,

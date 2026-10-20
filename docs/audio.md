@@ -71,6 +71,17 @@ curl -X POST localhost:5557/records/audio -d '{"recordId":"<id>","path":"fala.wa
 `ReplayDictation` emite os mesmos eventos parciais e finais do microfone, então o
 laço `ConversationVoice` → backend → ações → chips é exercitado inteiro.
 
+O atalho mais simples prepara o replay e deixa o próximo toque no microfone da
+tela Conversas executar a frase:
+
+```bash
+make simulate
+make simulate TEXT="Ontem almocei com Carlos no centro"
+make simulate AUDIO=/caminho/para/fala.wav
+```
+
+O painel (`make studio`) oferece a mesma operação na aba **Voz**.
+
 ## Custos
 
 O APK de debug cresce ~90 MB (modelo descompactado + `libvosk.so` para quatro

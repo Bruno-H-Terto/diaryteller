@@ -151,6 +151,11 @@ fun ConversationScreen(
                 } else {
                     Column {
                         AssistantBlock(message.text)
+                        ProposalCard(
+                            actions = message.proposals,
+                            onConfirm = { viewModel.confirm(message.id) },
+                            onDiscard = { viewModel.discard(message.id) },
+                        )
                         ChangeChips(message.changes)
                     }
                 }

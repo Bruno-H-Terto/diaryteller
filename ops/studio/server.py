@@ -12,13 +12,13 @@ import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 
-NO_CACHE = {"Cache-Control": "no-store"}
-
 from .backend import rows as backend_rows
 from .backend import tables as backend_tables
 from .catalogues import summary
 from .config import CATALOGUES, STATIC, Settings
 from .device import BridgeUnavailable, DeviceBridge
+
+NO_CACHE = {"Cache-Control": "no-store"}
 
 settings = Settings.load()
 bridge = DeviceBridge(settings.bridge_url)
@@ -120,7 +120,7 @@ async def tables() -> dict:
     """List backend tables so the panel can browse the stack state."""
     try:
         return {"tables": await backend_tables(settings.database_url)}
-    except Exception as error:  # noqa: BLE001 - the panel shows the stack as offline
+    except Exception as error:
         return {"tables": [], "error": str(error)}
 
 
@@ -138,3 +138,17 @@ async def table_rows(table: str) -> dict:
 async def i18n() -> dict:
     """Show every language file and the keys it still misses."""
     return summary(Path(CATALOGUES))
+
+
+@app.post("/api/voice/simulate")
+async def simulate_voice(payload: dict) -> dict:
+    """Prepare one spoken test turn; pressing the app microphone replays it."""
+    text = str(payload.get("text", "")).strip()
+    if not text:
+        raise HTTPException(status_code=422, detail="text is required")
+    try:
+        generated = await bridge.say(text, str(payload.get("language", "pt-BR")))
+        replay = await bridge.replay(generated["file"])
+        return {"text": text, "file": generated["file"], "ready": replay.get("ok", False)}
+    except (BridgeUnavailable, KeyError) as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error

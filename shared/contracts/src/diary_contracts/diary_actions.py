@@ -21,6 +21,8 @@ MAX_ACTIONS = 12
 NEW_REF = r"^new:[a-z0-9-]{1,24}$"
 #: Values a model writes when it means "no date"; they are not dates.
 NO_DATE = {"", "unknown", "undated", "none", "null", "sem data", "n/a"}
+#: Placeholder for the entry the user is narrating; the phone resolves it.
+CURRENT_RECORD = "current_record"
 
 
 class ActionKind(StrEnum):
@@ -129,14 +131,17 @@ def rejects(
     if isinstance(action, CreateEntity):
         return False
     if isinstance(action, CreateEvent):
-        return bool(
-            (set(action.participants) - entities) or (set(action.source_ids) - allowed_source_ids)
-        )
+        sources = {source for source in action.source_ids if source != CURRENT_RECORD}
+        return bool((set(action.participants) - entities) or (sources - allowed_source_ids))
     if isinstance(action, LinkEntity):
         return bool(
             (set([action.entity]) - entities)
             or (set([action.event]) - events if action.event else set())
-            or (set([action.source_id]) - allowed_source_ids if action.source_id else set())
+            or (
+                set([action.source_id]) - allowed_source_ids
+                if action.source_id and action.source_id != CURRENT_RECORD
+                else set()
+            )
         )
     return bool(set([action.event]) - snapshot.event_ids())
 

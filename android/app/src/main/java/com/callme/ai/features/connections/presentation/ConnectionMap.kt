@@ -2,7 +2,6 @@ package com.callme.ai.features.connections.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -62,8 +60,6 @@ import kotlin.math.sin
 @Composable
 fun ConnectionMap(
     nodes: List<ConnectionNode>,
-    records: Int,
-    neighbours: Int,
     selectedId: String?,
     onSelect: (ConnectionNode) -> Unit,
     onOpenGroup: () -> Unit,
@@ -101,13 +97,13 @@ fun ConnectionMap(
             val widthDp = this.maxWidth.value
             val heightDp = this.maxHeight.value
             val centerDp = NodeGeometry.centerDiameter(widthDp, heightDp)
-            val radius = with(density) { NodeGeometry.radius(centerDp, heightDp).dp.toPx() }
             val groupSize = (nodes.size - shownCount(nodes.size)).coerceAtLeast(0)
             val shown = nodes.take(shownCount(nodes.size))
-            val slots = NodeGeometry.ring(shown.size + if (groupSize > 0) 1 else 0, radius)
-            val centerSize = with(density) { centerDp.dp.toPx() }
+            val slotCount = shown.size + if (groupSize > 0) 1 else 0
+            val radiusX = widthPx * 0.44f
+            val radiusY = minOf(heightPx * 0.4f, heightPx / 2f - with(density) { 64.dp.toPx() })
+            val slots = NodeGeometry.constellation(slotCount, radiusX, radiusY)
             val labelRoom = with(density) { 10.dp.toPx() }
-            val upperLabelRoom = with(density) { 20.dp.toPx() }
             val connectionColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.58f)
             val dotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
 
@@ -119,31 +115,10 @@ fun ConnectionMap(
                     translationY = pan.y
                 },
             ) {
-                Canvas(Modifier.fillMaxSize()) {
-                    val step = 18.dp.toPx()
-                    var x = step / 2f
-                    while (x < size.width) {
-                        var y = step / 2f
-                        while (y < size.height) {
-                            drawCircle(dotColor, radius = 0.8.dp.toPx(), center = Offset(x, y))
-                            y += step
-                        }
-                        x += step
-                    }
-                    val centre = Offset(size.width / 2f, size.height / 2f - labelRoom)
-                    slots.forEach { (slotX, slotY) ->
-                        drawLine(
-                            color = connectionColor,
-                            start = centre,
-                            end = Offset(centre.x + slotX, centre.y + slotY),
-                            strokeWidth = 1.6.dp.toPx(),
-                            cap = StrokeCap.Round,
-                        )
-                    }
-                }
-                CenterBubble(records, centerDp.dp, Modifier.align(Alignment.Center).offset { IntOffset(0, -labelRoom.roundToInt()) })
+                MapLines(slots, -labelRoom, connectionColor, dotColor, Modifier.fillMaxSize())
+                CenterBubble(centerDp.dp, Modifier.align(Alignment.Center).offset { IntOffset(0, -labelRoom.roundToInt()) })
                 shown.forEachIndexed { index, node ->
-                    val (x, y) = node.pin?.let { it.x * radius to it.y * radius }
+                    val (x, y) = node.pin?.let { it.x * radiusX to it.y * radiusY }
                         ?: slots.getOrElse(index) { 0f to 0f }
                     val diameter = with(density) {
                         NodeGeometry.diameter(node.recordCount, heightDp).dp.toPx()
@@ -152,17 +127,13 @@ fun ConnectionMap(
                     MapNode(
                         node = node,
                         diameter = diameter,
-                        labelAbove = y < 0f,
                         selected = node.id == selectedId,
                         dimmed = selectedId != null && node.id != selectedId,
                         modifier = Modifier
                             .offset {
                                 IntOffset(
-                                    ((widthPx + x * 2 - diameter) / 2).roundToInt(),
-                                    (
-                                        (heightPx + y * 2 - diameter) / 2 - labelRoom -
-                                            if (y < 0f) upperLabelRoom else 0f
-                                    ).roundToInt(),
+                                    (widthPx / 2f + x - with(density) { 46.dp.toPx() }).roundToInt(),
+                                    (heightPx / 2f + y - diameter / 2f - labelRoom).roundToInt(),
                                 )
                             }
                             .graphicsLayer {
@@ -173,13 +144,14 @@ fun ConnectionMap(
                 }
                 if (groupSize > 0) {
                     val (x, y) = slots.lastOrNull() ?: (0f to 0f)
+                    val groupDiameter = with(density) { (NodeGeometry.MAX * NodeGeometry.fit(heightDp)).dp.toPx() }
                     MapGroupBubble(
                         count = groupSize,
                         modifier = Modifier
                             .offset {
                                 IntOffset(
-                                    ((widthPx + x * 2 - centerSize * 0.6f) / 2).roundToInt(),
-                                    ((heightPx + y * 2 - centerSize * 0.6f) / 2).roundToInt(),
+                                    (widthPx / 2f + x - groupDiameter / 2f).roundToInt(),
+                                    (heightPx / 2f + y - groupDiameter / 2f - labelRoom).roundToInt(),
                                 )
                             }
                             .clickable(onClick = onOpenGroup),
@@ -192,9 +164,6 @@ fun ConnectionMap(
                     pan = Offset.Zero
                 }
             }
-        }
-        if (records > 0) {
-            RecordCountLabel(records, Modifier.align(Alignment.BottomStart).padding(10.dp))
         }
     }
 }

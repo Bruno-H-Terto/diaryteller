@@ -10,6 +10,7 @@ from typing import Any
 
 from diary_contracts.diary import DiarySnapshot
 from diary_contracts.diary_actions import (
+    CURRENT_RECORD,
     MAX_ACTIONS,
     CreateEntity,
     CreateEvent,
@@ -47,7 +48,11 @@ def kept_actions(
     for action in parsed:
         if isinstance(action, CreateEvent):
             # A guessed record id is not evidence; drop the reference, not the event.
-            action.source_ids = [source for source in action.source_ids if source in allowed_ids]
+            action.source_ids = [
+                source
+                for source in action.source_ids
+                if source in allowed_ids or source == CURRENT_RECORD
+            ]
         if isinstance(action, CreateEvent) and set(action.participants) - known_entities:
             continue
         if rejects(

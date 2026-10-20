@@ -70,6 +70,9 @@ GENERATED FILE - edit android/i18n/en.yml and run `make i18n`.
     <string name="chat_error">Could not answer (%1$s). Check the connection and try again.</string>
     <string name="chat_placeholder">Write a message…</string>
     <string name="chat_quota">Your conversation quota is used up for now. You can keep writing in the diary and try again later.</string>
+    <string name="chat_proposal_confirm">Confirm changes</string>
+    <string name="chat_proposal_discard">Discard</string>
+    <string name="chat_proposal_title">Review before saving</string>
     <string name="chat_send">Send</string>
     <string name="chat_stop">Stop</string>
     <string name="chat_today">Today</string>
@@ -242,6 +245,10 @@ GENERATED FILE - edit android/i18n/en.yml and run `make i18n`.
     <string name="versions_restore_title">Restore V%1$d?</string>
     <string name="versions_subtitle">Your original stays preserved.</string>
     <string name="versions_title">Entry versions</string>
+    <plurals name="chat_proposal_count">
+        <item quantity="one">The AI suggested %1$d diary change.</item>
+        <item quantity="other">The AI suggested %1$d diary changes.</item>
+    </plurals>
     <plurals name="connections_records">
         <item quantity="one">%1$d entry</item>
         <item quantity="other">%1$d entries</item>

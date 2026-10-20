@@ -40,6 +40,34 @@ object NodeGeometry {
     fun radius(center: Float, height: Float): Float =
         center / 2f + (MAX * fit(height)) / 2f + 16f
 
+    /**
+     * Places a small number of nodes as a calm constellation around the owner.
+     * The presets avoid the rigid visual rhythm of a graph ring and reserve the
+     * lower centre for a fifth node or the grouped-connections affordance.
+     */
+    fun constellation(count: Int, radiusX: Float, radiusY: Float): List<Pair<Float, Float>> {
+        val normalized = when (count) {
+            1 -> listOf(0f to -0.86f)
+            2 -> listOf(-0.72f to -0.66f, 0.72f to -0.66f)
+            3 -> listOf(-0.72f to -0.66f, 0.72f to -0.66f, 0f to 0.82f)
+            4 -> listOf(
+                -0.74f to -0.72f,
+                0.74f to -0.72f,
+                -0.78f to 0.58f,
+                0.78f to 0.58f,
+            )
+            5 -> listOf(
+                -0.74f to -0.78f,
+                0.74f to -0.78f,
+                -0.82f to 0.06f,
+                0.82f to 0.06f,
+                0f to 0.86f,
+            )
+            else -> return ring(count, minOf(radiusX, radiusY))
+        }
+        return normalized.map { (x, y) -> x * radiusX to y * radiusY }
+    }
+
     /** Places [count] nodes evenly on a ring, starting at the top. */
     fun ring(count: Int, radius: Float): List<Pair<Float, Float>> {
         if (count <= 0) return emptyList()

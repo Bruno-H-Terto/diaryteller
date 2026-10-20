@@ -39,7 +39,7 @@ class Settings:
     services: list[dict[str, str]]
 
     @classmethod
-    def load(cls) -> "Settings":
+    def load(cls) -> Settings:
         """Build settings from the environment, falling back to `.env`."""
         dotenv = read_dotenv()
 

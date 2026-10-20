@@ -179,4 +179,21 @@ $("reset-layout").addEventListener("click", async () => {
 });
 
 $("table-select").addEventListener("change", (event) => loadTable(event.target.value));
+
+$("voice-simulate").addEventListener("click", async () => {
+  const result = $("voice-result");
+  result.textContent = "Preparando áudio local…";
+  try {
+    const prepared = await api("/api/voice/simulate", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ text: $("voice-text").value, language: $("voice-language").value }),
+    });
+    result.textContent = prepared.ready
+      ? "Pronto. No app, abra Conversas e toque no microfone."
+      : "O áudio foi criado, mas o replay não ficou disponível.";
+  } catch (error) {
+    result.textContent = `Falha: ${error.message}`;
+  }
+});
 refresh();

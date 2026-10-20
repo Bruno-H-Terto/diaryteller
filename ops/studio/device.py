@@ -42,6 +42,18 @@ class DeviceBridge:
         """Drop every manual position, returning the map to the default ring."""
         return await self._call("POST", "/pins/reset", json={})
 
+    async def say(self, text: str, language: str = "pt-BR") -> dict:
+        """Create a local test recording with the device TTS engine."""
+        return await self._call("POST", "/voice/say", json={"text": text, "language": language})
+
+    async def replay(self, path: str) -> dict:
+        """Make the conversation microphone replay one app-private WAV file."""
+        return await self._call("POST", "/voice/replay", json={"path": path})
+
+    async def transcribe(self, path: str) -> dict:
+        """Transcribe an app-private recording with the bundled local model."""
+        return await self._call("POST", "/voice/transcribe", json={"path": path})
+
     async def _call(self, method: str, path: str, json: dict | None = None) -> dict:
         url = f"{self.base_url}{path}"
         try:

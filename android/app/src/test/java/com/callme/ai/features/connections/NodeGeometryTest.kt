@@ -51,4 +51,15 @@ class NodeGeometryTest {
         assertThat(radius - node / 2f).isAtLeast(centre / 2f - 1f)
         assertThat(radius + node / 2f).isAtMost(width / 2f)
     }
+
+    @Test
+    fun `constellation uses the available vertical space without repeating slots`() {
+        val positions = NodeGeometry.constellation(5, radiusX = 120f, radiusY = 170f)
+
+        assertThat(positions).hasSize(5)
+        assertThat(positions.toSet()).hasSize(5)
+        assertThat(positions.maxOf { kotlin.math.abs(it.first) }).isAtMost(120f)
+        assertThat(positions.maxOf { kotlin.math.abs(it.second) }).isAtMost(170f)
+        assertThat(positions.last().second).isGreaterThan(0f)
+    }
 }

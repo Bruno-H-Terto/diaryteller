@@ -13,7 +13,7 @@ from pathlib import Path
 
 MAX_LINES = 200
 #: Translation catalogues and the fetched speech model are data, not hand-written code.
-DATA_PREFIXES = ("android/i18n", "android/app/src/main/assets")
+DATA_PREFIXES = ("android/i18n", "android/app/src/main/assets", "conversation/prompts")
 ALLOWLIST = {
     "poetry.lock",
     "package-lock.json",

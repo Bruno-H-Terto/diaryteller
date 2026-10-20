@@ -1,7 +1,8 @@
 SHELL := /bin/bash
 COMPOSE := docker compose -f ops/compose.yaml --env-file .env
+SIM_TEXT ?= Ontem almocei com Carlos no centro
 
-.PHONY: install keys up down logs migrate seed test lint format typecheck limits check smoke contract i18n test-env test-env-down test-env-status studio app model
+.PHONY: install keys up down logs migrate seed test lint format typecheck limits check smoke contract i18n test-env test-env-down test-env-status emulator studio app model simulate
 
 install:
 	poetry install --with dev
@@ -52,19 +53,29 @@ format:
 check: lint limits test
 
 test-env:
-	poetry run python ops/tools/testenv.py up
+	poetry run python -m ops.tools.testenv up
 
 test-env-down:
-	poetry run python ops/tools/testenv.py down
+	poetry run python -m ops.tools.testenv down
 
 test-env-status:
-	poetry run python ops/tools/testenv.py status
+	poetry run python -m ops.tools.testenv status
+
+emulator:
+	poetry run python -m ops.tools.testenv emulator
 
 app:
-	poetry run python ops/tools/testenv.py up
+	poetry run python -m ops.tools.testenv up
 
 studio:
 	poetry run python -m ops.studio
+
+simulate:
+	@if [ -n "$(AUDIO)" ]; then \
+		poetry run python ops/tools/simulate_voice.py --audio "$(AUDIO)"; \
+	else \
+		poetry run python ops/tools/simulate_voice.py --text "$(or $(TEXT),$(SIM_TEXT))" $(if $(SIM_LANGUAGE),--language "$(SIM_LANGUAGE)",); \
+	fi
 
 smoke:
 	poetry run python ops/tools/smoke.py

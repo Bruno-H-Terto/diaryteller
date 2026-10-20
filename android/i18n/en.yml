@@ -68,6 +68,9 @@ strings:
   chat_error: Could not answer (%1$s). Check the connection and try again.
   chat_placeholder: Write a message…
   chat_quota: 'Your conversation quota is used up for now. You can keep writing in the diary and try again later.'
+  chat_proposal_confirm: Confirm changes
+  chat_proposal_discard: Discard
+  chat_proposal_title: Review before saving
   chat_send: Send
   chat_stop: Stop
   chat_today: Today
@@ -241,6 +244,9 @@ strings:
   versions_subtitle: Your original stays preserved.
   versions_title: Entry versions
 plurals:
+  chat_proposal_count:
+    one: The AI suggested %1$d diary change.
+    other: The AI suggested %1$d diary changes.
   connections_records:
     one: '%1$d entry'
     other: '%1$d entries'

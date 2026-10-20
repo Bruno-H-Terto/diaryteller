@@ -38,6 +38,7 @@ class ConversationViewModel(
     val state: StateFlow<ConversationUiState> = _state.asStateFlow()
     private var job: Job? = null
     private var pending: List<DiaryAction> = emptyList()
+    private val narrations = mutableMapOf<String, String>()
 
     private val voice: ConversationVoice? = dictation?.let { engine ->
         ConversationVoice(
@@ -100,7 +101,7 @@ class ConversationViewModel(
                 _state.value = _state.value.copy(streaming = false, error = "unexpected")
             }
             if (_state.value.streaming) _state.value = _state.value.copy(streaming = false)
-            applyProposals(answerId, message, pending)
+            attachProposals(answerId, message, pending)
             speakAnswer(answerId)
             // A failed turn must not restart the microphone in a loop.
             if (_state.value.error == null) voice?.resume()
@@ -114,24 +115,42 @@ class ConversationViewModel(
         if (answer.isNotBlank()) speaker.speak(answer)
     }
 
-    /**
-     * Stores the narration as a diary entry and applies what the assistant proposed.
-     *
-     * The entry is written first so the event and the mentioned people are attached
-     * to the words that produced them; without it the map would show nothing.
-     */
-    private suspend fun applyProposals(
+    /** Keeps model output visible but inert until the user confirms it. */
+    private fun attachProposals(
         answerId: String,
         narration: String,
         actions: List<DiaryAction>,
     ) {
         if (actions.isEmpty()) return
-        val recordId = runCatching { records.createRecord(narration.trim()) }.getOrNull()
-        val changes = runCatching { mutator.apply(actions, recordId) }.getOrElse { emptyList() }
-        if (changes.isEmpty()) return
+        narrations[answerId] = narration.trim()
         _state.value = _state.value.copy(
             messages = _state.value.messages.map { message ->
-                if (message.id == answerId) message.copy(changes = message.changes + changes) else message
+                if (message.id == answerId) message.copy(proposals = actions) else message
+            },
+        )
+    }
+
+    /** Applies one reviewed turn locally and leaves an auditable change summary. */
+    fun confirm(answerId: String) = viewModelScope.launch {
+        val message = _state.value.messages.firstOrNull { it.id == answerId } ?: return@launch
+        if (message.proposals.isEmpty()) return@launch
+        val narration = narrations.remove(answerId).orEmpty()
+        val recordId = narration.takeIf { it.isNotBlank() }
+            ?.let { runCatching { records.createRecord(it) }.getOrNull() }
+        val changes = runCatching { mutator.apply(message.proposals, recordId) }.getOrElse { emptyList() }
+        _state.value = _state.value.copy(
+            messages = _state.value.messages.map {
+                if (it.id == answerId) it.copy(proposals = emptyList(), changes = changes) else it
+            },
+        )
+    }
+
+    /** Discards suggestions without writing a record, profile, link or event. */
+    fun discard(answerId: String) {
+        narrations.remove(answerId)
+        _state.value = _state.value.copy(
+            messages = _state.value.messages.map {
+                if (it.id == answerId) it.copy(proposals = emptyList()) else it
             },
         )
     }

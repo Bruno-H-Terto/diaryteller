@@ -11,9 +11,11 @@ sem sair da conversa. O servidor **não** escreve conteúdo de diário: ele prop
    (snapshot local): entidades, acontecimentos e a data de hoje.
 2. O pod `conversation` responde em streaming: texto visível e, no evento
    `result`, `actions` validados.
-3. O app aplica cada ação no Room (`RoomDiaryMutator`) e mostra chips
+3. O app mostra as ações em um cartão de revisão. Nada é escrito antes de
+   **Confirmar alterações**; **Descartar** não cria registro, perfil ou evento.
+4. Após confirmação, `RoomDiaryMutator` aplica as ações e mostra chips
    ("Novo cadastro · Carlos", "Acontecimento · Almoço com Ana").
-4. Em modo voz, a resposta é lida pelo `TextToSpeech` do aparelho e a escuta
+5. Em modo voz, a resposta é lida pelo `TextToSpeech` do aparelho e a escuta
    recomeça — turnos sem toque.
 
 ## Ações
@@ -62,6 +64,9 @@ ausentes ou tipos desconhecidos fazem a ação ser ignorada em vez de gravada.
 ```bash
 make test-env                 # pilha, banco, emulador e app
 poetry run python -m ops.studio   # painel: aba Pessoas e Diário mostram o resultado
+make simulate                 # frase pronta para o primeiro ensaio
+make simulate TEXT="Ontem almocei com Carlos no centro"
+make simulate AUDIO=/caminho/para/fala.wav
 ```
 
 No painel, a aba **Pessoas** lista o cadastro criado pela conversa e a aba

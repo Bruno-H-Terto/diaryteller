@@ -47,7 +47,7 @@ async def rows(
         return []
     connection = await asyncpg.connect(dsn(database_url))
     try:
-        statement = f'SELECT * FROM "{table}" LIMIT {min(limit, MAX_ROWS)}'  # noqa: S608 - identifier allowlisted
+        statement = f'SELECT * FROM "{table}" LIMIT {min(limit, MAX_ROWS)}'
         records = await connection.fetch(statement)
         return [
             {key: _jsonable(key, value) for key, value in dict(record).items()}

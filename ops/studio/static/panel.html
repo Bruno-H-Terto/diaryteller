@@ -20,6 +20,7 @@
     <button data-tab="people">Pessoas</button>
     <button data-tab="diary">Diário</button>
     <button data-tab="events">Eventos</button>
+    <button data-tab="voice">Voz</button>
     <button data-tab="stack">Stack</button>
     <button data-tab="i18n">Idiomas</button>
   </nav>
@@ -72,6 +73,21 @@
         <thead><tr><th>Acontecimento</th><th>Data</th><th>Precisão</th><th>Estado</th></tr></thead>
         <tbody id="events-body"></tbody>
       </table>
+    </section>
+
+    <section id="tab-voice">
+      <div class="editor">
+        <h2>Simular conversa por voz</h2>
+        <p class="hint">A frase é sintetizada no emulador e preparada como entrada do microfone. Depois, abra Conversas no app e toque no microfone.</p>
+        <label>Frase de teste
+          <textarea id="voice-text" rows="4">Ontem almocei com Carlos no centro.</textarea>
+        </label>
+        <label>Idioma
+          <select id="voice-language"><option value="pt-BR">Português</option><option value="en">English</option></select>
+        </label>
+        <button id="voice-simulate" class="primary">Preparar simulação</button>
+        <p class="hint" id="voice-result"></p>
+      </div>
     </section>
 
     <section id="tab-stack">

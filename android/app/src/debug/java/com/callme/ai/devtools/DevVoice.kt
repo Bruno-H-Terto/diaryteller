@@ -46,7 +46,7 @@ object DevVoice {
         val application = context as? CallMeApplication
             ?: return DevResponse(503, """{"error":"app not ready"}""")
         val file = DevSpeech.say(application, text, language)
-            ?: return DevResponse(422, """{"error":"voice unavailable for ${quote(language)}"}""")
+            ?: return DevResponse(422, """{"error":${quote("voice unavailable for $language")}}""")
         return DevResponse(200, """{"ok":true,"file":${quote(file.name)}}""")
     }
 

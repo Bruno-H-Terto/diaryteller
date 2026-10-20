@@ -32,7 +32,11 @@ object DevSpeech {
         }
         val synthesizer = withTimeout(WAIT_MS) { engine.await() }
         val locale = Locale.forLanguageTag(language)
-        if (synthesizer.setLanguage(locale) >= TextToSpeech.LANG_MISSING_DATA) {
+        val languageStatus = synthesizer.setLanguage(locale)
+        if (
+            languageStatus == TextToSpeech.LANG_MISSING_DATA ||
+            languageStatus == TextToSpeech.LANG_NOT_SUPPORTED
+        ) {
             synthesizer.shutdown()
             return@runBlocking null
         }

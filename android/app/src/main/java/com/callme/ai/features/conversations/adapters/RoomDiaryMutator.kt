@@ -87,6 +87,10 @@ class RoomDiaryMutator(
         return changes
     }
 
+    /** `current_record` is a placeholder for the entry being narrated. */
+    private fun resolve(reference: String?, recordId: String?): String? =
+        if (reference == CURRENT_RECORD) recordId else reference
+
     /** The entry the user narrated mentions everyone the reply introduced. */
     private suspend fun attach(recordId: String, entityId: String) {
         if (dao.entity(entityId) == null) return
@@ -148,7 +152,8 @@ class RoomDiaryMutator(
                 updatedAt = now(),
             ),
         )
-        (action.sourceIds + listOfNotNull(recordId)).distinct().forEach { source ->
+        val sources = action.sourceIds.map { resolve(it, recordId) } + listOfNotNull(recordId)
+        sources.filterNotNull().distinct().forEach { source ->
             dao.insertEventRecord(EventRecordLink(id, source))
         }
         action.participants.forEach { reference ->
@@ -165,7 +170,7 @@ class RoomDiaryMutator(
         recordId: String?,
     ) {
         val review = schema.state(action.certainty).review
-        val source = action.sourceId ?: recordId
+        val source = resolve(action.sourceId, recordId) ?: recordId
         if (source != null && dao.recordExists(source) > 0 && dao.entity(entityId) != null) {
             dao.upsertLink(RecordEntityLink(source, entityId, AI_ORIGIN, review))
         }
@@ -184,6 +189,7 @@ class RoomDiaryMutator(
         const val PERSON = "PERSON"
         const val PLACE = "PLACE"
         const val BACKGROUND = 0xFFEAE5F6
+        const val CURRENT_RECORD = "current_record"
         const val MAX_ENTITIES = 60
         const val MAX_EVENTS = 40
     }

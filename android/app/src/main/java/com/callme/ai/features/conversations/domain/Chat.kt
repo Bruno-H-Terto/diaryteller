@@ -4,6 +4,7 @@ data class ChatMessage(
     val id: String,
     val fromUser: Boolean,
     val text: String,
+    val proposals: List<DiaryAction> = emptyList(),
     val changes: List<AppliedChange> = emptyList(),
 )
 

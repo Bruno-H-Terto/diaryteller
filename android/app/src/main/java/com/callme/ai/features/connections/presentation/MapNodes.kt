@@ -3,9 +3,10 @@ package com.callme.ai.features.connections.presentation
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.callme.ai.R
@@ -54,7 +56,7 @@ internal fun shownCount(total: Int): Int =
     if (total <= MapVisibility.INDIVIDUAL) total else MapVisibility.INDIVIDUAL_WITH_GROUP
 
 @Composable
-internal fun CenterBubble(records: Int, size: Dp, modifier: Modifier = Modifier) {
+internal fun CenterBubble(size: Dp, modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primary, modifier = Modifier.size(size)) {
             Box(contentAlignment = Alignment.Center) {
@@ -73,24 +75,15 @@ internal fun CenterBubble(records: Int, size: Dp, modifier: Modifier = Modifier)
 internal fun MapNode(
     node: ConnectionNode,
     diameter: Float,
-    labelAbove: Boolean,
     selected: Boolean,
     dimmed: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val size = with(LocalDensity.current) { diameter.toDp() }
     Column(
-        modifier = modifier.widthIn(min = 72.dp).graphicsLayer { alpha = if (dimmed) 0.45f else 1f },
+        modifier = modifier.width(92.dp).graphicsLayer { alpha = if (dimmed) 0.4f else 1f },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (labelAbove) {
-            Text(
-                node.name,
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
-                modifier = Modifier.padding(bottom = 4.dp),
-            )
-        }
         Box(contentAlignment = Alignment.Center) {
             Surface(
                 shape = CircleShape,
@@ -107,15 +100,29 @@ internal fun MapNode(
                         .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
                 )
             }
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shadowElevation = 1.dp,
+                modifier = Modifier.align(Alignment.BottomEnd).offset(x = 4.dp, y = 2.dp).size(24.dp),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(node.recordCount.toString(), style = MaterialTheme.typography.labelSmall)
+                }
+            }
         }
-        if (!labelAbove) {
-            Text(
-                node.name,
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-        }
+        Text(
+            node.name,
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 1,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+        Text(
+            pluralStringResource(R.plurals.connections_records, node.recordCount, node.recordCount),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+        )
     }
 }
 

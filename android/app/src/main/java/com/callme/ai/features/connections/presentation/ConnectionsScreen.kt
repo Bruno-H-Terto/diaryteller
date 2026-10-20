@@ -81,8 +81,6 @@ fun ConnectionsScreen(
             MapSizeHint()
             ConnectionMap(
                 nodes = map?.nodes.orEmpty(),
-                records = map?.summary?.records ?: 0,
-                neighbours = map?.summary?.neighbours ?: 0,
                 selectedId = state.selected?.id,
                 onSelect = viewModel::select,
                 onOpenGroup = viewModel::openGroup,

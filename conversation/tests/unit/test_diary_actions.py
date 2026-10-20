@@ -168,3 +168,27 @@ def test_placeholder_date_means_no_date() -> None:
     assert isinstance(action, CreateEvent)
     assert action.event_date is None
     assert result.warnings == []
+
+
+def test_current_record_placeholder_is_allowed() -> None:
+    result = parse_final_result(
+        raw(
+            {
+                "actions": [
+                    {
+                        "kind": "create_event",
+                        "ref": "new:1",
+                        "title": "Almoço",
+                        "source_ids": ["current_record"],
+                    },
+                    {"kind": "link_entity", "entity": "a1", "source_id": "current_record"},
+                ]
+            }
+        ),
+        operation_id=uuid4(),
+        allowed_ids=set(),
+        timezone="UTC",
+        snapshot=DiarySnapshot.model_validate(SNAPSHOT),
+    )
+    assert len(result.actions) == 2
+    assert result.warnings == []
