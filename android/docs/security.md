@@ -17,8 +17,12 @@
 - Gravações ficam em `files/recordings` cifradas com AES-256-GCM (chave do
   Keystore). A reprodução descriptografa para um cache temporário apagado ao
   final.
+- Capas de registro ficam em `files/covers`, também cifradas; a miniatura é
+  decodificada em memória a partir do fluxo decifrado.
+- Entidades, vínculos, acontecimentos e avatares são tabelas locais do mesmo
+  banco cifrado. Não há grafo remoto, sincronização ou envio de conexões.
 - `allowBackup=false` e regras de extração excluem banco, arquivos e prefs.
-- Anexos (imagens/arquivos) usarão armazenamento privado protegido (etapa 5).
+- Outros anexos (arquivos) ainda usam armazenamento privado protegido (etapa 5).
 - Reconhecimento de fala e TTS são executados pelo sistema no aparelho; não há
   fallback para serviços de nuvem.
 

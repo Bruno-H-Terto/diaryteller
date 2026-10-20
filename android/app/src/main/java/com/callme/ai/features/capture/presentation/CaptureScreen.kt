@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.callme.ai.R
+import com.callme.ai.core.media.FilePlayer
 import com.callme.ai.core.ui.LocalSpeaker
 import com.callme.ai.features.capture.domain.CaptureMode
 
@@ -38,7 +39,7 @@ fun CaptureScreen(
 ) {
     val context = LocalContext.current
     val speaker = remember { LocalSpeaker(context) }
-    val player = remember { AudioPlayer() }
+    val player = remember { FilePlayer() }
     DisposableEffect(Unit) {
         onDispose {
             speaker.release()

@@ -34,6 +34,25 @@ conversation, exchange) e DeepSeek real:
 | Ditado | reconhecedor on-device iniciou; aparelho sem pacote pt-BR → mensagem acionável, sem upload |
 | Conversa com DeepSeek | resposta em streaming no app, citando apenas o registro selecionado |
 
+## Conexões e cadastros (validação manual)
+
+| Fluxo | Resultado |
+|---|---|
+| Diário agrupado | 5 registros do mesmo dia em um cartão, capa e ícone de áudio |
+| Áudio | player na abertura do registro com a transcrição logo abaixo |
+| Data do acontecimento | ano 2019 gravado e exibido como "2019", sem mês/dia inventados |
+| Mapa | centro fixo maior, periféricos em faixas, rótulos fora do anel |
+| Nó | painel com contagem do período, total do diário e acontecimentos |
+| Agrupamento | "+N conexões" lista as conexões restantes |
+| Revisão | sugestões confirmadas/descartadas saem de "Para revisar" |
+| Linha do tempo | mês, dia recolhível, cartão com participantes, fonte e precisão |
+| Precisão | "2019 · ano informado" e "Sem data definida" em seção própria |
+| Cadastros | duas "Marina" distintas; avatar alterado reflete em lista e mapa |
+| Período/filtros | trocar de aba e filtrar por Pessoa mantém período e contagens |
+| Estado | abrir um detalhe e voltar preserva rolagem e dia expandido |
+| Movimento | com escala de animação 0, duas capturas ficam idênticas (sem deriva) |
+| Remoção | "Remover dados de exemplo" apaga somente itens `sample-` |
+
 ## Achados corrigidos nesta validação
 
 1. `RECORD_AUDIO` ausente no manifesto: ditado falhava com erro opaco.
@@ -43,8 +62,19 @@ conversation, exchange) e DeepSeek real:
 5. `401` derrubava o app: agora há refresh único e erro tratado.
 6. Token de origem expirava em 15 min e impedia refresh após ociosidade: TTL de 30 dias.
 
+## Testes automatizados adicionados
+
+- `NodeGeometryTest`: faixas de tamanho, centro sempre maior, anel sem repetição.
+- `EventDateTest`: ano/mês/dia não inventam partes ausentes.
+- `TimelineGroupingTest`: ordem de meses/dias e balde sem data.
+- `ConnectionsCountingTest`: menções repetidas, versões, sugestões, período e
+  homônimos contam como esperado.
+
 ## Ainda não executado
 
 - Teste auditivo real de reprodução (emulador sem microfone/alto-falante útil).
 - Ditado com pacote pt-BR instalado (depende de download no aparelho).
 - Upload de anexos: endpoint pendente no backend.
+- Calendário com miniaturas de capa (tela ainda não existe).
+- Extração automática de entidades a partir do texto: os vínculos são criados
+  manualmente ou pelo conjunto de exemplo.

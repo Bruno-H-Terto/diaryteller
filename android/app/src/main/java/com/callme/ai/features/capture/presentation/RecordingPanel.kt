@@ -27,13 +27,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.callme.ai.R
+import com.callme.ai.core.media.FilePlayer
 import com.callme.ai.core.ui.CircleAction
 
 @Composable
 internal fun RecordingPanel(
     viewModel: CaptureViewModel,
     requestMic: () -> Unit,
-    player: AudioPlayer,
+    player: FilePlayer,
     onClose: () -> Unit,
 ) {
     val recording = viewModel.phase == CapturePhase.RECORDING

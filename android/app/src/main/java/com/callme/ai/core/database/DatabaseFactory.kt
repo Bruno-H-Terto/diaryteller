@@ -20,6 +20,7 @@ class DatabaseFactory(private val context: Context, private val secretFile: Secr
         val factory = SupportOpenHelperFactory(passphrase)
         return Room.databaseBuilder(context, CallMeDatabase::class.java, "callme.db")
             .openHelperFactory(factory)
+            .addMigrations(MIGRATION_1_2)
             .build()
     }
 }

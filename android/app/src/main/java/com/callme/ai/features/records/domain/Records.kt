@@ -1,5 +1,7 @@
 package com.callme.ai.features.records.domain
 
+import com.callme.ai.core.model.DatePrecision
+
 enum class VersionOrigin { USER, AI, RESTORE, IMPORT }
 
 enum class RecordSyncState { LOCAL, PENDING, SYNCING, SYNCED, FAILED, CONFLICT }
@@ -11,6 +13,11 @@ data class Record(
     val updatedAt: Long,
     val syncState: RecordSyncState,
     val preview: String,
+    val diaryDate: String = "",
+    val coverUri: String? = null,
+    val recordingId: String? = null,
+    val eventDate: String? = null,
+    val eventDatePrecision: DatePrecision = DatePrecision.UNKNOWN,
 )
 
 data class RecordVersion(

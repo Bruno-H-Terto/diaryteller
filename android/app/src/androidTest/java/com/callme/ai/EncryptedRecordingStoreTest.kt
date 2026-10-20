@@ -5,7 +5,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.callme.ai.core.database.CallMeDatabase
 import com.callme.ai.core.security.EncryptedFiles
-import com.callme.ai.features.capture.adapters.EncryptedRecordingStore
+import com.callme.ai.core.media.MediaStore
+import com.callme.ai.features.capture.adapters.MediaRecordingStore
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -21,12 +22,13 @@ class EncryptedRecordingStoreTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private lateinit var database: CallMeDatabase
-    private lateinit var store: EncryptedRecordingStore
+    private lateinit var store: MediaRecordingStore
 
     @Before
     fun setUp() {
         database = Room.inMemoryDatabaseBuilder(context, CallMeDatabase::class.java).build()
-        store = EncryptedRecordingStore(context, database.recordsDao(), EncryptedFiles(context))
+        val media = MediaStore(context, database.recordsDao(), EncryptedFiles(context))
+        store = MediaRecordingStore(media)
     }
 
     @After

@@ -7,10 +7,24 @@ edições/restaurações.
 - `application/RecordsRepository.kt`: contrato observável.
 - `adapters/RoomRecordsRepository.kt`: grava rascunho, confirma, adiciona versão,
   restaura e enfileira sincronização.
-- `presentation/DiaryScreen.kt`: linha do tempo do diário com busca e filtro local.
+- `presentation/DiaryScreen.kt` + `DiaryRows.kt`: registros agrupados por dia em
+  um único cartão, com busca local, filtro de rascunhos e miniatura de capa.
 - `presentation/EditorScreen.kt`: editor sem distrações (título + corpo, um toque
   para concluir). O texto é uma única string; a primeira linha é o título.
+- `presentation/EditorMedia.kt` + `AudioPickerSheet.kt`: capa opcional e um áudio
+  anexado, com a transcrição logo abaixo do player.
+- `presentation/EditorEventDate.kt`: data do acontecimento, separada da data de
+  registro e com precisão explícita.
 - `presentation/VersionsScreen.kt`: histórico com restauração confirmada.
+
+**Capas e áudio:** a capa é copiada para `files/covers` cifrada e serve apenas
+como elemento visual — não comprova lugar ou acontecimento. O áudio anexado é uma
+gravação local (`files/recordings`); a transcrição exibida é o próprio texto do
+registro.
+
+**Datas:** `record_metadata.diaryDate` é o dia a que o registro pertence;
+`eventDate`/`eventDatePrecision` guardam a data narrada. Só o que o usuário
+informou é gravado — ano sem mês, mês sem dia ou nenhuma data.
 
 **Invariantes:**
 

@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.callme.ai.core.model.DatePrecision
+import com.callme.ai.core.model.eventDateValue
 import com.callme.ai.features.records.application.RecordsRepository
+import com.callme.ai.features.records.domain.Record
 import com.callme.ai.features.records.domain.RecordVersion
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +23,9 @@ class EditorViewModel(
 
     val versions: StateFlow<List<RecordVersion>> = repository.observeVersions(recordId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val record: StateFlow<Record?> = repository.observeRecord(recordId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     var text by mutableStateOf("")
         private set
@@ -43,6 +49,15 @@ class EditorViewModel(
             repository.addVersion(recordId, text)
         }
         onSaved()
+    }
+
+    /** Stores the narrated date with the precision the user confirmed. */
+    fun setEventDate(year: Int, month: Int?, day: Int?, precision: DatePrecision) = viewModelScope.launch {
+        repository.setEventDate(recordId, eventDateValue(year, month, day, precision), precision)
+    }
+
+    fun clearEventDate() = viewModelScope.launch {
+        repository.setEventDate(recordId, null, DatePrecision.UNKNOWN)
     }
 
     fun restore(versionId: String) = viewModelScope.launch {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.callme.ai.bootstrap.AppContainer
+import com.callme.ai.core.media.LocalMedia
 import com.callme.ai.features.auth.domain.AuthState
 import com.callme.ai.features.auth.presentation.AuthScreen
 import com.callme.ai.features.auth.presentation.AuthViewModel
@@ -39,6 +41,7 @@ fun AppRoot(container: AppContainer, redirect: Uri?, onRedirectHandled: () -> Un
         }
     }
     val state by authVm.state.collectAsStateWithLifecycle()
+    CompositionLocalProvider(LocalMedia provides container.media) {
     when (val current = state) {
         is AuthState.Loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
@@ -48,8 +51,12 @@ fun AppRoot(container: AppContainer, redirect: Uri?, onRedirectHandled: () -> Un
             recordsRepository = container.recordsRepository,
             captureService = container.captureService,
             conversationRepository = container.conversationRepository,
+            connectionsRepository = container.connectionsRepository,
+            entitiesRepository = container.entitiesRepository,
+            sampleDiary = container.sampleDiary,
             email = current.email,
             onSignOut = authVm::signOut,
         )
     }
+}
 }

@@ -3,6 +3,7 @@ package com.callme.ai.bootstrap
 import android.content.Context
 import com.callme.ai.BuildConfig
 import com.callme.ai.core.database.DatabaseFactory
+import com.callme.ai.core.database.SampleDiary
 import com.callme.ai.core.network.ApiClient
 import com.callme.ai.core.network.SessionRefresher
 import com.callme.ai.core.security.EncryptedFiles
@@ -10,12 +11,17 @@ import com.callme.ai.core.security.EncryptedSessionStore
 import com.callme.ai.core.security.KeystoreCipherBox
 import com.callme.ai.core.security.SecretFile
 import com.callme.ai.features.auth.adapters.OidcAuthRepository
-import com.callme.ai.features.capture.adapters.EncryptedRecordingStore
+import com.callme.ai.core.media.MediaStore
 import com.callme.ai.features.capture.adapters.MediaRecorderAudioRecorder
+import com.callme.ai.features.capture.adapters.MediaRecordingStore
 import com.callme.ai.features.capture.adapters.SpeechRecognizerDictation
 import com.callme.ai.features.capture.application.CaptureService
 import com.callme.ai.features.conversations.adapters.HttpConversationRepository
 import com.callme.ai.features.conversations.application.ConversationRepository
+import com.callme.ai.features.connections.adapters.RoomConnectionsRepository
+import com.callme.ai.features.connections.application.ConnectionsRepository
+import com.callme.ai.features.entities.adapters.RoomEntitiesRepository
+import com.callme.ai.features.entities.application.EntitiesRepository
 import com.callme.ai.features.auth.application.AuthRepository
 import com.callme.ai.features.auth.application.DeviceIdStore
 import com.callme.ai.features.records.adapters.RoomRecordsRepository
@@ -45,12 +51,26 @@ class AppContainer(context: Context, provider: String = BuildConfig.OIDC_PROVIDE
         redirectUri = BuildConfig.OIDC_REDIRECT_URI,
     )
 
+    private val files = EncryptedFiles(appContext)
+
     private val database = DatabaseFactory(
         appContext,
         SecretFile(appContext, "db.key", KeystoreCipherBox("callme.database")),
     ).open()
 
     val recordsRepository: RecordsRepository = RoomRecordsRepository(database.recordsDao())
+
+    val media = MediaStore(appContext, database.recordsDao(), files)
+
+    val sampleDiary = SampleDiary(database.recordsDao(), database.entitiesDao(), media)
+
+    val entitiesRepository: EntitiesRepository = RoomEntitiesRepository(database.entitiesDao())
+    val connectionsRepository: ConnectionsRepository =
+        RoomConnectionsRepository(database.connectionsDao(), database.entitiesDao())
+
+    init {
+        runBlocking { entitiesRepository.ensureSelf() }
+    }
 
     val conversationRepository: ConversationRepository = HttpConversationRepository(
         api = api.conversationApi,
@@ -61,7 +81,7 @@ class AppContainer(context: Context, provider: String = BuildConfig.OIDC_PROVIDE
     val captureService: CaptureService = CaptureService(
         dictation = dictation,
         recorder = MediaRecorderAudioRecorder(appContext),
-        recordings = EncryptedRecordingStore(appContext, database.recordsDao(), EncryptedFiles(appContext)),
+        recordings = MediaRecordingStore(media),
     )
 
     val oidcProvider: String = provider

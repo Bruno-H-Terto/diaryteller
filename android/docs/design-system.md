@@ -1,40 +1,48 @@
 # Identidade visual
 
-A identidade segue o arquivo de referência "Call Me — Aplicativo Android · UX e
-Navegação". Cores, tipografia e formas ficam em `core/ui` e são a única fonte
-para as telas.
+A identidade segue o arquivo "Diaryteller · UX e Navegação". Cores, tipografia,
+formas e orçamento de movimento ficam em `core/ui` e são a única fonte para as
+telas.
 
 ## Cores
 
 | Papel | Claro | Escuro |
 | --- | --- | --- |
-| Primária (verde floresta) | `#24594D` | `#9CD3C2` |
-| Superfície tonal | `#E5EDE6` | `#26302B` |
-| Acento (terracota) | `#9C4934` | `#E5A48F` |
-| Fundo (papel) | `#F7F5EF` | `#14120F` |
-| Texto | `#242B29` | `#EFECE4` |
-| Texto secundário | `#5D6863` | `#B6BAAE` |
-| Linha divisória | `#DDE3DB` | `#3A3833` |
+| Primária (índigo) | `#51438F` | `#CBBFF5` |
+| Destaque suave (lavanda) | `#EAE5F6` | `#3A2E73` |
+| Acento (terracota) | `#B86443` | `#E9AE93` |
+| Fundo (papel) | `#F7F4F0` | `#16141C` |
+| Superfície | `#FFFDF9` | `#1F1D28` |
+| Texto | `#2B2938` | `#EAE6F0` |
+| Texto secundário | `#686477` | `#BDB8CB` |
+| Linha divisória | `#E4DFEA` | `#3D3749` |
 
-O terracota marca data, estado de gravação e origem da versão. O verde tonal
-preenche cartões de contexto, chips selecionados e indicador da aba ativa.
+O fundo é uniforme (sem gradientes); cartões usam `surfaceContainerLowest`.
+Terracota marca datas e estados de captura.
 
 ## Tipografia
 
-Poppins (SIL Open Font License 1.1, licença em
-`app/src/main/assets/licenses/poppins-OFL.txt`), embarcada em `res/font`:
+Nunito nos títulos (400/600/700/800 variável) e Nunito Sans na leitura, ambas
+embarcadas em `res/font` com licença em `assets/licenses/`:
 
-- Títulos: `displaySmall` (38/44), `headlineLarge` (32/40),
-  `headlineMedium` (28/36), sempre semibold e com tracking negativo.
-- Corpo: `bodyLarge` (16/26) para leitura, `bodyMedium` (15/24) para listas.
-- Rótulos: `labelSmall` em caixa alta para datas e seções.
+- Títulos: `displaySmall` (36/42), `headlineLarge` (30/38), `headlineMedium`
+  (26/34), semibold/bold e tracking negativo.
+- Corpo: `bodyLarge` (16/26) para leitura, `bodyMedium` (15/24) em listas.
+- Rótulos: `labelSmall` em caixa alta para datas, seções e contagens.
 
-## Formas e componentes
+## Componentes
 
-- Cantos: cartões 16–24 dp, pílulas 24 dp, botões de ação em círculo.
-- `PillButton` para ação principal e tonal; `ChoicePill` para filtros e contexto;
-  `CircleAction` para captura; `SettingRow` para ajustes.
-- Barra inferior com três abas (Diário, Conversas, Ajustes) e indicador em
-  `primaryContainer`; some quando o teclado está aberto.
-- Ícone do app: símbolo do diário em `#1C5F50` com canto terracota, fundo papel;
-  ícone adaptativo, monocromático e splash usam o mesmo desenho.
+- `PillButton` (ação principal/tonal), `ChoicePill` (filtros), `CircleAction`
+  (captura), `SegmentTabs` (Mapa/Linha do tempo), `SettingRow` e `TonalIcon`.
+- Cartões com cantos 18–24 dp; pílulas em `CircleShape`.
+- `EntityAvatar` desenha retratos cartoon em Compose (pessoa, animal, lugar,
+  data) com modelo e cores por entidade.
+- Barra inferior com quatro destinos (Diário, Conexões, Conversas, Ajustes) e
+  indicador lavanda; some quando o teclado está aberto.
+
+## Movimento
+
+`Motion.kt` define `TAP_MS = 120`, `DISSOLVE_MS = 200`, `PANEL_MS = 240` e uma
+curva única. `LocalReduceMotion` lê a escala de animação do sistema: com
+"reduzir movimento" ativo, o mapa não executa a deriva vertical e nenhum quadro é
+produzido fora da tela.

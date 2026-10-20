@@ -4,43 +4,60 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.callme.ai.R
 
-private val Poppins = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_medium, FontWeight.Medium),
-    Font(R.font.poppins_semibold, FontWeight.SemiBold),
-    Font(R.font.poppins_bold, FontWeight.Bold),
+@OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
+private fun rounded(weight: Int) = Font(
+    resId = R.font.nunito,
+    weight = FontWeight(weight),
+    variationSettings = FontVariation.Settings(FontVariation.weight(weight)),
 )
 
-private fun style(
-    size: Int,
-    lineHeight: Int,
-    weight: FontWeight = FontWeight.Normal,
-    tracking: Double = 0.0,
-) = TextStyle(
-    fontFamily = Poppins,
-    fontWeight = weight,
-    fontSize = size.sp,
-    lineHeight = lineHeight.sp,
-    letterSpacing = tracking.sp,
+@OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
+private fun reading(weight: Int) = Font(
+    resId = R.font.nunito_sans,
+    weight = FontWeight(weight),
+    variationSettings = FontVariation.Settings(FontVariation.weight(weight)),
 )
 
-/** Type scale of the redesign: geometric sans, tight headlines, calm body text. */
+/** Headings use rounded Nunito; reading text uses the wider Nunito Sans. */
+internal val Nunito = FontFamily(rounded(400), rounded(600), rounded(700), rounded(800))
+internal val NunitoSans = FontFamily(reading(400), reading(600), reading(700))
+
+private fun heading(size: Int, lineHeight: Int, weight: Int = 700, tracking: Double = -0.4) =
+    TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight(weight),
+        fontSize = size.sp,
+        lineHeight = lineHeight.sp,
+        letterSpacing = tracking.sp,
+    )
+
+private fun body(size: Int, lineHeight: Int, weight: Int = 400, tracking: Double = 0.0) =
+    TextStyle(
+        fontFamily = NunitoSans,
+        fontWeight = FontWeight(weight),
+        fontSize = size.sp,
+        lineHeight = lineHeight.sp,
+        letterSpacing = tracking.sp,
+    )
+
+/** Type scale of the redesign: large friendly headings and calm reading text. */
 internal val CallMeTypography = Typography(
-    displaySmall = style(38, 44, FontWeight.SemiBold, -0.8),
-    headlineLarge = style(32, 40, FontWeight.SemiBold, -0.6),
-    headlineMedium = style(28, 36, FontWeight.SemiBold, -0.4),
-    headlineSmall = style(24, 32, FontWeight.SemiBold, -0.2),
-    titleLarge = style(20, 28, FontWeight.Medium),
-    titleMedium = style(18, 26, FontWeight.Medium),
-    titleSmall = style(15, 22, FontWeight.Medium),
-    bodyLarge = style(16, 26),
-    bodyMedium = style(15, 24),
-    bodySmall = style(13, 20),
-    labelLarge = style(15, 20, FontWeight.Medium),
-    labelMedium = style(12, 16, FontWeight.Medium, 0.4),
-    labelSmall = style(11, 16, FontWeight.Medium, 0.8),
+    displaySmall = heading(36, 42, 800, -0.8),
+    headlineLarge = heading(30, 38, 800, -0.6),
+    headlineMedium = heading(26, 34, 700, -0.4),
+    headlineSmall = heading(22, 30, 700, -0.2),
+    titleLarge = heading(20, 28, 700, 0.0),
+    titleMedium = heading(17, 24, 700, 0.0),
+    titleSmall = heading(15, 22, 700, 0.0),
+    bodyLarge = body(16, 26),
+    bodyMedium = body(15, 24),
+    bodySmall = body(13, 20),
+    labelLarge = body(15, 20, 600),
+    labelMedium = body(12, 16, 600, 0.3),
+    labelSmall = body(11, 16, 700, 0.8),
 )

@@ -35,8 +35,13 @@ import com.callme.ai.R
 import com.callme.ai.core.ui.ChoicePill
 import com.callme.ai.core.ui.Wordmark
 import com.callme.ai.features.capture.domain.CaptureMode
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-/** Diary timeline: groups records by day and offers local search and draft filtering. */
+private val ptBr: Locale = Locale.forLanguageTag("pt-BR")
+
+/** Diary: records grouped by the day they belong to, with local search. */
 @Composable
 fun DiaryScreen(
     viewModel: RecordsViewModel,
@@ -50,6 +55,7 @@ fun DiaryScreen(
     val visible = records
         .filter { if (draftsOnly) it.preview.isBlank() else true }
         .filter { query.isBlank() || it.preview.contains(query, ignoreCase = true) }
+    val days = visible.groupBy { it.diaryDate }.toSortedMap(compareByDescending { it })
 
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -57,32 +63,32 @@ fun DiaryScreen(
             Text(
                 stringResource(R.string.diary_title),
                 style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(horizontal = 24.dp),
+                modifier = Modifier.padding(horizontal = 20.dp),
             )
             Text(
-                todayLabel(),
+                monthLabel(days.keys.firstOrNull()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
             )
             Row(
-                Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                ChoicePill(stringResource(R.string.diary_filter_all), !draftsOnly, onClick = { draftsOnly = false })
+                ChoicePill(stringResource(R.string.filter_all), !draftsOnly, onClick = { draftsOnly = false })
                 ChoicePill(stringResource(R.string.diary_filter_drafts), draftsOnly, onClick = { draftsOnly = true })
             }
-            if (visible.isEmpty()) {
+            if (days.isEmpty()) {
                 Text(
                     stringResource(if (records.isEmpty()) R.string.diary_empty else R.string.diary_no_results),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp),
                 )
             } else {
                 LazyColumn(contentPadding = PaddingValues(bottom = 120.dp)) {
-                    items(visible, key = { it.id }) { record ->
-                        TimelineRow(record, onClick = { onOpen(record.id) })
+                    items(days.keys.toList(), key = { "day-$it" }) { date ->
+                        DiaryDayCard(date, days[date].orEmpty(), onOpen)
                     }
                 }
             }
@@ -91,7 +97,7 @@ fun DiaryScreen(
             NewRecordAction(
                 onCreateText = { viewModel.createDraft(onOpen) },
                 onCapture = onCapture,
-                modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
+                modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp),
             )
         }
     }
@@ -105,7 +111,7 @@ private fun DiaryHeader(
     onToggleSearch: () -> Unit,
 ) {
     Row(
-        Modifier.fillMaxWidth().padding(start = 24.dp, end = 12.dp, top = 16.dp, bottom = 8.dp),
+        Modifier.fillMaxWidth().padding(start = 20.dp, end = 12.dp, top = 20.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (searching) {
@@ -135,4 +141,12 @@ private fun DiaryHeader(
             )
         }
     }
+}
+
+/** Month of the first visible day, so the header never guesses a period. */
+private fun monthLabel(firstDay: String?): String {
+    val date = runCatching { java.time.LocalDate.parse(firstDay.orEmpty()) }.getOrNull()
+    val month = date?.let { YearMonth.from(it) } ?: YearMonth.now()
+    return month.format(DateTimeFormatter.ofPattern("MMMM 'de' yyyy", ptBr))
+        .replaceFirstChar { it.titlecase(ptBr) }
 }

@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -27,114 +27,50 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/** Lowercase brand wordmark used at the top of the main destinations. */
+/** Product wordmark shown at the top of the primary destinations. */
 @Composable
 fun Wordmark(modifier: Modifier = Modifier) {
     Text(
-        text = "call me",
-        style = MaterialTheme.typography.titleLarge.copy(letterSpacing = (-0.6).sp),
+        text = "Diaryteller",
+        style = MaterialTheme.typography.titleLarge.copy(letterSpacing = (-0.2).sp),
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier,
     )
 }
 
-/** Primary or tonal action shaped as a pill, matching the redesign buttons. */
+/** Two or three mutually exclusive segments shown as a single lavender track. */
 @Composable
-fun PillButton(
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    tonal: Boolean = false,
-) {
+fun SegmentTabs(labels: List<String>, selected: Int, onSelect: (Int) -> Unit) {
     val colors = MaterialTheme.colorScheme
-    Surface(
-        onClick = onClick,
-        enabled = enabled,
-        shape = CircleShape,
-        color = when {
-            !enabled -> colors.surfaceContainerHighest
-            tonal -> colors.primaryContainer
-            else -> colors.primary
-        },
-        contentColor = when {
-            !enabled -> colors.onSurfaceVariant
-            tonal -> colors.onPrimaryContainer
-            else -> colors.onPrimary
-        },
-        modifier = modifier.height(48.dp),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(colors.primaryContainer.copy(alpha = 0.55f), CircleShape)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 24.dp)) {
-            Text(label, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
+        labels.forEachIndexed { index, label ->
+            Surface(
+                onClick = { onSelect(index) },
+                shape = CircleShape,
+                color = if (index == selected) colors.primary else Color.Transparent,
+                contentColor = if (index == selected) colors.onPrimary else colors.onPrimaryContainer,
+                modifier = Modifier.weight(1f).height(40.dp),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(label, style = MaterialTheme.typography.labelLarge, maxLines = 1)
+                }
+            }
         }
     }
 }
 
-/** Round icon action with a caption below, used on the capture screen. */
-@Composable
-fun CircleAction(
-    icon: ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    highlighted: Boolean = false,
-) {
-    val colors = MaterialTheme.colorScheme
-    Column(
-        modifier = modifier.clickable(enabled = enabled, onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .size(if (highlighted) 76.dp else 56.dp)
-                .background(
-                    if (highlighted) colors.primary else colors.primaryContainer.copy(alpha = 0.6f),
-                    CircleShape,
-                ),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                icon,
-                contentDescription = label,
-                tint = if (highlighted) colors.onPrimary else colors.primary,
-                modifier = Modifier.size(if (highlighted) 30.dp else 22.dp),
-            )
-        }
-        Text(
-            label,
-            style = MaterialTheme.typography.bodySmall,
-            color = if (enabled) colors.onSurface else colors.onSurfaceVariant.copy(alpha = 0.5f),
-        )
-    }
-}
-
-/** Tonal pill used for local filters and context chips. */
-@Composable
-fun ChoicePill(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val colors = MaterialTheme.colorScheme
-    Surface(
-        onClick = onClick,
-        shape = CircleShape,
-        color = if (selected) colors.primaryContainer else Color.Transparent,
-        contentColor = if (selected) colors.onPrimaryContainer else colors.onSurfaceVariant,
-        modifier = modifier,
-    ) {
-        Text(
-            label,
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp),
-        )
-    }
-}
-
-/** Small uppercase caption that opens a settings section. */
+/** Small uppercase caption that opens a section. */
 @Composable
 fun SectionLabel(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text.uppercase(),
-        style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.2.sp),
+        style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.1.sp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = modifier,
     )
@@ -173,21 +109,15 @@ fun SettingRow(
     }
 }
 
-/** Square tonal badge that holds an icon in lists and cards. */
+/** Rounded lavender badge holding an icon. */
 @Composable
 fun TonalIcon(icon: ImageVector, tint: Color = MaterialTheme.colorScheme.primary) {
     Box(
         modifier = Modifier
             .size(40.dp)
-            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f), MaterialTheme.shapes.small),
+            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(14.dp)),
         contentAlignment = Alignment.Center,
     ) {
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
     }
-}
-
-/** Space between a screen heading and the content below it. */
-@Composable
-fun HeadingGap() {
-    Spacer(Modifier.height(24.dp))
 }

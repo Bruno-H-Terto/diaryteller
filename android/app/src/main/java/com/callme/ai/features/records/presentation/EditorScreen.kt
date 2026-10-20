@@ -1,14 +1,18 @@
 package com.callme.ai.features.records.presentation
 
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.History
@@ -18,6 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -28,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.callme.ai.R
+import com.callme.ai.core.model.DatePrecision
+import com.callme.ai.core.ui.DatePrecisionDialog
 import com.callme.ai.core.ui.PillButton
 import java.time.Instant
 import java.time.ZoneId
@@ -36,7 +45,7 @@ import java.util.Locale
 
 private val ptBr: Locale = Locale.forLanguageTag("pt-BR")
 
-/** Distraction-free editor: headline, body and a single confirm action. */
+/** Distraction-free editor: headline, body, optional media and narrated date. */
 @Composable
 fun EditorScreen(
     viewModel: EditorViewModel,
@@ -44,9 +53,11 @@ fun EditorScreen(
     onVersions: () -> Unit,
 ) {
     val versions by viewModel.versions.collectAsStateWithLifecycle()
+    val record by viewModel.record.collectAsStateWithLifecycle()
     val current = versions.lastOrNull()
     val parts = splitDraft(viewModel.text)
     val confirmed = current?.confirmed == true
+    var settingDate by remember { mutableStateOf(false) }
 
     Column(Modifier.fillMaxSize()) {
         Row(
@@ -71,22 +82,22 @@ fun EditorScreen(
                 tonal = true,
             )
         }
-        Column(Modifier.weight(1f).padding(horizontal = 24.dp)) {
-            Spacer(Modifier.height(12.dp))
-            current?.let {
+        Column(
+            Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
+        ) {
+            Spacer(Modifier.height(8.dp))
+            record?.let {
                 Text(
                     kicker(it.createdAt),
                     style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.1.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(12.dp))
             BasicTextField(
                 value = parts.title,
                 onValueChange = { viewModel.onTextChange(joinDraft(it, parts.body)) },
-                textStyle = MaterialTheme.typography.headlineMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurface,
-                ),
+                textStyle = MaterialTheme.typography.headlineMedium.copy(color = MaterialTheme.colorScheme.onSurface),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
@@ -102,8 +113,9 @@ fun EditorScreen(
                     }
                     field()
                 },
+                modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(12.dp))
             BasicTextField(
                 value = parts.body,
                 onValueChange = { viewModel.onTextChange(joinDraft(parts.title, it)) },
@@ -113,7 +125,7 @@ fun EditorScreen(
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 220.dp),
                 decorationBox = { field ->
                     if (parts.body.isEmpty()) {
                         Text(
@@ -125,12 +137,30 @@ fun EditorScreen(
                     field()
                 },
             )
+            EditorMedia(record, viewModel.text)
+            EditorEventDate(record, onSet = { settingDate = true })
+            Text(
+                stringResource(if (confirmed) R.string.editor_saved else R.string.editor_pending),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 24.dp),
+            )
         }
-        Text(
-            stringResource(if (confirmed) R.string.editor_saved else R.string.editor_pending),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+    }
+    if (settingDate) {
+        val currentDate = record?.eventDate?.let { parseIso(it) }
+        DatePrecisionDialog(
+            initialYear = currentDate?.year ?: Instant.now().atZone(ZoneId.systemDefault()).year,
+            initialPrecision = record?.eventDatePrecision ?: DatePrecision.UNKNOWN,
+            onDismiss = { settingDate = false },
+            onConfirm = { year, month, day, precision ->
+                viewModel.setEventDate(year, month, day, precision)
+                settingDate = false
+            },
+            onClear = {
+                viewModel.clearEventDate()
+                settingDate = false
+            },
         )
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Hub
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -42,20 +43,26 @@ import com.callme.ai.features.conversations.application.ConversationRepository
 import com.callme.ai.features.conversations.domain.SelectableRecord
 import com.callme.ai.features.conversations.presentation.ConversationScreen
 import com.callme.ai.features.conversations.presentation.ConversationViewModel
+import com.callme.ai.features.connections.application.ConnectionsRepository
+import com.callme.ai.features.connections.presentation.ConnectionsScreen
+import com.callme.ai.features.connections.presentation.ConnectionsViewModel
+import com.callme.ai.features.entities.application.EntitiesRepository
+import com.callme.ai.features.entities.domain.EntityType
+import com.callme.ai.features.entities.presentation.AvatarEditorScreen
+import com.callme.ai.features.entities.presentation.AvatarEditorViewModel
 import com.callme.ai.features.records.application.RecordsRepository
 import com.callme.ai.features.records.presentation.DiaryScreen
 import com.callme.ai.features.records.presentation.EditorScreen
 import com.callme.ai.features.records.presentation.EditorViewModel
 import com.callme.ai.features.records.presentation.RecordsViewModel
 import com.callme.ai.features.records.presentation.VersionsScreen
-import com.callme.ai.features.settings.presentation.AccountScreen
-import com.callme.ai.features.settings.presentation.PrivacyScreen
-import com.callme.ai.features.settings.presentation.SettingsScreen
+import com.callme.ai.core.database.SampleDiary
 
 private data class Tab(val route: String, val label: Int, val icon: ImageVector)
 
 private val tabs = listOf(
     Tab(Destinations.DIARY, R.string.tab_diary, Icons.Outlined.MenuBook),
+    Tab(Destinations.CONNECTIONS, R.string.tab_connections, Icons.Outlined.Hub),
     Tab(Destinations.CONVERSATIONS, R.string.tab_conversations, Icons.Outlined.ChatBubbleOutline),
     Tab(Destinations.SETTINGS, R.string.tab_settings, Icons.Outlined.Tune),
 )
@@ -67,6 +74,9 @@ fun MainScaffold(
     recordsRepository: RecordsRepository,
     captureService: CaptureService,
     conversationRepository: ConversationRepository,
+    connectionsRepository: ConnectionsRepository,
+    entitiesRepository: EntitiesRepository,
+    sampleDiary: SampleDiary,
     email: String,
     onSignOut: () -> Unit,
     navController: NavHostController = rememberNavController(),
@@ -128,22 +138,8 @@ fun MainScaffold(
                         .map { SelectableRecord(it.id, it.preview.lineSequence().first()) },
                 )
             }
-            composable(Destinations.SETTINGS) {
-                SettingsScreen(
-                    onPrivacy = { navController.navigate(Destinations.PRIVACY) },
-                    onAccount = { navController.navigate(Destinations.ACCOUNT) },
-                )
-            }
-            composable(Destinations.PRIVACY) {
-                SubScreen(onBack = { navController.popBackStack() }) { PrivacyScreen() }
-            }
-            composable(Destinations.ACCOUNT) {
-                AccountScreen(
-                    email = email,
-                    onBack = { navController.popBackStack() },
-                    onSignOut = onSignOut,
-                )
-            }
+            detailRoutes(navController, connectionsRepository, entitiesRepository)
+            settingsRoutes(navController, sampleDiary, email, onSignOut)
             composable(Destinations.EDITOR) { backStack ->
                 val recordId = backStack.arguments?.getString("recordId").orEmpty()
                 val vm: EditorViewModel = viewModel(

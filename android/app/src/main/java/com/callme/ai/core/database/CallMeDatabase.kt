@@ -9,10 +9,20 @@ import androidx.room.RoomDatabase
         RecordVersionEntity::class,
         SyncQueueEntity::class,
         RecordingEntity::class,
+        RecordMetadataEntity::class,
+        DiaryEntity::class,
+        RecordEntityLink::class,
+        EventEntity::class,
+        EventRecordLink::class,
+        EventEntityLink::class,
+        RelationshipEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class CallMeDatabase : RoomDatabase() {
     abstract fun recordsDao(): RecordsDao
+    abstract fun connectionsDao(): ConnectionsDao
+
+    abstract fun entitiesDao(): EntitiesDao
 }

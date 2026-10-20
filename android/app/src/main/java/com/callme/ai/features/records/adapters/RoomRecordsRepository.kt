@@ -1,6 +1,8 @@
 package com.callme.ai.features.records.adapters
 
 import com.callme.ai.core.database.RecordEntity
+import com.callme.ai.core.database.RecordMetadataEntity
+import com.callme.ai.core.database.RecordWithMetadata
 import com.callme.ai.core.database.RecordVersionEntity
 import com.callme.ai.core.database.RecordsDao
 import com.callme.ai.core.database.SyncQueueEntity
@@ -10,7 +12,9 @@ import com.callme.ai.features.records.domain.RecordSyncState
 import com.callme.ai.features.records.domain.RecordVersion
 import com.callme.ai.features.records.domain.VersionOrigin
 import com.callme.ai.features.records.domain.Versioning
+import com.callme.ai.core.model.DatePrecision
 import java.time.Instant
+import java.time.ZoneId
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,10 +26,13 @@ class RoomRecordsRepository(
 ) : RecordsRepository {
 
     override fun observeRecords(): Flow<List<Record>> =
-        dao.observeRecords().map { rows -> rows.map(::toRecord) }
+        dao.observeDiaryRecords().map { rows -> rows.map { it.toRecord() } }
+
+    override fun observeRecord(recordId: String): Flow<Record?> =
+        dao.observeRecord(recordId).map { row -> row?.let { it.toRecord() } }
 
     override fun observeVersions(recordId: String): Flow<List<RecordVersion>> =
-        dao.observeVersions(recordId).map { rows -> rows.map(::toVersion) }
+        dao.observeVersions(recordId).map { rows -> rows.map { it.toVersion() } }
 
     override suspend fun createDraft(): String {
         val recordId = newId()
@@ -40,6 +47,18 @@ class RoomRecordsRepository(
                 syncState = RecordSyncState.LOCAL.name,
                 remoteId = null,
                 preview = "",
+            ),
+        )
+        dao.insertMetadata(
+            RecordMetadataEntity(
+                recordId = recordId,
+                diaryDate = Instant.ofEpochMilli(moment).atZone(ZoneId.systemDefault())
+                    .toLocalDate().toString(),
+                coverUri = null,
+                recordingId = null,
+                eventDate = null,
+                eventDatePrecision = "UNKNOWN",
+                transcriptState = "NONE",
             ),
         )
         dao.insertVersion(
@@ -91,7 +110,7 @@ class RoomRecordsRepository(
 
     override suspend fun addVersion(recordId: String, content: String): String {
         val record = dao.record(recordId) ?: return ""
-        val number = Versioning.nextNumber(dao.versions(recordId).map(::toVersion))
+        val number = Versioning.nextNumber(dao.versions(recordId).map { it.toVersion() })
         val versionId = newId()
         val moment = now()
         dao.insertVersion(
@@ -115,15 +134,19 @@ class RoomRecordsRepository(
 
     override suspend fun restoreVersion(recordId: String, versionId: String): String {
         val record = dao.record(recordId) ?: return ""
-        val target = dao.version(versionId)?.let(::toVersion) ?: return ""
+        val target = dao.version(versionId)?.let { it.toVersion() } ?: return ""
         val restored = Versioning.restored(target, record.currentVersionId, newId(), now())
-        val versions = dao.versions(recordId).map(::toVersion)
+        val versions = dao.versions(recordId).map { it.toVersion() }
         val numbered = restored.copy(number = Versioning.nextNumber(versions))
-        dao.insertVersion(toEntity(numbered))
+        dao.insertVersion(numbered.toEntity())
         dao.pointToVersion(recordId, numbered.id, numbered.createdAt)
         dao.updatePreview(recordId, numbered.content.take(120), numbered.createdAt)
         enqueue(recordId, "version")
         return numbered.id
+    }
+
+    override suspend fun setEventDate(recordId: String, isoDate: String?, precision: DatePrecision) {
+        dao.updateEventDate(recordId, isoDate, precision.name)
     }
 
     override suspend fun deleteRecord(recordId: String) {
@@ -148,35 +171,4 @@ class RoomRecordsRepository(
             ),
         )
     }
-
-    private fun toRecord(row: RecordEntity) = Record(
-        id = row.id,
-        currentVersionId = row.currentVersionId,
-        createdAt = row.createdAt,
-        updatedAt = row.updatedAt,
-        syncState = runCatching { RecordSyncState.valueOf(row.syncState) }.getOrDefault(RecordSyncState.LOCAL),
-        preview = row.preview,
-    )
-
-    private fun toVersion(row: RecordVersionEntity) = RecordVersion(
-        id = row.id,
-        recordId = row.recordId,
-        number = row.number,
-        content = row.content,
-        origin = runCatching { VersionOrigin.valueOf(row.origin) }.getOrDefault(VersionOrigin.USER),
-        baseVersionId = row.baseVersionId,
-        createdAt = row.createdAt,
-        confirmed = row.confirmed,
-    )
-
-    private fun toEntity(version: RecordVersion) = RecordVersionEntity(
-        id = version.id,
-        recordId = version.recordId,
-        number = version.number,
-        content = version.content,
-        origin = version.origin.name,
-        baseVersionId = version.baseVersionId,
-        createdAt = version.createdAt,
-        confirmed = version.confirmed,
-    )
 }

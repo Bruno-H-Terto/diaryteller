@@ -48,9 +48,9 @@ fun AuthScreen(viewModel: AuthViewModel, provider: String) {
         horizontalAlignment = Alignment.Start,
     ) {
         Image(
-            painter = painterResource(R.drawable.splash_logo),
+            painter = painterResource(R.drawable.brand_mark),
             contentDescription = null,
-            modifier = Modifier.size(132.dp),
+            modifier = Modifier.size(96.dp),
         )
         Wordmark(Modifier.padding(top = 12.dp))
         Text(

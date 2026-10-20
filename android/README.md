@@ -1,7 +1,8 @@
-# Call Me AI — Android
+# Diaryteller — Android
 
-Aplicativo local-first para registrar texto e áudio, consultar versões e
-conversar com a IA sobre registros selecionados.
+Diário narrado local-first: registra texto e áudio, preserva versões, organiza
+acontecimentos e mostra as conexões (pessoas, animais, lugares e datas) em mapa e
+linha do tempo. A IA só recebe o contexto que o usuário escolher.
 
 ## Estado atual
 
@@ -16,18 +17,28 @@ Entrega incremental conforme `docs/`:
 | 6. Gravação e transcrição local | concluída (ditado on-device e gravação cifrada) |
 | 5. Upload de anexos | pendente (contrato pronto no backend, implementação não) |
 | 7. Conversa com IA | concluída (streaming com contexto selecionado, DeepSeek no servidor) |
-| 8. Identidade visual | concluída (tema, ícone, splash; ver docs/design-system.md) |
+| 8. Conexões, cadastros e identidade visual | concluída (mapa, linha do tempo, avatares, tema Diaryteller) |
 | 9. Release | pendente |
 
 O que é real: autenticação OIDC por Authorization Code + PKCE no navegador do
 sistema, sessão cifrada com Android Keystore, Room sobre SQLCipher, criação e
-versionamento local de registros, ditado transcrito no aparelho e gravação de
-áudio cifrada localmente com TTS local para leitura.
+versionamento local de registros agrupados por dia, capa opcional e áudio anexado
+(cifrados), data do acontecimento com precisão explícita, cadastro local de
+entidades com avatar próprio, mapa de conexões com agrupamento e linha do tempo
+de acontecimentos, ditado transcrito no aparelho e TTS local para leitura.
 
 O que é simulado/pendente: sincronização de registros (não há endpoint no
-backend) e upload de anexos. Ver
+backend), upload de anexos, calendário com miniaturas e extração automática de
+entidades a partir do texto. Ver
 [backend-requirements](docs/backend-requirements.md) e
 [testing](docs/testing.md).
+
+## Dados de exemplo
+
+Em builds `debug`, Ajustes › Validação local instala ou remove um diário
+sintético (prefixo `sample-`) com dias com vários registros, menções repetidas,
+três versões de um registro, duas pessoas chamadas Marina, um acontecimento com
+dois relatos, datas por ano e sem data. Nada real é apagado.
 
 ## Voz: somente no aparelho
 

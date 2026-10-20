@@ -25,6 +25,14 @@ Composição manual, sem framework:
 - `AppRoot` cria o `AuthViewModel`; as telas criam os demais ViewModels com
   factories explícitas.
 
+## Módulos de produto
+
+- `features/records`: diário agrupado por dia, editor, versões, capa e áudio.
+- `features/entities`: cadastro local e avatares desenhados em Compose.
+- `features/connections`: mapa e linha do tempo sobre os mesmos dados.
+- `core/media`: arquivos cifrados (capas, gravações) e reprodução.
+- `core/database`: Room versão 2 com migração não destrutiva.
+
 ## Fluxo de dados
 
 ```text
