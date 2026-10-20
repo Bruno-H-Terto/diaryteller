@@ -43,6 +43,9 @@ import com.callme.ai.features.capture.presentation.CaptureViewModel
 import com.callme.ai.features.conversations.application.ConversationRepository
 import com.callme.ai.features.conversations.domain.SelectableRecord
 import com.callme.ai.features.conversations.presentation.ConversationScreen
+import com.callme.ai.features.capture.application.DictationEngine
+import com.callme.ai.features.conversations.application.DiaryMutator
+import com.callme.ai.features.conversations.application.ReplySpeaker
 import com.callme.ai.features.conversations.presentation.ConversationViewModel
 import com.callme.ai.features.connections.application.ConnectionsRepository
 import com.callme.ai.features.connections.presentation.ConnectionsScreen
@@ -66,6 +69,9 @@ fun MainScaffold(
     recordsRepository: RecordsRepository,
     captureService: CaptureService,
     conversationRepository: ConversationRepository,
+    diaryMutator: DiaryMutator,
+    dictation: DictationEngine,
+    replySpeaker: () -> ReplySpeaker,
     connectionsRepository: ConnectionsRepository,
     entitiesRepository: EntitiesRepository,
     sampleDiary: SampleDiary,
@@ -126,17 +132,13 @@ fun MainScaffold(
                     onCapture = { navController.navigate(Destinations.capture(it.name.lowercase())) },
                 )
             }
-            composable(Destinations.CONVERSATIONS) {
-                val vm: ConversationViewModel = viewModel(
-                    factory = factory { ConversationViewModel(conversationRepository, recordsRepository) },
-                )
-                val rows by recordsRepository.observeRecords().collectAsState(initial = emptyList())
-                ConversationScreen(
-                    viewModel = vm,
-                    selectable = rows.filter { it.preview.isNotBlank() }
-                        .map { SelectableRecord(it.id, it.preview.lineSequence().first()) },
-                )
-            }
+            conversationRoute(
+                recordsRepository = recordsRepository,
+                conversationRepository = conversationRepository,
+                diaryMutator = diaryMutator,
+                dictation = dictation,
+                replySpeaker = replySpeaker,
+            )
             detailRoutes(navController, connectionsRepository, entitiesRepository)
             settingsRoutes(navController, sampleDiary, email, onSignOut)
             composable(Destinations.EDITOR) { backStack ->

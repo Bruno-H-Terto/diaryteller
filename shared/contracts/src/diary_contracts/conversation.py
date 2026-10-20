@@ -11,6 +11,8 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .context import ContextBundle
+from .diary import DiarySnapshot
+from .diary_actions import MAX_ACTIONS, DiaryAction
 from .suggestions import Proposal, TimelineEntry
 
 
@@ -47,6 +49,7 @@ class ConversationRequest(BaseModel):
     locale: str = Field(default="pt-BR", max_length=16)
     timezone: str = Field(default="UTC", min_length=1, max_length=64)
     context: ContextBundle = Field(default_factory=ContextBundle)
+    diary: DiarySnapshot = Field(default_factory=DiarySnapshot)
 
     @model_validator(mode="after")
     def _context_selection(self) -> ConversationRequest:
@@ -71,4 +74,5 @@ class FinalResult(BaseModel):
     suggested_replies: list[str] = Field(default_factory=list, max_length=5)
     proposals: list[Proposal] = Field(default_factory=list, max_length=10)
     timeline: list[TimelineEntry] = Field(default_factory=list, max_length=100)
+    actions: list[DiaryAction] = Field(default_factory=list, max_length=MAX_ACTIONS)
     warnings: list[str] = Field(default_factory=list, max_length=10)

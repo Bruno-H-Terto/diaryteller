@@ -55,6 +55,13 @@ GENERATED FILE - edit android/i18n/en.yml and run `make i18n`.
     <string name="cd_next_period">Next period</string>
     <string name="cd_previous_period">Previous period</string>
     <string name="cd_search">Search</string>
+    <string name="chat_voice">Voice conversation</string>
+    <string name="chat_voice_listening">Listening to you…</string>
+    <string name="chat_applied_entity">New record · %1$s</string>
+    <string name="chat_applied_event">Event · %1$s</string>
+    <string name="chat_applied_link">New link · %1$s</string>
+    <string name="chat_applied_date">Date updated · %1$s</string>
+    <string name="chat_voice_unavailable">Offline speech recognition is unavailable on this device.</string>
     <string name="chat_assistant">Diaryteller</string>
     <string name="chat_context_add">Share context</string>
     <string name="chat_context_empty">No entry selected.</string>

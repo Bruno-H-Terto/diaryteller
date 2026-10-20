@@ -12,6 +12,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from diary_contracts.conversation import FinalResult
+from diary_contracts.diary import DiarySnapshot
 from diary_contracts.suggestions import (
     GoalProposal,
     LocalSummaryProposal,
@@ -21,6 +22,7 @@ from diary_contracts.suggestions import (
 )
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from .diary_actions import kept_actions
 from .response import MARKER
 
 
@@ -36,6 +38,7 @@ class _Tail(BaseModel):
     suggested_replies: list[str] = Field(default_factory=list)
     proposals: list[dict[str, Any]] = Field(default_factory=list)
     timeline: list[dict[str, Any]] = Field(default_factory=list)
+    actions: list[dict[str, Any]] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
 
 
@@ -99,6 +102,7 @@ def parse_final_result(
     operation_id: UUID,
     allowed_ids: set[str],
     timezone: str,
+    snapshot: DiarySnapshot | None = None,
     timeline_override: list[dict[str, Any]] | None = None,
 ) -> FinalResult:
     """Split visible answer and structured tail, then validate every reference."""
@@ -120,6 +124,7 @@ def parse_final_result(
     except (ValueError, TypeError) as exc:
         raise EvidenceError("invalid proposal or timeline") from exc
     return FinalResult(
+        actions=kept_actions(tail.actions, snapshot or DiarySnapshot(), allowed_ids),
         operation_id=operation_id,
         answer=answer,
         source_ids=tail.source_ids[:50],

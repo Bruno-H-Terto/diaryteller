@@ -16,7 +16,11 @@ import com.callme.ai.features.capture.adapters.MediaRecorderAudioRecorder
 import com.callme.ai.features.capture.adapters.MediaRecordingStore
 import com.callme.ai.features.capture.adapters.SpeechRecognizerDictation
 import com.callme.ai.features.capture.application.CaptureService
+import com.callme.ai.features.conversations.adapters.AndroidReplySpeaker
 import com.callme.ai.features.conversations.adapters.HttpConversationRepository
+import com.callme.ai.features.conversations.adapters.RoomDiaryMutator
+import com.callme.ai.features.conversations.application.DiaryMutator
+import com.callme.ai.features.conversations.application.ReplySpeaker
 import com.callme.ai.features.conversations.application.ConversationRepository
 import com.callme.ai.features.connections.adapters.RoomConnectionsRepository
 import com.callme.ai.features.connections.application.ConnectionsRepository
@@ -26,6 +30,7 @@ import com.callme.ai.features.auth.application.AuthRepository
 import com.callme.ai.features.auth.application.DeviceIdStore
 import com.callme.ai.features.records.adapters.RoomRecordsRepository
 import com.callme.ai.features.records.application.RecordsRepository
+import java.util.Locale
 import kotlinx.coroutines.runBlocking
 
 /** Manual composition root. No reflection, no global singletons. */
@@ -72,12 +77,21 @@ class AppContainer(context: Context, provider: String = BuildConfig.OIDC_PROVIDE
         runBlocking { entitiesRepository.ensureSelf() }
     }
 
+    val diaryMutator: DiaryMutator = RoomDiaryMutator(
+        dao = database.entitiesDao(),
+        snapshotDao = database.snapshotDao(),
+    )
+
     val conversationRepository: ConversationRepository = HttpConversationRepository(
         api = api.conversationApi,
         records = recordsRepository,
+        mutator = diaryMutator,
     )
 
-    private val dictation = SpeechRecognizerDictation(appContext)
+    /** Device synthesizer used to read answers aloud in the voice conversation. */
+    fun replySpeaker(): ReplySpeaker = AndroidReplySpeaker(appContext, Locale.getDefault())
+
+    val dictation = SpeechRecognizerDictation(appContext)
     val captureService: CaptureService = CaptureService(
         dictation = dictation,
         recorder = MediaRecorderAudioRecorder(appContext),

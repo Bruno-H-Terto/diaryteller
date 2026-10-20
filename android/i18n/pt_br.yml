@@ -57,6 +57,13 @@ strings:
   cd_next_period: Próximo período
   cd_previous_period: Período anterior
   cd_search: Buscar
+  chat_voice: Conversa por voz
+  chat_voice_listening: Ouvindo você…
+  chat_applied_entity: Novo cadastro · %1$s
+  chat_applied_event: Acontecimento · %1$s
+  chat_applied_link: Novo vínculo · %1$s
+  chat_applied_date: Data atualizada · %1$s
+  chat_voice_unavailable: Reconhecimento de fala offline indisponível neste aparelho.
   chat_assistant: Diaryteller
   chat_context_add: Compartilhar contexto
   chat_context_empty: Nenhum registro selecionado.

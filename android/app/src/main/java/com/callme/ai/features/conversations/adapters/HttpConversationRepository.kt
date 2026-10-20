@@ -6,7 +6,9 @@ import com.callme.ai.core.network.ConversationApi
 import com.callme.ai.core.network.ConversationRequestDto
 import com.callme.ai.core.network.SseFrame
 import com.callme.ai.core.network.SseReader
+import com.callme.ai.core.network.toDto
 import com.callme.ai.features.conversations.application.ConversationRepository
+import com.callme.ai.features.conversations.application.DiaryMutator
 import com.callme.ai.features.conversations.domain.ChatEvent
 import com.callme.ai.features.records.application.RecordsRepository
 import java.io.IOException
@@ -28,13 +30,14 @@ import okhttp3.ResponseBody
 class HttpConversationRepository(
     private val api: ConversationApi,
     private val records: RecordsRepository,
+    private val mutator: DiaryMutator,
     private val conversationId: String = UUID.randomUUID().toString(),
     private val now: () -> String = { Instant.now().toString() },
 ) : ConversationRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    override fun ask(message: String, recordIds: List<String>): Flow<ChatEvent> = flow {
+    override fun ask(message: String, recordIds: List<String>, recordId: String?): Flow<ChatEvent> = flow {
         val selected = recordIds.mapNotNull { id ->
             records.currentContent(id)?.takeIf { it.isNotBlank() }?.let { text ->
                 ContextRecordDto(id = id, recordedAt = now(), text = text)
@@ -45,6 +48,7 @@ class HttpConversationRepository(
             conversationId = conversationId,
             message = message,
             context = ContextBundleDto(records = selected),
+            diary = mutator.snapshot().toDto(),
         )
         val response: ResponseBody = try {
             api.respond(idempotencyKey = UUID.randomUUID().toString(), body = body)
@@ -66,6 +70,10 @@ class HttpConversationRepository(
                         emit(ChatEvent.Failed(codeOf(frame)))
                         break
                     }
+                    "result" -> frame.json()?.let { result ->
+                        DiaryActionParser.parse(result).takeIf { it.isNotEmpty() }
+                            ?.let { emit(ChatEvent.Proposed(it)) }
+                    }
                     "completed" -> {
                         emit(ChatEvent.Completed)
                         break
@@ -74,6 +82,8 @@ class HttpConversationRepository(
             }
         }
     }.flowOn(Dispatchers.IO)
+
+    private fun SseFrame.json() = runCatching { json.parseToJsonElement(data).jsonObject }.getOrNull()
 
     private fun textOf(frame: SseFrame): String =
         runCatching { json.parseToJsonElement(frame.data).jsonObject["text"]?.jsonPrimitive?.content }

@@ -3,7 +3,11 @@ package com.callme.ai.features.conversations.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.callme.ai.features.conversations.application.ConversationRepository
+import com.callme.ai.features.capture.application.DictationEngine
+import com.callme.ai.features.conversations.application.DiaryMutator
+import com.callme.ai.features.conversations.application.ReplySpeaker
 import com.callme.ai.features.conversations.domain.ChatEvent
+import com.callme.ai.features.conversations.domain.DiaryAction
 import com.callme.ai.features.conversations.domain.ChatMessage
 import com.callme.ai.features.records.application.RecordsRepository
 import java.util.UUID
@@ -17,16 +21,55 @@ data class ConversationUiState(
     val messages: List<ChatMessage> = emptyList(),
     val streaming: Boolean = false,
     val error: String? = null,
+    val voice: Boolean = false,
+    val hearing: String = "",
+    val selected: Set<String> = emptySet(),
 )
 
 class ConversationViewModel(
     private val repository: ConversationRepository,
     private val records: RecordsRepository,
+    private val mutator: DiaryMutator,
+    private val dictation: DictationEngine? = null,
+    private val speaker: ReplySpeaker? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ConversationUiState())
     val state: StateFlow<ConversationUiState> = _state.asStateFlow()
     private var job: Job? = null
+    private var pending: List<DiaryAction> = emptyList()
+
+    private val voice: ConversationVoice? = dictation?.let { engine ->
+        ConversationVoice(
+            engine = engine,
+            scope = viewModelScope,
+            languageTag = { java.util.Locale.getDefault().toLanguageTag() },
+            onPartial = { text -> _state.value = _state.value.copy(hearing = text) },
+            onUtterance = { text -> ask(text, _state.value.selected) },
+            onUnavailable = {
+                _state.value = _state.value.copy(voice = false, error = VOICE_UNAVAILABLE)
+            },
+        )
+    }
+
+    /** Turns the hands-free conversation on or off. */
+    fun toggleVoice() {
+        val manager = voice ?: return
+        if (manager.listening) {
+            manager.stop()
+            _state.value = _state.value.copy(voice = false, hearing = "")
+        } else {
+            manager.start()
+            _state.value = _state.value.copy(voice = true, error = null)
+        }
+    }
+
+    fun toggleSelection(recordId: String) {
+        val current = _state.value.selected
+        _state.value = _state.value.copy(
+            selected = if (recordId in current) current - recordId else current + recordId,
+        )
+    }
 
     fun ask(message: String, selected: Set<String>) {
         if (message.isBlank() || _state.value.streaming) return
@@ -38,12 +81,14 @@ class ConversationViewModel(
             streaming = true,
             error = null,
         )
+        pending = emptyList()
         job = viewModelScope.launch {
             runCatching {
-                repository.ask(message, selected.toList()).collect { event ->
+                repository.ask(message, selected.toList(), selected.firstOrNull()).collect { event ->
                 when (event) {
                     is ChatEvent.Started -> Unit
                     is ChatEvent.Delta -> append(answerId, event.text)
+                    is ChatEvent.Proposed -> pending = event.actions
                     is ChatEvent.Failed -> _state.value = _state.value.copy(
                         streaming = false,
                         error = event.code,
@@ -55,12 +100,39 @@ class ConversationViewModel(
                 _state.value = _state.value.copy(streaming = false, error = "unexpected")
             }
             if (_state.value.streaming) _state.value = _state.value.copy(streaming = false)
+            applyProposals(answerId, pending)
+            speakAnswer(answerId)
+            voice?.resume()
         }
+    }
+
+    /** Reads the finished answer aloud only while the voice conversation is on. */
+    private fun speakAnswer(answerId: String) {
+        if (speaker == null || !_state.value.voice) return
+        val answer = _state.value.messages.firstOrNull { it.id == answerId }?.text.orEmpty()
+        if (answer.isNotBlank()) speaker.speak(answer)
+    }
+
+    /** Applies what the assistant proposed and attaches the result to its message. */
+    private suspend fun applyProposals(answerId: String, actions: List<DiaryAction>) {
+        if (actions.isEmpty()) return
+        val changes = runCatching { mutator.apply(actions, null) }.getOrElse { emptyList() }
+        if (changes.isEmpty()) return
+        _state.value = _state.value.copy(
+            messages = _state.value.messages.map { message ->
+                if (message.id == answerId) message.copy(changes = message.changes + changes) else message
+            },
+        )
     }
 
     fun cancel() {
         job?.cancel()
         _state.value = _state.value.copy(streaming = false)
+    }
+
+    override fun onCleared() {
+        voice?.stop()
+        speaker?.release()
     }
 
     private fun append(id: String, delta: String) {

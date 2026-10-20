@@ -55,6 +55,13 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="cd_next_period">Próximo período</string>
     <string name="cd_previous_period">Período anterior</string>
     <string name="cd_search">Buscar</string>
+    <string name="chat_voice">Conversa por voz</string>
+    <string name="chat_voice_listening">Ouvindo você…</string>
+    <string name="chat_applied_entity">Novo cadastro · %1$s</string>
+    <string name="chat_applied_event">Acontecimento · %1$s</string>
+    <string name="chat_applied_link">Novo vínculo · %1$s</string>
+    <string name="chat_applied_date">Data atualizada · %1$s</string>
+    <string name="chat_voice_unavailable">Reconhecimento de fala offline indisponível neste aparelho.</string>
     <string name="chat_assistant">Diaryteller</string>
     <string name="chat_context_add">Compartilhar contexto</string>
     <string name="chat_context_empty">Nenhum registro selecionado.</string>

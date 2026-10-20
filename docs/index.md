@@ -17,6 +17,7 @@ apenas durante a requisição e devolve resultados.
 
 - [Contrato mobile e exemplos](mobile-contract.md)
 - [Streaming e idempotência](streaming-contract.md)
+- [Diálogo que altera o diário](conversation-actions.md)
 - [MCP e contexto local](mcp-contract.md)
 - [Endpoints de identidade](endpoints-auth.md)
 - [Endpoints de IA e voz](endpoints-ai.md)

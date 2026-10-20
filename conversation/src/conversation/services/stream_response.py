@@ -148,6 +148,7 @@ async def stream_response(
             timeline_override = timeline_from_tool(results[MemoryTool.TIMELINE.value], allowed_ids)
         result = parse_final_result(
             raw_text,
+            snapshot=request.diary,
             operation_id=prepared.operation_id,
             allowed_ids=allowed_ids,
             timezone=request.timezone,

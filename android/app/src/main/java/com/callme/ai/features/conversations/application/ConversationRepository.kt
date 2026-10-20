@@ -4,6 +4,11 @@ import com.callme.ai.features.conversations.domain.ChatEvent
 import kotlinx.coroutines.flow.Flow
 
 interface ConversationRepository {
-    /** Streams one answer; the message is never re-sent by the repository. */
-    fun ask(message: String, recordIds: List<String>): Flow<ChatEvent>
+    /**
+     * Streams one answer and the diary actions it proposes.
+     *
+     * [recordIds] are the entries the user chose to share; [recordId] is the
+     * entry a new event or mention should be attached to, when there is one.
+     */
+    fun ask(message: String, recordIds: List<String>, recordId: String? = null): Flow<ChatEvent>
 }

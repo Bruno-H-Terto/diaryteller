@@ -53,6 +53,13 @@ strings:
   cd_next_period: Next period
   cd_previous_period: Previous period
   cd_search: Search
+  chat_voice: Voice conversation
+  chat_voice_listening: Listening to you…
+  chat_applied_entity: New record · %1$s
+  chat_applied_event: Event · %1$s
+  chat_applied_link: New link · %1$s
+  chat_applied_date: Date updated · %1$s
+  chat_voice_unavailable: Offline speech recognition is unavailable on this device.
   chat_assistant: Diaryteller
   chat_context_add: Share context
   chat_context_empty: No entry selected.

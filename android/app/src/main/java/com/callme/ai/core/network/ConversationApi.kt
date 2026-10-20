@@ -29,6 +29,7 @@ data class ConversationRequestDto(
     val mode: String = "conversation",
     val message: String,
     val context: ContextBundleDto,
+    val diary: DiarySnapshotDto? = null,
 )
 
 interface ConversationApi {

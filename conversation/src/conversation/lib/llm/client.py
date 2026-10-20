@@ -62,6 +62,9 @@ class OpenAIChatClient:
             "stream_options": {"include_usage": True},
             "max_completion_tokens": self._max_output,
             "store": False,
+            # Low temperature: the structured tail must be reproducible, so the
+            # same narration always yields the same diary actions.
+            "temperature": 0.2,
         }
         if tools:
             request["tools"] = tools

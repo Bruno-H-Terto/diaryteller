@@ -31,6 +31,27 @@ def build_messages(system_prompt: str, request: ConversationRequest) -> list[Llm
                 f"type={record.source_type.value}\n{record.text}"
             )
         lines.append("</provided_records>")
+    diary = request.diary
+    if diary.entities or diary.events:
+        lines.append("<diary>")
+        if diary.today:
+            lines.append(f"today={diary.today.isoformat()}")
+        for entity in diary.entities:
+            relation = f" relation={entity.relation}" if entity.relation else ""
+            lines.append(
+                f"entity id={entity.id} kind={entity.kind.value} name={entity.name}{relation}"
+            )
+        for event in diary.events:
+            when = event.event_date.isoformat() if event.event_date else "undated"
+            lines.append(
+                f"event id={event.id} date={when} precision={event.precision.value} "
+                f"title={event.title}"
+            )
+        lines.append("</diary>")
+    if diary.draft:
+        lines.append("<draft>")
+        lines.append(diary.draft)
+        lines.append("</draft>")
     lines.append("<user_message>")
     lines.append(request.message)
     lines.append("</user_message>")

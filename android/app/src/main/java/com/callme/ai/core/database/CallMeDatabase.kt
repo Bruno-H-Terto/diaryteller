@@ -28,4 +28,6 @@ abstract class CallMeDatabase : RoomDatabase() {
     abstract fun entitiesDao(): EntitiesDao
 
     abstract fun mapPinDao(): MapPinDao
+
+    abstract fun snapshotDao(): DiarySnapshotDao
 }

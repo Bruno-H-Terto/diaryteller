@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,9 @@ import com.callme.ai.R
 import com.callme.ai.core.ui.ChoicePill
 import com.callme.ai.features.conversations.domain.SelectableRecord
 
+/** Error code used when the device has no offline speech recognition. */
+internal const val VOICE_UNAVAILABLE = "voice_unavailable"
+
 /** Conversation with the server-side AI, always with an explicit, visible context. */
 @Composable
 fun ConversationScreen(
@@ -36,7 +41,7 @@ fun ConversationScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var input by remember { mutableStateOf("") }
-    var selected by remember { mutableStateOf<Set<String>>(emptySet()) }
+    val selected = state.selected
     var contextOpen by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
 
@@ -50,25 +55,41 @@ fun ConversationScreen(
             Column {
                 state.error?.let { code ->
                     Text(
-                        stringResource(R.string.chat_error, code),
+                        if (code == VOICE_UNAVAILABLE) {
+                            stringResource(R.string.chat_voice_unavailable)
+                        } else {
+                            stringResource(R.string.chat_error, code)
+                        },
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
                     )
                 }
-                MessageComposer(
-                    value = input,
-                    onValueChange = { input = it },
-                    streaming = state.streaming,
-                    canSend = input.isNotBlank(),
-                    onSend = {
-                        viewModel.ask(input, selected)
-                        input = ""
-                    },
-                    onStop = viewModel::cancel,
-                    onToggleContext = { contextOpen = !contextOpen },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                )
+                if (state.voice) ListeningLine(state.hearing)
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    MessageComposer(
+                        value = input,
+                        onValueChange = { input = it },
+                        streaming = state.streaming,
+                        canSend = input.isNotBlank(),
+                        onSend = {
+                            viewModel.ask(input, selected)
+                            input = ""
+                        },
+                        onStop = viewModel::cancel,
+                        onToggleContext = { contextOpen = !contextOpen },
+                        modifier = Modifier.weight(1f),
+                    )
+                    VoiceButton(
+                        listening = state.voice,
+                        enabled = !state.streaming || state.voice,
+                        onToggle = viewModel::toggleVoice,
+                    )
+                }
             }
         },
     ) { inner ->
@@ -107,13 +128,7 @@ fun ConversationScreen(
                             ChoicePill(
                                 label = record.label.take(32),
                                 selected = record.id in selected,
-                                onClick = {
-                                    selected = if (record.id in selected) {
-                                        selected - record.id
-                                    } else {
-                                        selected + record.id
-                                    }
-                                },
+                                onClick = { viewModel.toggleSelection(record.id) },
                             )
                         }
                     }
@@ -128,7 +143,14 @@ fun ConversationScreen(
                 )
             }
             items(state.messages, key = { it.id }) { message ->
-                if (message.fromUser) UserBubble(message.text) else AssistantBlock(message.text)
+                if (message.fromUser) {
+                    UserBubble(message.text)
+                } else {
+                    Column {
+                        AssistantBlock(message.text)
+                        ChangeChips(message.changes)
+                    }
+                }
             }
         }
     }

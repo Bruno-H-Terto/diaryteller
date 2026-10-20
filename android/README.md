@@ -16,7 +16,8 @@ Entrega incremental conforme `docs/`:
 | 4. Histórico de versões | concluída (local) |
 | 6. Gravação e transcrição local | concluída (ditado on-device e gravação cifrada) |
 | 5. Upload de anexos | pendente (contrato pronto no backend, implementação não) |
-| 7. Conversa com IA | concluída (streaming com contexto selecionado, DeepSeek no servidor) |
+| 7. Conversa com IA | concluída (streaming, voz no aparelho e ações que alteram o diário) |
+| 7b. Diálogo que altera o diário | concluída (perfis, acontecimentos, vínculos e datas propostos na conversa) |
 | 8. Conexões, cadastros e identidade visual | concluída (mapa, linha do tempo, avatares, tema Diaryteller) |
 | 9. Release | pendente |
 

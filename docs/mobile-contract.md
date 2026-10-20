@@ -63,13 +63,23 @@ curl -N -X POST "$CONV/v1/ai/responses" "${AUTH[@]}" \
   "message": "Hoje briguei com minha mãe.",
   "locale": "pt-BR",
   "timezone": "America/Sao_Paulo",
-  "context": {"coverage": "selected_records", "records": []}
+  "context": {"coverage": "selected_records", "records": []},
+  "diary": {
+    "entities": [{"id": "local-ana", "kind": "person", "name": "Ana", "relation": "amiga"}],
+    "events": [{"id": "local-ev-1", "title": "Almoço", "event_date": "2026-10-18", "precision": "day"}],
+    "today": "2026-10-19"
+  }
 }'
 ```
 
-Leia o corpo incremental como provisório. Persistir apenas o evento `result`.
-Propostas (`goal`, `reminder`, `local_summary`) exigem confirmação e são
-salvas/agendadas pelo app; o backend não executa nada.
+`diary` é opcional e traz só o que o app decide compartilhar; o servidor usa na
+requisição e não retém. Leia o corpo incremental como provisório. Persistir
+apenas o evento `result`: ele traz `proposals`, `timeline` e `actions`.
+
+`actions` são `create_entity`, `create_event`, `link_entity` e `set_event_date`,
+com `certainty` `explicit` ou `inferred`. O app valida, grava no Room e define o
+estado de revisão; o backend não executa nada. Detalhes em
+[diálogo que altera o diário](conversation-actions.md).
 
 ## Memória paga (timeline)
 
@@ -96,6 +106,10 @@ curl -N -X POST "$CONV/v1/ai/responses" "${AUTH[@]}" \
 
 Não há endpoint de voz. Gravação, transcrição e síntese acontecem no aparelho
 (`SpeechRecognizer` on-device e `TextToSpeech`); nenhum áudio sai do celular.
+
+O modo mão livre usa o mesmo `POST /v1/ai/responses`: a transcrição final vira
+uma mensagem, a resposta é lida em voz alta e a escuta recomeça. Silêncio ou
+frase não reconhecida apenas religam o microfone.
 
 ## Refresh e revogação
 

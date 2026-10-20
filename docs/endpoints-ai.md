@@ -26,7 +26,13 @@ Quota insuficiente: `429 quota_exceeded` com `details.operation_id`, `metric`,
 
 A resposta é `text/event-stream`; ver [streaming](streaming-contract.md).
 `Cache-Control: no-store`. O corpo incremental é provisório; somente o evento
-`result` habilita propostas.
+`result` habilita propostas e ações.
+
+O corpo aceita `diary` (entidades, acontecimentos, data de hoje e rascunho) para
+que a conversa reutilize o que já existe e proponha mudanças; o evento `result`
+devolve `actions`, aplicadas pelo aparelho. Regras, limites e estados de revisão
+estão em [diálogo que altera o diário](conversation-actions.md). O snapshot é de
+uso único e não é retido.
 
 ### Idempotência
 

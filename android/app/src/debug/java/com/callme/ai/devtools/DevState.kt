@@ -51,8 +51,8 @@ class DevState(private val db: RoomDatabase) {
     private fun events(): List<String> = db.rows(
         "SELECT id, title, eventDate, datePrecision, reviewState FROM events ORDER BY eventDate DESC LIMIT $LIMIT",
     ) { row ->
-        """{"id":${quote(row.row("id"))},"title":${quote(row.headline("content"))},""" +
-            """"eventDate":${nullable(row.text("eventDate"))},"precision":${nullable(row.text("eventDatePrecision"))},""" +
+        """{"id":${quote(row.row("id"))},"title":${quote(row.row("title"))},""" +
+            """"eventDate":${nullable(row.text("eventDate"))},"precision":${nullable(row.text("datePrecision"))},""" +
             """"state":${quote(row.row("reviewState"))}}"""
     }
 
