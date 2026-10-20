@@ -13,25 +13,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.callme.ai.R
-import com.callme.ai.core.ui.ChoicePill
 import com.callme.ai.core.ui.EntityAvatar
 import com.callme.ai.core.ui.PillButton
 import com.callme.ai.core.ui.SectionLabel
@@ -45,9 +38,9 @@ fun EntityListScreen(
     viewModel: EntitiesViewModel,
     onBack: () -> Unit,
     onOpen: (String) -> Unit,
+    onAdd: () -> Unit,
 ) {
     val entities by viewModel.entities.collectAsStateWithLifecycle()
-    var adding by remember { mutableStateOf(false) }
 
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.padding(start = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -87,17 +80,8 @@ fun EntityListScreen(
         }
         PillButton(
             label = stringResource(R.string.entities_add),
-            onClick = { adding = true },
+            onClick = onAdd,
             modifier = Modifier.fillMaxWidth().padding(24.dp),
-        )
-    }
-    if (adding) {
-        AddEntityDialog(
-            onDismiss = { adding = false },
-            onConfirm = { type, name ->
-                adding = false
-                viewModel.create(type, name) { id -> onOpen(id) }
-            },
         )
     }
 }
@@ -115,35 +99,3 @@ private fun EntityRow(entity: DiaryEntity, onClick: () -> Unit) {
     }
 }
 
-@Composable
-private fun AddEntityDialog(onDismiss: () -> Unit, onConfirm: (EntityType, String) -> Unit) {
-    var type by remember { mutableStateOf(EntityType.PERSON) }
-    var name by remember { mutableStateOf("") }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.entity_new_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    EntityType.entries.filter { it != EntityType.SELF }.forEach { candidate ->
-                        ChoicePill(candidate.label(), type == candidate, { type = candidate })
-                    }
-                }
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.entity_name)) },
-                    singleLine = true,
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { onConfirm(type, name) }, enabled = name.isNotBlank()) {
-                Text(stringResource(R.string.entity_save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.entity_cancel)) }
-        },
-    )
-}

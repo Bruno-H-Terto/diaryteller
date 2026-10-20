@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +59,14 @@ fun ConnectionsScreen(
             .padding(horizontal = 20.dp),
     ) {
         ConnectionsHeader()
+        SegmentTabs(
+            labels = listOf(
+                stringResource(R.string.connections_map),
+                stringResource(R.string.connections_timeline),
+            ),
+            selected = if (state.mode == ConnectionsMode.MAP) 0 else 1,
+            onSelect = { viewModel.setMode(if (it == 0) ConnectionsMode.MAP else ConnectionsMode.TIMELINE) },
+        )
         PeriodRow(
             label = state.period.label,
             wholeHistory = state.period.month == null,
@@ -66,19 +76,9 @@ fun ConnectionsScreen(
             onHistory = if (state.period.month == null) viewModel::useCurrentMonth else viewModel::useWholeHistory,
             onFilter = { filtering = true },
         )
-        SegmentTabs(
-            labels = listOf(stringResource(R.string.connections_map), stringResource(R.string.connections_timeline)),
-            selected = if (state.mode == ConnectionsMode.MAP) 0 else 1,
-            onSelect = { viewModel.setMode(if (it == 0) ConnectionsMode.MAP else ConnectionsMode.TIMELINE) },
-        )
         val map = state.map
         if (state.mode == ConnectionsMode.MAP) {
-            Text(
-                stringResource(R.string.connections_size_rule),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 10.dp, bottom = 4.dp),
-            )
+            MapSizeHint()
             ConnectionMap(
                 nodes = map?.nodes.orEmpty(),
                 records = map?.summary?.records ?: 0,
@@ -144,6 +144,27 @@ fun ConnectionsScreen(
             onQuery = viewModel::setQuery,
             onSelect = viewModel::setType,
             onDismiss = { filtering = false },
+        )
+    }
+}
+
+@Composable
+private fun MapSizeHint() {
+    Row(
+        modifier = Modifier.padding(top = 10.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Icon(
+            Icons.Outlined.Info,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(16.dp),
+        )
+        Text(
+            stringResource(R.string.connections_size_rule),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

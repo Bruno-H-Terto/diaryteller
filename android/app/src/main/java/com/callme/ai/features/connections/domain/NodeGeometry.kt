@@ -30,11 +30,11 @@ object NodeGeometry {
     }
 
     /** Nodes shrink a little on short screens but keep a legible minimum. */
-    fun fit(height: Float): Float = (height / 360f).coerceIn(0.62f, 1f)
+    fun fit(height: Float): Float = (height / 360f).coerceIn(0.84f, 1f)
 
     /** The centre shrinks on narrow screens but stays above every other node. */
     fun centerDiameter(width: Float, height: Float): Float =
-        minOf(CENTER * fit(height), width * 0.34f)
+        minOf(CENTER * fit(height), width * 0.34f).coerceAtLeast(MAX * fit(height) + 14f)
 
     /** Ring radius that clears the centre bubble and leaves room for the label. */
     fun radius(center: Float, height: Float): Float =

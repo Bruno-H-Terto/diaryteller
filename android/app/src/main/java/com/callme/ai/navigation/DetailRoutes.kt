@@ -13,6 +13,7 @@ import com.callme.ai.features.entities.application.EntitiesRepository
 import com.callme.ai.features.entities.presentation.EntitiesViewModel
 import com.callme.ai.features.entities.presentation.EntityDetailScreen
 import com.callme.ai.features.entities.presentation.EntityDetailViewModel
+import com.callme.ai.features.entities.presentation.EntityCreateScreen
 import com.callme.ai.features.entities.presentation.EntityListScreen
 
 /** Connections, entity registry and event detail routes. */
@@ -42,6 +43,20 @@ fun NavGraphBuilder.detailRoutes(
                     viewModel = vm,
                     onBack = { navController.popBackStack() },
                     onOpen = { navController.navigate(Destinations.entity(it)) },
+                    onAdd = { navController.navigate(Destinations.ENTITY_NEW) },
+                )
+            }
+            composable(Destinations.ENTITY_NEW) {
+                val vm: EntitiesViewModel = viewModel(
+                    factory = factory { EntitiesViewModel(entitiesRepository) },
+                )
+                EntityCreateScreen(
+                    viewModel = vm,
+                    onBack = { navController.popBackStack() },
+                    onCreated = { id ->
+                        navController.popBackStack()
+                        navController.navigate(Destinations.avatar(id))
+                    },
                 )
             }
             composable(

@@ -1,5 +1,8 @@
 package com.callme.ai.core.ui
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -11,8 +14,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.callme.ai.R
 import com.callme.ai.core.model.AvatarStyle
 
 /** Rounded cartoon avatar drawn in code: no third-party assets, consistent everywhere. */
@@ -22,6 +28,24 @@ fun EntityAvatar(
     size: Dp = 48.dp,
     modifier: Modifier = Modifier,
 ) {
+    val illustrated = avatarResource(style.model)
+    if (illustrated != null) {
+        Box(
+            modifier
+                .size(size)
+                .clip(CircleShape)
+                .background(Color(style.background)),
+            contentAlignment = androidx.compose.ui.Alignment.Center,
+        ) {
+            Image(
+                painter = painterResource(illustrated),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(size * 0.94f),
+            )
+        }
+        return
+    }
     Canvas(modifier.size(size).clip(CircleShape)) {
         drawRect(Color(style.background))
         val unit = this.size.minDimension / 100f
@@ -29,10 +53,20 @@ fun EntityAvatar(
         when (style.model.firstOrNull()) {
             'a' -> drawAnimal(style, ::p, unit)
             'l' -> drawPlace(style, ::p, unit)
-            'e' -> drawEvent(style, ::p)
+            'e' -> drawEvent(style, ::p, unit)
             else -> drawPerson(style, ::p, unit)
         }
     }
+}
+
+private fun avatarResource(model: String): Int? = when (model) {
+    "p1" -> R.drawable.avatar_person_1
+    "p2" -> R.drawable.avatar_person_2
+    "p3" -> R.drawable.avatar_person_3
+    "a1" -> R.drawable.avatar_animal_1
+    "l1" -> R.drawable.avatar_place_1
+    "e1" -> R.drawable.avatar_event_1
+    else -> null
 }
 
 private const val SkinArgb = 0xFFE8C39EL
@@ -74,7 +108,7 @@ private fun DrawScope.drawPerson(
     drawCircle(Ink, 1.7f * unit, p(57f, 46f))
     val smile = Path().apply {
         moveTo(p(45f, 53f).x, p(45f, 53f).y)
-        quadraticBezierTo(p(50f, 57f).x, p(50f, 57f).y, p(55f, 53f).x, p(55f, 53f).y)
+        quadraticTo(p(50f, 57f).x, p(50f, 57f).y, p(55f, 53f).x, p(55f, 53f).y)
     }
     drawPath(smile, Ink, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.6f * unit))
 }
@@ -134,12 +168,14 @@ private fun DrawScope.drawPlace(
     }
 }
 
-private fun DrawScope.drawEvent(style: AvatarStyle, p: (Float, Float) -> Offset) {
+private fun DrawScope.drawEvent(style: AvatarStyle, p: (Float, Float) -> Offset, unit: Float) {
     val page = Color(style.clothing ?: 0xFFFFFDF9)
     val header = Color(style.hair ?: ClothingArgb)
-    drawRect(page, p(22f, 20f), Size(56f * 1f, 62f * 1f))
-    drawRect(header, p(22f, 20f), Size(56f, 14f))
-    drawCircle(Color(0xFFB86443), 5f, p(38f, 52f))
-    drawCircle(header, 5f, p(58f, 52f))
-    drawRect(header, p(34f, 64f), Size(32f, 4f))
+    val corners = androidx.compose.ui.geometry.CornerRadius(8f * unit)
+    drawRoundRect(page, p(22f, 20f), Size(56f * unit, 62f * unit), cornerRadius = corners)
+    drawRoundRect(header, p(22f, 20f), Size(56f * unit, 18f * unit), cornerRadius = corners)
+    drawRect(header, p(22f, 30f), Size(56f * unit, 8f * unit))
+    drawCircle(Color(0xFFB86443), 5f * unit, p(38f, 52f))
+    drawCircle(header, 5f * unit, p(58f, 52f))
+    drawRoundRect(header, p(34f, 64f), Size(32f * unit, 4f * unit), cornerRadius = androidx.compose.ui.geometry.CornerRadius(2f * unit))
 }

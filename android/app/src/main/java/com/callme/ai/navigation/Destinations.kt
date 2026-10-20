@@ -12,6 +12,7 @@ object Destinations {
     const val VERSIONS = "versions/{recordId}"
     const val CAPTURE = "capture/{mode}"
     const val ENTITIES = "conexoes/pessoas"
+    const val ENTITY_NEW = "conexoes/pessoas/novo"
     const val ENTITY = "conexoes/pessoa/{entityId}?mes={mes}"
     const val AVATAR = "conexoes/pessoa/{entityId}/avatar"
     const val EVENT = "conexoes/acontecimento/{eventId}"

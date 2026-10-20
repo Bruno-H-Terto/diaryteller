@@ -94,10 +94,11 @@ internal fun MapNode(
         Box(contentAlignment = Alignment.Center) {
             Surface(
                 shape = CircleShape,
-                color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                modifier = Modifier.size(size),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shadowElevation = if (selected) 4.dp else 1.dp,
+                modifier = Modifier.size(size).padding(3.dp),
             ) {
-                EntityAvatar(node.avatar, size = size)
+                EntityAvatar(node.avatar, size = size - 6.dp)
             }
             if (selected) {
                 Box(
