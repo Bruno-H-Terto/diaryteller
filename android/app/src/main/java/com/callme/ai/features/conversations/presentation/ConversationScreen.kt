@@ -58,6 +58,8 @@ fun ConversationScreen(
                     Text(
                         if (code == VOICE_UNAVAILABLE) {
                             stringResource(R.string.chat_voice_unavailable)
+                        } else if (code == "http_429") {
+                            stringResource(R.string.chat_quota)
                         } else {
                             stringResource(R.string.chat_error, code)
                         },

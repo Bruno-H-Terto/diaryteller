@@ -68,6 +68,7 @@ strings:
   chat_context_shared: Compartilhado com a IA
   chat_error: Não foi possível responder (%1$s). Verifique a conexão e tente novamente.
   chat_placeholder: Escreva uma mensagem…
+  chat_quota: 'Sua cota de conversas acabou por agora. Você pode continuar escrevendo no diário e tentar de novo depois.'
   chat_send: Enviar
   chat_stop: Parar
   chat_today: Hoje

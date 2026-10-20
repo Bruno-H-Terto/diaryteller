@@ -102,7 +102,8 @@ class ConversationViewModel(
             if (_state.value.streaming) _state.value = _state.value.copy(streaming = false)
             applyProposals(answerId, message, pending)
             speakAnswer(answerId)
-            voice?.resume()
+            // A failed turn must not restart the microphone in a loop.
+            if (_state.value.error == null) voice?.resume()
         }
     }
 

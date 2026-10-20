@@ -67,6 +67,7 @@ strings:
   chat_context_shared: Shared with the AI
   chat_error: Could not answer (%1$s). Check the connection and try again.
   chat_placeholder: Write a message…
+  chat_quota: 'Your conversation quota is used up for now. You can keep writing in the diary and try again later.'
   chat_send: Send
   chat_stop: Stop
   chat_today: Today

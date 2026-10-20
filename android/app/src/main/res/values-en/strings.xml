@@ -69,6 +69,7 @@ GENERATED FILE - edit android/i18n/en.yml and run `make i18n`.
     <string name="chat_context_shared">Shared with the AI</string>
     <string name="chat_error">Could not answer (%1$s). Check the connection and try again.</string>
     <string name="chat_placeholder">Write a message…</string>
+    <string name="chat_quota">Your conversation quota is used up for now. You can keep writing in the diary and try again later.</string>
     <string name="chat_send">Send</string>
     <string name="chat_stop">Stop</string>
     <string name="chat_today">Today</string>

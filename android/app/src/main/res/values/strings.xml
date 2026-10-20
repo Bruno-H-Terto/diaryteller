@@ -69,6 +69,7 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="chat_context_shared">Compartilhado com a IA</string>
     <string name="chat_error">Não foi possível responder (%1$s). Verifique a conexão e tente novamente.</string>
     <string name="chat_placeholder">Escreva uma mensagem…</string>
+    <string name="chat_quota">Sua cota de conversas acabou por agora. Você pode continuar escrevendo no diário e tentar de novo depois.</string>
     <string name="chat_send">Enviar</string>
     <string name="chat_stop">Parar</string>
     <string name="chat_today">Hoje</string>
