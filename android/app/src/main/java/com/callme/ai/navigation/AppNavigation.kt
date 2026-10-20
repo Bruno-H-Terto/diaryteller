@@ -70,8 +70,9 @@ fun MainScaffold(
     captureService: CaptureService,
     conversationRepository: ConversationRepository,
     diaryMutator: DiaryMutator,
-    dictation: DictationEngine,
+    dictation: () -> DictationEngine,
     replySpeaker: () -> ReplySpeaker,
+    transcribeRecording: suspend (String) -> String?,
     connectionsRepository: ConnectionsRepository,
     entitiesRepository: EntitiesRepository,
     sampleDiary: SampleDiary,
@@ -151,6 +152,7 @@ fun MainScaffold(
                     viewModel = vm,
                     onClose = { navController.popBackStack() },
                     onVersions = { navController.navigate(Destinations.versions(recordId)) },
+                    transcribe = transcribeRecording,
                 )
             }
             composable(Destinations.CAPTURE) { backStack ->

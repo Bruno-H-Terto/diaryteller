@@ -19,7 +19,7 @@ fun NavGraphBuilder.conversationRoute(
     recordsRepository: RecordsRepository,
     conversationRepository: ConversationRepository,
     diaryMutator: DiaryMutator,
-    dictation: DictationEngine,
+    dictation: () -> DictationEngine,
     replySpeaker: () -> ReplySpeaker,
 ) {
     composable(Destinations.CONVERSATIONS) {
@@ -29,7 +29,7 @@ fun NavGraphBuilder.conversationRoute(
                     repository = conversationRepository,
                     records = recordsRepository,
                     mutator = diaryMutator,
-                    dictation = dictation,
+                    dictation = dictation(),
                     speaker = replySpeaker(),
                 )
             },

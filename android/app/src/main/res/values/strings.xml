@@ -23,17 +23,17 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="avatar_note">Alterar a aparência preserva a identidade e os vínculos.</string>
     <string name="avatar_skin">Pele</string>
     <string name="capture_dictate">Ditar</string>
-    <string name="capture_dictate_hint">A transcrição acontece no aparelho; nenhum áudio é enviado ao servidor.</string>
+    <string name="capture_dictate_hint">A transcrição acontece no aparelho, com o modelo que vem no app.</string>
     <string name="capture_discard">Descartar</string>
     <string name="capture_done">Concluir</string>
     <string name="capture_error">Não foi possível transcrever (%1$s). Tente novamente.</string>
     <string name="capture_listen">Ouvir transcrição</string>
     <string name="capture_listening">Ouvindo você</string>
-    <string name="capture_model_missing">Baixe o pacote de idioma de reconhecimento offline nas configurações do Android. O app não envia áudio para a nuvem.</string>
+    <string name="capture_model_missing">O modelo de fala não está neste build. Rode make model e reinstale o app.</string>
     <string name="capture_new_audio">Novo áudio</string>
     <string name="capture_offline_only">Transcrição indisponível</string>
     <string name="capture_pace">Fale no seu ritmo.\nVocê revisa o texto depois.</string>
-    <string name="capture_pack_missing">O pacote de idioma offline não está instalado neste aparelho. Baixe em Configurações do Android › Reconhecimento de fala. Nenhum áudio é enviado.</string>
+    <string name="capture_pack_missing">O modelo de fala não está neste build. Rode make model e reinstale o app.</string>
     <string name="capture_play">Ouvir</string>
     <string name="capture_ready">Pronto para gravar</string>
     <string name="capture_recording">Gravando agora</string>
@@ -47,7 +47,7 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="capture_tap_to_speak">Toque no microfone para começar</string>
     <string name="capture_transcript">Transcrição</string>
     <string name="capture_transcript_hint">Suas palavras aparecem aqui.</string>
-    <string name="capture_unsupported">Este aparelho não oferece reconhecimento de fala offline. Você pode gravar áudio e transcrever em outro aparelho compatível.</string>
+    <string name="capture_unsupported">Este aparelho não oferece entrada de microfone para ditado.</string>
     <string name="cd_back">Voltar</string>
     <string name="cd_close">Fechar</string>
     <string name="cd_mic">Gravar</string>
@@ -61,7 +61,7 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="chat_applied_event">Acontecimento · %1$s</string>
     <string name="chat_applied_link">Novo vínculo · %1$s</string>
     <string name="chat_applied_date">Data atualizada · %1$s</string>
-    <string name="chat_voice_unavailable">Reconhecimento de fala offline indisponível neste aparelho.</string>
+    <string name="chat_voice_unavailable">Não foi possível iniciar o reconhecimento de fala.</string>
     <string name="chat_assistant">Diaryteller</string>
     <string name="chat_context_add">Compartilhar contexto</string>
     <string name="chat_context_empty">Nenhum registro selecionado.</string>
@@ -135,6 +135,8 @@ GENERATED FILE - edit android/i18n/pt_br.yml and run `make i18n`.
     <string name="editor_record">Registro</string>
     <string name="editor_saved">Salvo neste aparelho</string>
     <string name="editor_title_hint">Começar pelo que importa</string>
+    <string name="editor_transcribe_audio">Transcrever neste aparelho</string>
+    <string name="editor_transcribing">Transcrevendo…</string>
     <string name="editor_transcript">Transcrição</string>
     <string name="editor_transcript_note">A transcrição é o texto deste registro e acompanha o áudio.</string>
     <string name="editor_versions">Versões</string>

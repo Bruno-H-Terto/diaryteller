@@ -12,7 +12,8 @@ import sys
 from pathlib import Path
 
 MAX_LINES = 200
-DATA_DIRS = {"android/i18n"}
+#: Translation catalogues and the fetched speech model are data, not hand-written code.
+DATA_PREFIXES = ("android/i18n", "android/app/src/main/assets")
 ALLOWLIST = {
     "poetry.lock",
     "package-lock.json",
@@ -65,7 +66,7 @@ def iter_files(root: Path) -> list[Path]:
             continue
         if relative.parts[:2] in {("contracts", "openapi"), ("contracts", "android-delta")}:
             continue
-        if "/".join(relative.parts[:2]) in DATA_DIRS:
+        if str(relative).replace("\\", "/").startswith(DATA_PREFIXES):
             continue
         if path.suffix in CHECKED_SUFFIXES or path.name in CHECKED_NAMES:
             files.append(path)

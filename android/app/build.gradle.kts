@@ -51,6 +51,12 @@ android {
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
+
+    androidResources {
+        // The speech model is a tree of thousands of small files; keep it
+        // uncompressed so Vosk can read it straight from the assets.
+        noCompress += "mdl"
+    }
 }
 
 val i18nBuild = tasks.register<Exec>("i18nBuild") {
@@ -106,6 +112,7 @@ dependencies {
     implementation(libs.retrofit.serialization)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.vosk)
     implementation("com.google.android.material:material:1.12.0")
 
     testImplementation(libs.junit)

@@ -36,6 +36,12 @@ class EditorViewModel(
         }
     }
 
+    /** Appends a locally produced transcript to the entry being written. */
+    fun applyTranscript(value: String) {
+        if (value.isBlank()) return
+        text = listOf(text.trim(), value.trim()).filter { it.isNotBlank() }.joinToString("\n\n")
+    }
+
     fun onTextChange(value: String) {
         text = value
         viewModelScope.launch { repository.updateDraft(recordId, value) }

@@ -16,8 +16,19 @@ object DevTools {
     /** Port exposed by `adb forward`; kept in sync with the studio panel. */
     const val PORT = 5557
 
+    /** WAV in the app's files directory the replay engine should speak, if any. */
+    @Volatile
+    private var replay: String? = null
+
+    fun replayFile(): String? = replay
+
+    fun setReplay(file: String?) {
+        replay = file
+    }
+
     fun start(context: Context) {
-        val container = (context.applicationContext as CallMeApplication).container
-        DevServer(DevRequest(container.database)).start()
+        val application = context.applicationContext as CallMeApplication
+        DevVoice.attach(application)
+        DevServer(DevRequest(application.container.database)).start()
     }
 }

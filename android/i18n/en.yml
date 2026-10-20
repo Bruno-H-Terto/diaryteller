@@ -21,17 +21,17 @@ strings:
   avatar_note: Changing the look keeps the identity and the links.
   avatar_skin: Skin
   capture_dictate: Dictate
-  capture_dictate_hint: Transcription happens on the device; no audio is sent to the server.
+  capture_dictate_hint: 'Transcription happens on the device with the model shipped in the app.'
   capture_discard: Discard
   capture_done: Finish
   capture_error: Could not transcribe (%1$s). Try again.
   capture_listen: Play transcript
   capture_listening: Listening to you
-  capture_model_missing: Download the offline speech language pack in Android settings. The app does not send audio to the cloud.
+  capture_model_missing: 'The speech model is missing from this build. Run make model and reinstall.'
   capture_new_audio: New audio
   capture_offline_only: Transcription unavailable
   capture_pace: Speak at your own pace.\nYou review the text afterwards.
-  capture_pack_missing: The offline language pack is not installed on this device. Download it in Android Settings › Speech recognition. No audio is sent.
+  capture_pack_missing: 'The speech model is missing from this build. Run make model and reinstall.'
   capture_play: Play
   capture_ready: Ready to record
   capture_recording: Recording now
@@ -45,7 +45,7 @@ strings:
   capture_tap_to_speak: Tap the microphone to start
   capture_transcript: Transcript
   capture_transcript_hint: Your words appear here.
-  capture_unsupported: This device does not offer offline speech recognition. You can record audio and transcribe on another compatible device.
+  capture_unsupported: 'This device has no microphone input for dictation.'
   cd_back: Back
   cd_close: Close
   cd_mic: Record
@@ -59,7 +59,7 @@ strings:
   chat_applied_event: Event · %1$s
   chat_applied_link: New link · %1$s
   chat_applied_date: Date updated · %1$s
-  chat_voice_unavailable: Offline speech recognition is unavailable on this device.
+  chat_voice_unavailable: 'Could not start speech recognition.'
   chat_assistant: Diaryteller
   chat_context_add: Share context
   chat_context_empty: No entry selected.
@@ -133,6 +133,8 @@ strings:
   editor_record: Entry
   editor_saved: Saved on this device
   editor_title_hint: Start with what matters
+  editor_transcribe_audio: Transcribe on this device
+  editor_transcribing: Transcribing…
   editor_transcript: Transcript
   editor_transcript_note: The transcript is the text of this entry and goes with the audio.
   editor_versions: Versions

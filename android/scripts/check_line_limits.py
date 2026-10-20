@@ -10,7 +10,7 @@ MAX_LINES = 200
 ROOT = Path(__file__).resolve().parents[1]
 INCLUDE = (ROOT / "app" / "src", ROOT / "scripts")
 SUFFIXES = {".kt", ".kts", ".xml", ".py"}
-IGNORED = {"build", ".gradle", "__pycache__"}
+IGNORED = {"build", ".gradle", "__pycache__", "assets"}
 
 
 def generated(path: Path) -> bool:

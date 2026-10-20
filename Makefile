@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 COMPOSE := docker compose -f ops/compose.yaml --env-file .env
 
-.PHONY: install keys up down logs migrate seed test lint format typecheck limits check smoke contract i18n test-env test-env-down test-env-status studio app
+.PHONY: install keys up down logs migrate seed test lint format typecheck limits check smoke contract i18n test-env test-env-down test-env-status studio app model
 
 install:
 	poetry install --with dev
@@ -34,6 +34,9 @@ lint:
 
 i18n:
 	poetry run python ops/tools/i18n.py build
+
+model:
+	poetry run python ops/tools/fetch_models.py pt
 
 limits:
 	poetry run python ops/tools/check_line_limits.py

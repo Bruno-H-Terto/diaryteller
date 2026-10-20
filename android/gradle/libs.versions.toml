@@ -25,6 +25,7 @@ securityCrypto = "1.1.0-alpha06"
 splashscreen = "1.0.1"
 
 [libraries]
+vosk = { module = "com.alphacephei:vosk-android", version = "0.3.47" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version = "1.16.0" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }

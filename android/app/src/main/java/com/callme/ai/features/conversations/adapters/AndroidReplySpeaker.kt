@@ -18,11 +18,15 @@ class AndroidReplySpeaker(context: Context, private val locale: Locale) : ReplyS
     private var ready = false
     private var pending: String? = null
 
+    @Volatile
+    private var supported = false
+
     init {
         engine = TextToSpeech(context.applicationContext) { status ->
-            ready = status == TextToSpeech.SUCCESS
-            if (ready) {
-                engine?.language = locale
+            val synthesizer = engine
+            ready = status == TextToSpeech.SUCCESS && synthesizer != null
+            if (ready && synthesizer != null) {
+                supported = synthesizer.setLanguage(locale) >= TextToSpeech.LANG_AVAILABLE
                 pending?.let { speak(it) }
             }
             pending = null
@@ -37,6 +41,8 @@ class AndroidReplySpeaker(context: Context, private val locale: Locale) : ReplyS
             pending = clean
             return
         }
+        // A device without the language voice stays silent instead of failing.
+        if (!supported) return
         synthesizer.speak(clean, TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString())
     }
 

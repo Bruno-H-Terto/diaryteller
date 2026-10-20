@@ -51,6 +51,7 @@ fun EditorScreen(
     viewModel: EditorViewModel,
     onClose: () -> Unit,
     onVersions: () -> Unit,
+    transcribe: suspend (String) -> String? = { null },
 ) {
     val versions by viewModel.versions.collectAsStateWithLifecycle()
     val record by viewModel.record.collectAsStateWithLifecycle()
@@ -137,7 +138,12 @@ fun EditorScreen(
                     field()
                 },
             )
-            EditorMedia(record, viewModel.text)
+            EditorMedia(
+                record = record,
+                text = viewModel.text,
+                onTranscript = viewModel::applyTranscript,
+                transcribe = transcribe,
+            )
             EditorEventDate(record, onSet = { settingDate = true })
             Text(
                 stringResource(if (confirmed) R.string.editor_saved else R.string.editor_pending),

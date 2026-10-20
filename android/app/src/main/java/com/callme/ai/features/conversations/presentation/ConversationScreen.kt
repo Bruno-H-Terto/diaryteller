@@ -42,6 +42,7 @@ fun ConversationScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     var input by remember { mutableStateOf("") }
     val selected = state.selected
+    val microphone = rememberMicrophone { viewModel.toggleVoice() }
     var contextOpen by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
 
@@ -87,7 +88,7 @@ fun ConversationScreen(
                     VoiceButton(
                         listening = state.voice,
                         enabled = !state.streaming || state.voice,
-                        onToggle = viewModel::toggleVoice,
+                        onToggle = microphone,
                     )
                 }
             }

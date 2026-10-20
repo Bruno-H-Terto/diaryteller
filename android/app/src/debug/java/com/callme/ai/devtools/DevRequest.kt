@@ -20,6 +20,11 @@ class DevRequest(private val db: RoomDatabase) {
             DevMutations(db).updateEntity(path.removePrefix("/entities/").trim('/'), body)
         method == "POST" && path == "/pins" -> DevMutations(db).pin(body)
         method == "POST" && path == "/pins/reset" -> DevMutations(db).clearPins()
+        method == "POST" && path == "/voice/replay" -> DevVoice.replay(body)
+        method == "POST" && path == "/voice/transcribe" -> DevVoice.transcribe(body)
+        method == "POST" && path == "/voice/say" -> DevVoice.say(body)
+        method == "POST" && path == "/records/audio" ->
+            DevRecords.attachAudio(DevVoice.application(), body)
         else -> DevResponse(404, """{"error":"unknown route"}""")
     }
 }

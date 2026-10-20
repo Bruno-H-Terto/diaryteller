@@ -46,10 +46,16 @@ import kotlinx.coroutines.launch
  * record text right below the player as its transcription.
  */
 @Composable
-fun EditorMedia(record: Record?, text: String) {
+fun EditorMedia(
+    record: Record?,
+    text: String,
+    onTranscript: (String) -> Unit = {},
+    transcribe: (suspend (String) -> String?)? = null,
+) {
     val media = LocalMedia.current
     val scope = rememberCoroutineScope()
     val player = remember { FilePlayer() }
+    var transcribing by remember { mutableStateOf(false) }
     var pickingAudio by remember { mutableStateOf(false) }
     var choices by remember { mutableStateOf<List<AudioChoice>>(emptyList()) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -154,6 +160,13 @@ fun EditorMedia(record: Record?, text: String) {
             )
         }
         SectionLabel(stringResource(R.string.editor_transcript), Modifier.padding(top = 16.dp))
+        TranscribeButton(
+            record = record,
+            transcribe = transcribe,
+            transcribing = transcribing,
+            onTranscribing = { transcribing = it },
+            onTranscript = onTranscript,
+        )
         Text(
             text.ifBlank { stringResource(R.string.editor_transcript_note) },
             style = MaterialTheme.typography.bodyLarge,

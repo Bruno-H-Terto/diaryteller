@@ -22,19 +22,17 @@ strings:
   avatar_note: Alterar a aparência preserva a identidade e os vínculos.
   avatar_skin: Pele
   capture_dictate: Ditar
-  capture_dictate_hint: A transcrição acontece no aparelho; nenhum áudio é enviado ao servidor.
+  capture_dictate_hint: 'A transcrição acontece no aparelho, com o modelo que vem no app.'
   capture_discard: Descartar
   capture_done: Concluir
   capture_error: Não foi possível transcrever (%1$s). Tente novamente.
   capture_listen: Ouvir transcrição
   capture_listening: Ouvindo você
-  capture_model_missing: Baixe o pacote de idioma de reconhecimento offline nas configurações do Android.
-    O app não envia áudio para a nuvem.
+  capture_model_missing: 'O modelo de fala não está neste build. Rode make model e reinstale o app.'
   capture_new_audio: Novo áudio
   capture_offline_only: Transcrição indisponível
   capture_pace: Fale no seu ritmo.\nVocê revisa o texto depois.
-  capture_pack_missing: O pacote de idioma offline não está instalado neste aparelho. Baixe em Configurações
-    do Android › Reconhecimento de fala. Nenhum áudio é enviado.
+  capture_pack_missing: 'O modelo de fala não está neste build. Rode make model e reinstale o app.'
   capture_play: Ouvir
   capture_ready: Pronto para gravar
   capture_recording: Gravando agora
@@ -48,8 +46,7 @@ strings:
   capture_tap_to_speak: Toque no microfone para começar
   capture_transcript: Transcrição
   capture_transcript_hint: Suas palavras aparecem aqui.
-  capture_unsupported: Este aparelho não oferece reconhecimento de fala offline. Você pode gravar áudio
-    e transcrever em outro aparelho compatível.
+  capture_unsupported: 'Este aparelho não oferece entrada de microfone para ditado.'
   cd_back: Voltar
   cd_close: Fechar
   cd_mic: Gravar
@@ -63,7 +60,7 @@ strings:
   chat_applied_event: Acontecimento · %1$s
   chat_applied_link: Novo vínculo · %1$s
   chat_applied_date: Data atualizada · %1$s
-  chat_voice_unavailable: Reconhecimento de fala offline indisponível neste aparelho.
+  chat_voice_unavailable: 'Não foi possível iniciar o reconhecimento de fala.'
   chat_assistant: Diaryteller
   chat_context_add: Compartilhar contexto
   chat_context_empty: Nenhum registro selecionado.
@@ -137,6 +134,8 @@ strings:
   editor_record: Registro
   editor_saved: Salvo neste aparelho
   editor_title_hint: Começar pelo que importa
+  editor_transcribe_audio: Transcrever neste aparelho
+  editor_transcribing: Transcrevendo…
   editor_transcript: Transcrição
   editor_transcript_note: A transcrição é o texto deste registro e acompanha o áudio.
   editor_versions: Versões
