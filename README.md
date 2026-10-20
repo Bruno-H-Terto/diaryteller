@@ -38,6 +38,7 @@ cp .env.example .env
 make install
 make keys          # development RS256 keys and local secret checks
 make up            # postgres, mongo, mailpit, services
+make model         # baixa o modelo de fala local (não versionado)
 make test-env      # pilha + banco + emulador + app de debug
 make studio         # painel local em http://127.0.0.1:8099
 make check         # ruff, black, pyright, limites, traduções, testes
