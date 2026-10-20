@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,15 +59,6 @@ import com.callme.ai.features.records.presentation.RecordsViewModel
 import com.callme.ai.features.records.presentation.VersionsScreen
 import com.callme.ai.core.database.SampleDiary
 
-private data class Tab(val route: String, val label: Int, val icon: ImageVector)
-
-private val tabs = listOf(
-    Tab(Destinations.DIARY, R.string.tab_diary, Icons.Outlined.MenuBook),
-    Tab(Destinations.CONNECTIONS, R.string.tab_connections, Icons.Outlined.Hub),
-    Tab(Destinations.CONVERSATIONS, R.string.tab_conversations, Icons.Outlined.ChatBubbleOutline),
-    Tab(Destinations.SETTINGS, R.string.tab_settings, Icons.Outlined.Tune),
-)
-
 /** Root scaffold: tab bar for the three destinations, full-screen routes above it. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -99,7 +91,14 @@ fun MainScaffold(
                                 selected = route == tab.route,
                                 onClick = { navController.navigateToTab(tab.route) },
                                 icon = { Icon(tab.icon, contentDescription = null) },
-                                label = { Text(stringResource(tab.label)) },
+                                label = {
+                                    Text(
+                                        stringResource(tab.label),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.labelSmall,
+                                    )
+                                },
                                 colors = NavigationBarItemDefaults.colors(
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     selectedTextColor = MaterialTheme.colorScheme.onSurface,

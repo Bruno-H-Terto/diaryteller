@@ -44,6 +44,8 @@ fun SettingsScreen(
         )
         SectionLabel(stringResource(R.string.settings_section))
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(top = 12.dp))
+        LanguageSetting()
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         SettingRow(
             icon = Icons.Outlined.Shield,
             title = stringResource(R.string.settings_privacy),

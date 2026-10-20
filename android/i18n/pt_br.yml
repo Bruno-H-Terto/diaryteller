@@ -1,0 +1,251 @@
+language: pt-BR
+label: Português (Brasil)
+strings:
+  account_cancel: Cancelar
+  account_email: Email
+  account_sign_out: Sair
+  account_sign_out_body: Sair apaga tokens e dados privados desta conta neste dispositivo. Conteúdo ainda
+    não sincronizado será perdido.
+  account_sign_out_confirm: Sair e apagar dados locais
+  action_continue: Continuar
+  app_name: Diaryteller
+  auth_body: Seus registros ficam no aparelho. A IA só vê o que você decidir compartilhar.
+  auth_cancelled: Entrada cancelada.
+  auth_error: Não foi possível entrar. Tente novamente.
+  auth_headline: Um diário que acompanha o seu pensamento.
+  auth_sign_in: Começar
+  auth_signing_in: Abrindo o navegador…
+  avatar_background: Cor de fundo
+  avatar_clothing: Roupa
+  avatar_hair: Cabelo
+  avatar_model: Modelo
+  avatar_note: Alterar a aparência preserva a identidade e os vínculos.
+  avatar_skin: Pele
+  capture_dictate: Ditar
+  capture_dictate_hint: A transcrição acontece no aparelho; nenhum áudio é enviado ao servidor.
+  capture_discard: Descartar
+  capture_done: Concluir
+  capture_error: Não foi possível transcrever (%1$s). Tente novamente.
+  capture_listen: Ouvir transcrição
+  capture_listening: Ouvindo você
+  capture_model_missing: Baixe o pacote de idioma de reconhecimento offline nas configurações do Android.
+    O app não envia áudio para a nuvem.
+  capture_new_audio: Novo áudio
+  capture_offline_only: Transcrição indisponível
+  capture_pace: Fale no seu ritmo.\nVocê revisa o texto depois.
+  capture_pack_missing: O pacote de idioma offline não está instalado neste aparelho. Baixe em Configurações
+    do Android › Reconhecimento de fala. Nenhum áudio é enviado.
+  capture_play: Ouvir
+  capture_ready: Pronto para gravar
+  capture_recording: Gravando agora
+  capture_recording_hint: O áudio fica cifrado neste aparelho.
+  capture_recordings: Gravações neste aparelho
+  capture_save_transcript: Salvar como registro
+  capture_saved_local: Áudio salvo neste aparelho
+  capture_saved_now: Áudio salvo
+  capture_start: Gravar
+  capture_stop: Parar
+  capture_tap_to_speak: Toque no microfone para começar
+  capture_transcript: Transcrição
+  capture_transcript_hint: Suas palavras aparecem aqui.
+  capture_unsupported: Este aparelho não oferece reconhecimento de fala offline. Você pode gravar áudio
+    e transcrever em outro aparelho compatível.
+  cd_back: Voltar
+  cd_close: Fechar
+  cd_mic: Gravar
+  cd_more: Mais opções
+  cd_next_period: Próximo período
+  cd_previous_period: Período anterior
+  cd_search: Buscar
+  chat_assistant: Diaryteller
+  chat_context_add: Compartilhar contexto
+  chat_context_empty: Nenhum registro selecionado.
+  chat_context_note: Excluir após processamento
+  chat_context_shared: Compartilhado com a IA
+  chat_error: Não foi possível responder (%1$s). Verifique a conexão e tente novamente.
+  chat_placeholder: Escreva uma mensagem…
+  chat_send: Enviar
+  chat_stop: Parar
+  chat_today: Hoje
+  connections_current_month: Mês atual
+  connections_filters: Filtros
+  connections_group: conexões
+  connections_group_hint: Conexões agrupadas. Abra uma para ver os registros de origem.
+  connections_group_title: +%1$d conexões
+  connections_history: Tudo
+  connections_manage: Ver conexões em lista
+  connections_map: Mapa
+  connections_neighbours: '%1$d conexões neste período'
+  connections_recenter: Voltar ao centro
+  connections_records: '%1$d registros'
+  connections_review_count: '%1$d sugestões para revisar'
+  connections_review_hint: Você confirma quem é quem
+  connections_search: Buscar conexões
+  connections_size_rule: O tamanho representa registros distintos no período
+  connections_subtitle: As pessoas e os momentos da sua história.
+  connections_timeline: Linha do tempo
+  connections_type: Tipo de conexão
+  connections_you: Você
+  conversations_subtitle: Um espaço para desenvolver suas ideias.
+  conversations_title: Conversas
+  date_day: Dia
+  date_day_field: Dia
+  date_month: Mês
+  date_month_field: Mês (1-12)
+  date_unknown: Sem data
+  date_year: Ano
+  date_year_field: Ano
+  diary_day_count: '%1$d registros neste dia'
+  diary_draft: Rascunho local
+  diary_empty: Nada por aqui ainda.\nComece pelo que importa.
+  diary_filter_all: Todos
+  diary_filter_drafts: Rascunhos
+  diary_has_audio: Este registro tem áudio
+  diary_new_dictation: Ditar no aparelho
+  diary_new_record: Novo registro
+  diary_new_recording: Gravar áudio
+  diary_new_text: Escrever texto
+  diary_no_results: Nenhum registro encontrado.
+  diary_search: Buscar registros
+  diary_search_close: Fechar busca
+  diary_title: Seu diário.
+  editor_audio: Áudio
+  editor_audio_attach: Anexar áudio deste aparelho
+  editor_audio_label: Relato por voz
+  editor_audio_none: Nenhum áudio anexado.
+  editor_audio_pick_empty: Nenhuma gravação encontrada.
+  editor_audio_pick_title: Gravações neste aparelho
+  editor_audio_remove: Remover áudio
+  editor_body_hint: Escreva sem pressa. Você revisa depois.
+  editor_cover: Capa
+  editor_cover_add: Adicionar capa
+  editor_cover_change: Trocar capa
+  editor_cover_note: 'A capa é ilustrativa: não prova o lugar nem o acontecimento.'
+  editor_cover_remove: Remover capa
+  editor_done: Concluir
+  editor_draft: Rascunho local
+  editor_error: Não foi possível salvar. O texto continua no rascunho.
+  editor_event_date: Data do acontecimento
+  editor_event_date_note: Separada da data em que você registrou.
+  editor_event_date_set: Definir
+  editor_event_date_unset: Não informada
+  editor_pending: Aguardando sincronização
+  editor_record: Registro
+  editor_saved: Salvo neste aparelho
+  editor_title_hint: Começar pelo que importa
+  editor_transcript: Transcrição
+  editor_transcript_note: A transcrição é o texto deste registro e acompanha o áudio.
+  editor_versions: Versões
+  entities_add: Adicionar
+  entities_empty: Nenhum cadastro ainda.
+  entities_title: Pessoas, animais e lugares
+  entity_animal: Animal
+  entity_cancel: Cancelar
+  entity_create_avatar: Continuar para o avatar
+  entity_create_name_hint: Use um nome que ajude você a reconhecê-la no diário.
+  entity_create_name_title: Como você quer chamar esta conexão?
+  entity_create_progress: Etapa %1$d de 2
+  entity_create_type_hint: Escolha um tipo. Você poderá alterar a aparência na próxima etapa.
+  entity_create_type_title: Quem ou o que você quer adicionar?
+  entity_edit: Editar avatar e cadastro
+  entity_event: Acontecimento
+  entity_events: Na sua história
+  entity_in_period: Registros em %1$s
+  entity_name: Nome
+  entity_new_title: Novo cadastro
+  entity_no_events: Nenhum acontecimento registrado ainda.
+  entity_open_profile: Ver conexões desta pessoa
+  entity_open_sources: Ver registros de origem
+  entity_period_count: '%1$d registros no período'
+  entity_person: Pessoa
+  entity_place: Lugar
+  entity_save: Salvar
+  entity_total_count: '%1$d registros no diário como um todo'
+  entity_type: '%1$s'
+  event_back_timeline: Voltar à linha do tempo
+  event_detach_hint: Desfazer mantém o relato no diário e apenas o remove deste acontecimento.
+  event_detach_source: Desfazer união deste relato
+  event_fix_date: Data do acontecimento
+  event_open_source: Abrir relato de origem
+  event_open_sources: Ver %1$d relatos de origem
+  event_participants: Participantes e lugar
+  event_recorded_on: Registrado em %1$s
+  event_sources: Relatos de origem
+  event_title_label: Acontecimento
+  event_undated: Sem data definida
+  filter_all: Todos
+  filter_animals: Animais
+  filter_events: Acontecimentos
+  filter_people: Pessoas
+  filter_places: Lugares
+  privacy_headline: Você escolhe\no que compartilhar.
+  privacy_local_body: Seus registros, versões e mídias ficam aqui.
+  privacy_local_label: No aparelho
+  privacy_note: Excluir a conta também exclui os dados remotos associados.
+  privacy_shared_body: Somente os contextos que você decidiu manter aparecem nesta lista.
+  privacy_shared_label: Compartilhado com a IA
+  privacy_title: Privacidade e dados
+  relation_confirmed: Confirmado
+  relation_declared: Declarado no relato
+  relation_edit: Corrigir identificação
+  relation_label_field: Como você chama essa relação
+  relation_suggested: Sugerido · a revisar
+  relation_unknown: Sem relação informada
+  review_confirm: Confirmar
+  review_discard: Descartar
+  review_empty: Nada para revisar agora.
+  review_hint: Sugestões não confirmadas ficam separadas das relações confirmadas.
+  review_kind_event: Acontecimento sugerido
+  review_kind_link: Participante citado
+  review_kind_relation: Relação sugerida
+  review_title: Para revisar
+  settings_account: Conta
+  settings_account_sub: Sessão e exclusão de dados remotos
+  settings_back: Voltar
+  settings_debug: Validação local
+  settings_privacy: Privacidade e dados
+  settings_language: Idioma
+  settings_language_sub: Um arquivo por idioma no catálogo
+  settings_privacy_sub: Conteúdo local e contexto compartilhado
+  settings_sample: Dados de exemplo
+  settings_sample_add_body: Acrescenta registros, pessoas, acontecimentos e sugestões de exemplo. Seus
+    registros atuais não são alterados.
+  settings_sample_add_sub: Adicionar um diário sintético para testar
+  settings_sample_remove_body: Remove somente os itens marcados como exemplo, incluindo o áudio de teste.
+    Nada mais é apagado.
+  settings_sample_remove_sub: Remover apenas os dados de exemplo
+  settings_section: Seu espaço
+  settings_title: Ajustes
+  tab_connections: Conexões
+  tab_conversations: Conversas
+  tab_diary: Diário
+  tab_settings: Ajustes
+  timeline_collapse: Recolher dia
+  timeline_empty: Nenhum acontecimento neste período.
+  timeline_expand: Abrir dia
+  timeline_load_more: Carregar mais
+  timeline_review_events: Revisar acontecimentos sugeridos · %1$d
+  versions_cancel: Cancelar
+  versions_close: Voltar à leitura
+  versions_current: Atual
+  versions_origin_ai: Organizada pela IA
+  versions_origin_import: Importada
+  versions_origin_restore: Restaurada
+  versions_origin_user: Editada por você
+  versions_original: Original
+  versions_restore: Restaurar como nova versão
+  versions_restore_body: O conteúdo atual continua salvo como versão anterior.
+  versions_restore_confirm: Restaurar
+  versions_restore_title: Restaurar V%1$d?
+  versions_subtitle: Seu original permanece preservado.
+  versions_title: Versões do registro
+plurals:
+  chat_context_count:
+    one: '%1$d registro no contexto'
+    other: '%1$d registros no contexto'
+  timeline_day_count:
+    one: '%1$d acontecimento'
+    other: '%1$d acontecimentos'
+  timeline_month_count:
+    one: '%1$d acontecimento'
+    other: '%1$d acontecimentos'

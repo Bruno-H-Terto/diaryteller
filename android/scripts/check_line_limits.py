@@ -13,6 +13,12 @@ SUFFIXES = {".kt", ".kts", ".xml", ".py"}
 IGNORED = {"build", ".gradle", "__pycache__"}
 
 
+def generated(path: Path) -> bool:
+    """Generated resources come from `android/i18n` and are exempt by design."""
+    head = path.read_text(encoding="utf-8", errors="replace")[:200]
+    return "GENERATED FILE" in head
+
+
 def files() -> list[Path]:
     found: list[Path] = []
     for base in INCLUDE:
@@ -24,6 +30,7 @@ def files() -> list[Path]:
                 path.is_file()
                 and path.suffix in SUFFIXES
                 and not IGNORED.intersection(relative.parts)
+                and not generated(path)
             ):
                 found.append(path)
     return found

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+GENERATED FILE - edit android/i18n/*.yml and run `make i18n`.
+-->
+<resources>
+    <string-array name="app_languages">
+        <item>Português (Brasil)|pt-BR</item>
+        <item>English|en</item>
+    </string-array>
+</resources>

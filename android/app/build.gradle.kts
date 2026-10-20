@@ -53,13 +53,27 @@ android {
     }
 }
 
+val i18nBuild = tasks.register<Exec>("i18nBuild") {
+    workingDir = rootProject.projectDir.parentFile
+    commandLine("poetry", "run", "python", "ops/tools/i18n.py", "build")
+}
+
+val i18nCheck = tasks.register<Exec>("i18nCheck") {
+    workingDir = rootProject.projectDir.parentFile
+    commandLine("poetry", "run", "python", "ops/tools/i18n.py", "check")
+}
+
+tasks.named("preBuild") {
+    dependsOn(i18nBuild)
+}
+
 tasks.register<Exec>("checkLineLimits") {
     workingDir = rootProject.projectDir
     commandLine("python3", "scripts/check_line_limits.py")
 }
 
 tasks.named("check") {
-    dependsOn("checkLineLimits")
+    dependsOn("checkLineLimits", i18nCheck)
 }
 
 dependencies {

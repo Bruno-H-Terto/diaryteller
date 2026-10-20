@@ -7,11 +7,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.runtime.mutableStateOf
+import android.content.Context
 import com.callme.ai.bootstrap.CallMeApplication
+import com.callme.ai.core.i18n.AppLanguages
 import com.callme.ai.core.ui.CallMeTheme
 
 class MainActivity : ComponentActivity() {
     private val redirect = mutableStateOf<Uri?>(null)
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguages.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()

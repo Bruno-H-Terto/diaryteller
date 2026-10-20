@@ -1,7 +1,8 @@
 """Fail when a hand-written file exceeds the 200 physical line budget.
 
-Generated artifacts are allowlisted explicitly and are never split to bypass the
-limit. Binary files and repository metadata are ignored.
+Generated artifacts and translation catalogues are allowlisted explicitly and
+are never split to bypass the limit. Binary files and repository metadata are
+ignored.
 """
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ import sys
 from pathlib import Path
 
 MAX_LINES = 200
+DATA_DIRS = {"android/i18n"}
 ALLOWLIST = {
     "poetry.lock",
     "package-lock.json",
@@ -62,6 +64,8 @@ def iter_files(root: Path) -> list[Path]:
         if path.name in ALLOWLIST:
             continue
         if relative.parts[:2] in {("contracts", "openapi"), ("contracts", "android-delta")}:
+            continue
+        if "/".join(relative.parts[:2]) in DATA_DIRS:
             continue
         if path.suffix in CHECKED_SUFFIXES or path.name in CHECKED_NAMES:
             files.append(path)

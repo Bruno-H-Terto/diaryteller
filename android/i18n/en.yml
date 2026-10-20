@@ -1,0 +1,245 @@
+language: en
+label: English
+strings:
+  account_cancel: Cancel
+  account_email: Email
+  account_sign_out: Sign out
+  account_sign_out_body: Signing out erases tokens and private data of this account on this device. Content not yet synced will be lost.
+  account_sign_out_confirm: Sign out and erase local data
+  action_continue: Continue
+  app_name: Diaryteller
+  auth_body: Your entries stay on the device. The AI only sees what you choose to share.
+  auth_cancelled: Sign in cancelled.
+  auth_error: Could not sign in. Try again.
+  auth_headline: A diary that follows your thinking.
+  auth_sign_in: Start
+  auth_signing_in: Opening the browser…
+  avatar_background: Background
+  avatar_clothing: Clothing
+  avatar_hair: Hair
+  avatar_model: Model
+  avatar_note: Changing the look keeps the identity and the links.
+  avatar_skin: Skin
+  capture_dictate: Dictate
+  capture_dictate_hint: Transcription happens on the device; no audio is sent to the server.
+  capture_discard: Discard
+  capture_done: Finish
+  capture_error: Could not transcribe (%1$s). Try again.
+  capture_listen: Play transcript
+  capture_listening: Listening to you
+  capture_model_missing: Download the offline speech language pack in Android settings. The app does not send audio to the cloud.
+  capture_new_audio: New audio
+  capture_offline_only: Transcription unavailable
+  capture_pace: Speak at your own pace.\nYou review the text afterwards.
+  capture_pack_missing: The offline language pack is not installed on this device. Download it in Android Settings › Speech recognition. No audio is sent.
+  capture_play: Play
+  capture_ready: Ready to record
+  capture_recording: Recording now
+  capture_recording_hint: The audio is encrypted on this device.
+  capture_recordings: Recordings on this device
+  capture_save_transcript: Save as entry
+  capture_saved_local: Audio saved on this device
+  capture_saved_now: Audio saved
+  capture_start: Record
+  capture_stop: Stop
+  capture_tap_to_speak: Tap the microphone to start
+  capture_transcript: Transcript
+  capture_transcript_hint: Your words appear here.
+  capture_unsupported: This device does not offer offline speech recognition. You can record audio and transcribe on another compatible device.
+  cd_back: Back
+  cd_close: Close
+  cd_mic: Record
+  cd_more: More options
+  cd_next_period: Next period
+  cd_previous_period: Previous period
+  cd_search: Search
+  chat_assistant: Diaryteller
+  chat_context_add: Share context
+  chat_context_empty: No entry selected.
+  chat_context_note: Deleted after processing
+  chat_context_shared: Shared with the AI
+  chat_error: Could not answer (%1$s). Check the connection and try again.
+  chat_placeholder: Write a message…
+  chat_send: Send
+  chat_stop: Stop
+  chat_today: Today
+  connections_current_month: Current month
+  connections_filters: Filters
+  connections_group: connections
+  connections_group_hint: Grouped connections. Open one to see the source entries.
+  connections_group_title: +%1$d connections
+  connections_history: All
+  connections_manage: See connections as a list
+  connections_map: Map
+  connections_neighbours: '%1$d connections in this period'
+  connections_recenter: Back to the centre
+  connections_records: '%1$d entries'
+  connections_review_count: '%1$d suggestions to review'
+  connections_review_hint: You confirm who is who
+  connections_search: Search connections
+  connections_size_rule: Size means distinct entries in the period
+  connections_subtitle: The people and moments of your story.
+  connections_timeline: Timeline
+  connections_type: Connection type
+  connections_you: You
+  conversations_subtitle: A space to develop your ideas.
+  conversations_title: Conversations
+  date_day: Day
+  date_day_field: Day
+  date_month: Month
+  date_month_field: Month (1-12)
+  date_unknown: No date
+  date_year: Year
+  date_year_field: Year
+  diary_day_count: '%1$d entries on this day'
+  diary_draft: Local draft
+  diary_empty: Nothing here yet.\nStart with what matters.
+  diary_filter_all: All
+  diary_filter_drafts: Drafts
+  diary_has_audio: This entry has audio
+  diary_new_dictation: Dictate on the device
+  diary_new_record: New entry
+  diary_new_recording: Record audio
+  diary_new_text: Write text
+  diary_no_results: No entries found.
+  diary_search: Search entries
+  diary_search_close: Close search
+  diary_title: Your diary.
+  editor_audio: Audio
+  editor_audio_attach: Attach audio from this device
+  editor_audio_label: Voice account
+  editor_audio_none: No audio attached.
+  editor_audio_pick_empty: No recording found.
+  editor_audio_pick_title: Recordings on this device
+  editor_audio_remove: Remove audio
+  editor_body_hint: Write without hurry. You review it later.
+  editor_cover: Cover
+  editor_cover_add: Add cover
+  editor_cover_change: Change cover
+  editor_cover_note: 'The cover is illustrative: it does not prove the place or the event.'
+  editor_cover_remove: Remove cover
+  editor_done: Finish
+  editor_draft: Local draft
+  editor_error: Could not save. The text stays in the draft.
+  editor_event_date: Date of the event
+  editor_event_date_note: Separate from the date you recorded it.
+  editor_event_date_set: Set
+  editor_event_date_unset: Not informed
+  editor_pending: Waiting to sync
+  editor_record: Entry
+  editor_saved: Saved on this device
+  editor_title_hint: Start with what matters
+  editor_transcript: Transcript
+  editor_transcript_note: The transcript is the text of this entry and goes with the audio.
+  editor_versions: Versions
+  entities_add: Add
+  entities_empty: No records yet.
+  entities_title: People, animals and places
+  entity_animal: Animal
+  entity_cancel: Cancel
+  entity_create_avatar: Continue to the avatar
+  entity_create_name_hint: Use a name that helps you recognise it in the diary.
+  entity_create_name_title: What do you want to call this connection?
+  entity_create_progress: Step %1$d of 2
+  entity_create_type_hint: Choose a type. You can change the look in the next step.
+  entity_create_type_title: Who or what do you want to add?
+  entity_edit: Edit avatar and record
+  entity_event: Event
+  entity_events: In your story
+  entity_in_period: Entries in %1$s
+  entity_name: Name
+  entity_new_title: New record
+  entity_no_events: No event recorded yet.
+  entity_open_profile: See this person's connections
+  entity_open_sources: See source entries
+  entity_period_count: '%1$d entries in the period'
+  entity_person: Person
+  entity_place: Place
+  entity_save: Save
+  entity_total_count: '%1$d entries in the whole diary'
+  entity_type: '%1$s'
+  event_back_timeline: Back to the timeline
+  event_detach_hint: Undoing keeps the account in the diary and only removes it from this event.
+  event_detach_source: Undo joining this account
+  event_fix_date: Date of the event
+  event_open_source: Open source account
+  event_open_sources: See %1$d source accounts
+  event_participants: Participants and place
+  event_recorded_on: Recorded on %1$s
+  event_sources: Source accounts
+  event_title_label: Event
+  event_undated: No date set
+  filter_all: All
+  filter_animals: Animals
+  filter_events: Events
+  filter_people: People
+  filter_places: Places
+  privacy_headline: You choose\nwhat to share.
+  privacy_local_body: Your entries, versions and media stay here.
+  privacy_local_label: On the device
+  privacy_note: Deleting the account also deletes the associated remote data.
+  privacy_shared_body: Only the contexts you chose to keep appear in this list.
+  privacy_shared_label: Shared with the AI
+  privacy_title: Privacy and data
+  relation_confirmed: Confirmed
+  relation_declared: Declared in the account
+  relation_edit: Fix identification
+  relation_label_field: How you call this relationship
+  relation_suggested: Suggested · to review
+  relation_unknown: No relationship informed
+  review_confirm: Confirm
+  review_discard: Discard
+  review_empty: Nothing to review now.
+  review_hint: Unconfirmed suggestions stay apart from confirmed relationships.
+  review_kind_event: Suggested event
+  review_kind_link: Mentioned participant
+  review_kind_relation: Suggested relationship
+  review_title: To review
+  settings_account: Account
+  settings_account_sub: Session and deletion of remote data
+  settings_back: Back
+  settings_debug: Local validation
+  settings_language: Language
+  settings_language_sub: One file per language in the catalogue
+  settings_privacy: Privacy and data
+  settings_privacy_sub: Local content and shared context
+  settings_sample: Sample data
+  settings_sample_add_body: Adds sample entries, people, events and suggestions. Your current entries are not changed.
+  settings_sample_add_sub: Add a synthetic diary to test
+  settings_sample_remove_body: Removes only the items marked as sample, including the test audio. Nothing else is erased.
+  settings_sample_remove_sub: Remove only the sample data
+  settings_section: Your space
+  settings_title: Settings
+  tab_connections: Connections
+  tab_conversations: Conversations
+  tab_diary: Diary
+  tab_settings: Settings
+  timeline_collapse: Collapse day
+  timeline_empty: No event in this period.
+  timeline_expand: Open day
+  timeline_load_more: Load more
+  timeline_review_events: Review suggested events · %1$d
+  versions_cancel: Cancel
+  versions_close: Back to reading
+  versions_current: Current
+  versions_origin_ai: Organised by the AI
+  versions_origin_import: Imported
+  versions_origin_restore: Restored
+  versions_origin_user: Edited by you
+  versions_original: Original
+  versions_restore: Restore as a new version
+  versions_restore_body: The current content stays saved as a previous version.
+  versions_restore_confirm: Restore
+  versions_restore_title: Restore V%1$d?
+  versions_subtitle: Your original stays preserved.
+  versions_title: Entry versions
+plurals:
+  chat_context_count:
+    one: '%1$d entry in context'
+    other: '%1$d entries in context'
+  timeline_day_count:
+    one: '%1$d event'
+    other: '%1$d events'
+  timeline_month_count:
+    one: '%1$d event'
+    other: '%1$d events'
