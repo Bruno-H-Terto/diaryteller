@@ -38,6 +38,9 @@ cp .env.example .env
 make install
 make keys          # development RS256 keys and local secret checks
 make up            # postgres, mongo, mailpit, services
+make test-env      # pilha + banco + emulador + app de debug
+make studio         # painel local em http://127.0.0.1:8099
+make check         # ruff, black, pyright, limites, traduções, testes
 make migrate
 make seed          # plans, permissions and roles
 curl -s localhost:8001/health/ready

@@ -19,7 +19,11 @@ data class ConnectionNode(
     val recordCount: Int,
     val relationLabel: String,
     val origin: RelationOrigin,
+    val pin: MapPin? = null,
 )
+
+/** Manual position on the map, normalised to the ring radius. */
+data class MapPin(val x: Float, val y: Float)
 
 /** Counts shown around the centre of the map. */
 data class MapSummary(val records: Int, val audio: Int, val neighbours: Int)

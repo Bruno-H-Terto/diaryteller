@@ -53,7 +53,7 @@ class AppContainer(context: Context, provider: String = BuildConfig.OIDC_PROVIDE
 
     private val files = EncryptedFiles(appContext)
 
-    private val database = DatabaseFactory(
+    val database = DatabaseFactory(
         appContext,
         SecretFile(appContext, "db.key", KeystoreCipherBox("callme.database")),
     ).open()

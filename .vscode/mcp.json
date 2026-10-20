@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "diaryteller-studio": {
+      "type": "stdio",
+      "command": "poetry",
+      "args": ["run", "python", "-m", "ops.studio.mcp_server"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

@@ -16,8 +16,9 @@ import androidx.room.RoomDatabase
         EventRecordLink::class,
         EventEntityLink::class,
         RelationshipEntity::class,
+        MapPinEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false,
 )
 abstract class CallMeDatabase : RoomDatabase() {
@@ -25,4 +26,6 @@ abstract class CallMeDatabase : RoomDatabase() {
     abstract fun connectionsDao(): ConnectionsDao
 
     abstract fun entitiesDao(): EntitiesDao
+
+    abstract fun mapPinDao(): MapPinDao
 }

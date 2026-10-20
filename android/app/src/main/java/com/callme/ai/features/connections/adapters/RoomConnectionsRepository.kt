@@ -14,6 +14,7 @@ import com.callme.ai.features.connections.application.ConnectionsRepository
 import com.callme.ai.features.connections.application.MapData
 import com.callme.ai.features.connections.domain.ConnectionNode
 import com.callme.ai.features.connections.domain.EventSource
+import com.callme.ai.features.connections.domain.MapPin
 import com.callme.ai.features.connections.domain.MapSummary
 import com.callme.ai.features.connections.domain.Participant
 import com.callme.ai.features.connections.domain.ReviewItem
@@ -45,9 +46,11 @@ class RoomConnectionsRepository(
             dao.connectionTotal(start, end, filter, query),
             dao.recordsInPeriod(start, end),
             dao.audioInPeriod(start, end),
-        ) { rows, neighbours, records, audio ->
+            dao.pins(),
+        ) { rows, neighbours, records, audio, pins ->
+            val layout = pins.associate { it.entityId to MapPin(it.x, it.y) }
             MapData(
-                nodes = rows.map(::toNode),
+                nodes = rows.map { toNode(it).copy(pin = layout[it.id]) },
                 summary = MapSummary(records, audio, neighbours),
             )
         }

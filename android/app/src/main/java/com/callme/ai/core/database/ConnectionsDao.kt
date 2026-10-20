@@ -194,4 +194,7 @@ interface ConnectionsDao {
         """,
     )
     fun reviewItems(): Flow<List<ReviewRow>>
+
+    @Query("SELECT entityId, x, y FROM map_pins")
+    fun pins(): Flow<List<MapPinRow>>
 }

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diaryteller studio</title>
+  <link rel="stylesheet" href="/panel.css" />
+</head>
+<body>
+  <header>
+    <h1>Diaryteller studio</h1>
+    <span class="pill" id="app-pill">app…</span>
+    <span class="pill" id="sync-pill">0 alterações</span>
+    <div class="spacer"></div>
+    <button id="refresh">Atualizar</button>
+  </header>
+
+  <nav>
+    <button data-tab="map" class="active">Mapa</button>
+    <button data-tab="people">Pessoas</button>
+    <button data-tab="diary">Diário</button>
+    <button data-tab="events">Eventos</button>
+    <button data-tab="stack">Stack</button>
+    <button data-tab="i18n">Idiomas</button>
+  </nav>
+
+  <main>
+    <section id="tab-map" class="active">
+      <div class="row" style="margin-bottom: 12px">
+        <span class="hint">Arraste um nó para reposicionar. A posição é gravada no aparelho e o app abre o mapa nesse arranjo.</span>
+        <div class="spacer"></div>
+        <button id="save-layout" class="primary" disabled>Salvar layout</button>
+        <button id="reset-layout">Restaurar anel</button>
+      </div>
+      <div id="map"></div>
+    </section>
+
+    <section id="tab-people">
+      <div class="row">
+        <label class="hint">Cadastro <select id="person-select"></select></label>
+      </div>
+      <form class="editor" id="person-form">
+        <label>Nome <input id="person-name" maxlength="60" /></label>
+        <label>Avatar
+          <select id="person-model">
+            <option value="p1">Ilustrado · pessoa 1</option>
+            <option value="p2">Ilustrado · pessoa 2</option>
+            <option value="p3">Ilustrado · pessoa 3</option>
+            <option value="a1">Ilustrado · animal</option>
+            <option value="l1">Ilustrado · lugar</option>
+            <option value="e1">Ilustrado · acontecimento</option>
+            <option value="person">Desenhado · pessoa</option>
+            <option value="animal">Desenhado · animal</option>
+            <option value="place">Desenhado · lugar</option>
+            <option value="event">Desenhado · acontecimento</option>
+          </select>
+        </label>
+        <label>Fundo <input type="color" id="person-bg" /></label>
+        <button class="primary" type="submit">Salvar cadastro</button>
+      </form>
+    </section>
+
+    <section id="tab-diary">
+      <table>
+        <thead><tr><th>Título</th><th>Prévia</th><th>Data do fato</th><th>Áudio</th></tr></thead>
+        <tbody id="records-body"></tbody>
+      </table>
+    </section>
+
+    <section id="tab-events">
+      <table>
+        <thead><tr><th>Acontecimento</th><th>Data</th><th>Precisão</th><th>Estado</th></tr></thead>
+        <tbody id="events-body"></tbody>
+      </table>
+    </section>
+
+    <section id="tab-stack">
+      <div class="cards" id="service-cards"></div>
+      <div class="row" style="margin: 18px 0 10px">
+        <label class="hint">Tabela <select id="table-select"></select></label>
+        <span class="hint" id="table-hint"></span>
+      </div>
+      <table>
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </section>
+
+    <section id="tab-i18n">
+      <div class="hint">Cada arquivo em <code>android/i18n</code> gera uma língua no app (`make i18n`).</div>
+      <table style="margin-top: 12px">
+        <thead><tr><th>Arquivo</th><th>Idioma</th><th>Rótulo</th><th>Strings</th><th>Plurais</th><th>Pendentes</th></tr></thead>
+        <tbody id="i18n-body"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="/panel-data.js"></script>
+  <script src="/panel.js"></script>
+</body>
+</html>

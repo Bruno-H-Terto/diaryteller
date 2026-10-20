@@ -28,6 +28,12 @@ apenas durante a requisição e devolve resultados.
 - [Operação, retenção e backups](operations.md)
 - [Testes e critérios de qualidade](testing.md)
 - [Performance e carga](performance.md)
+- [Ambiente de desenvolvimento e painel](dev-environment.md)
+
+## App Android
+
+- [Traduções por arquivo YAML](i18n.md)
+- [Design system](design-system.md)
 
 ## Decisões arquiteturais
 
