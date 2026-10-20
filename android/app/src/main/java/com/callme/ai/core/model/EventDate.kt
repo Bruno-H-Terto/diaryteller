@@ -38,7 +38,7 @@ fun eventDateLabel(date: LocalDate?, precision: DatePrecision): String = when (p
 fun eventDateNote(precision: DatePrecision, suggested: Boolean): String = when {
     precision == DatePrecision.UNKNOWN -> "Nenhuma data foi citada nos relatos"
     suggested -> "Data interpretada a partir do relato · a revisar"
-    precision == DatePrecision.DAY -> "Data interpretada a partir do relato"
+    precision == DatePrecision.DAY -> "Data informada por você"
     precision == DatePrecision.MONTH -> "Mês citado nos relatos · dia não informado"
     else -> "Ano citado nos relatos · mês e dia não informados"
 }
